@@ -1,0 +1,4 @@
+make.sh started at 2024-08-12 17:38:55
+Executing: zsh my_shell_script.sh
+Hello world!
+make.sh finished at 2024-08-12 17:38:55
