@@ -24,5 +24,5 @@ export juliaCmd="julia"
 ###############################################################################
 
 # Add paths to external resources required by your repository here
-# EXTERNAL_NAMES=("dropbox" "drive")
-# EXTERNAL_PATHS=("/Users/username/MyDropboxPath" "/Users/username/MyGoogleDrive")
+#EXTERNAL_NAMES=("dropbox")
+#EXTERNAL_PATHS=("/Users/dannywerner/GSLab Dropbox/Daniel Werner")
