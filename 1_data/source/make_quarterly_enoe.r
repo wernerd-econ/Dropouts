@@ -66,7 +66,7 @@ fuse_quarter <- function(sdem, coe1, coe2, hog, viv){
 
 # ---- Function to process a single year/quarter ----
 process_quarter <- function(year, quarter) {
-  folder_path <- sprintf("%d/%s", year, quarter)
+  folder_path <- sprintf("ENOE/%d/%s", year, quarter)
 
   #Helper function to load files from dropbox
   load_from_dropbox <- function(folder_path, filename) {
