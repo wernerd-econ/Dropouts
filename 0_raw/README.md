@@ -43,3 +43,5 @@ It is important to be very careful with downloading ENOE onto local hard drive.
 The raw files for the ENOE spanning from 2007-2024 take up roughly 72.0GB of 
 storage. I have chosen to use dropbox to store all the raw data and an external
 hard drive for all intermediary files in my code.
+
+When running the code in 1_data, there are a few things to keep in mind. Files are large and the scripts used to merge them may sometimes throw errors of the kind "vector memory reached" ... if that occurs (mainly for cohorts 50-53, 60, and 61 in make_cohorts_enoe.r & for 2020 T4, 2021 T1, and 2021 T2 in make_quarterly_enoe.r) consider converting .dta files to .parquet and reading them in with read_parquet() in the arrow package [can use script cohort_by_hand.py to do so] or removing unecessary columns eraly by only keeping the intersection with another quarter (e.g. 2019 T2), respectively. 

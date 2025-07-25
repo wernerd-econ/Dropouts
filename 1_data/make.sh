@@ -45,7 +45,24 @@ mkdir -p "${MAKE_SCRIPT_DIR}/output"
 (
 cd "${MAKE_SCRIPT_DIR}/source"
 
-run_R make_quarterly_enoe.r "${LOGFILE}" || exit 1
+YEARS=({2007..2024})
+QUARTERS=(T1 T2 T3 T4)
+
+for year in "${YEARS[@]}"; do
+  for quarter in "${QUARTERS[@]}"; do
+    echo -e "\nProcessing ${year} ${quarter}..."
+    run_R make_quarterly_enoe.r "${LOGFILE}" "$year" "$quarter" || exit 1
+    echo -e "\nFinished Processing ${year} ${quarter}..."
+  done
+done
+
+for ((i=1; i<=315; i+=5)); do
+  cohort_number=$(( (i-1) / 5 + 1))
+  percent=$(( 100 * $cohort_number / 63 ))
+  echo -e "\nProcessing cohort $cohort_number of 63 ... ($percent% done)"
+  run_R make_cohorts_enoe.r "${LOGFILE}" "$i" || exit 1
+  echo -e "\nFinished processing cohort $cohort_number of 63."
+done
 ) || false
 
 echo -e "\nmake.sh finished at $(date '+%Y-%m-%d %H:%M:%S')" | tee -a "${LOGFILE}"

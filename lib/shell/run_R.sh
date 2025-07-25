@@ -39,7 +39,7 @@ run_R () {
     echo -e "\nScript ${program} in ${rCmd} started at ${start_time}" | tee -a "${logfile}"
 
     # run command and capture both stdout and stderr in the output variable
-    output=$(${rCmd} "${program}" 2>&1)
+    output=$(${rCmd} "${program}" "${@:3}" 2>&1)
     return_code=$?  # capture the exit status 
 
     # capture the content of output folder after running the script
