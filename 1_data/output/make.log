@@ -1,9 +1,2 @@
 
-Script make_cohorts_enoe.r in Rscript started at 2025-07-25 10:10:32
-Script make_cohorts_enoe.r finished successfully at 2025-07-25 10:13:28
-Output: 
-
-The following files were created in make_cohorts_enoe.r:
-Cohort_63.dta 
-
-make.sh finished at 2025-07-25 10:13:28
+Script staple_cohorts.py in python3 started at 2025-07-25 15:27:46

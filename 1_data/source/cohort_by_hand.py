@@ -2,6 +2,11 @@ import pandas as pd
 import pyarrow.parquet as pq
 from functools import reduce
 
+##### ======================================================= #####
+        # This script processes ENOE data to make cohorts
+        # that were too large for automated R script to handle.
+##### ======================================================= #####
+
 # Convert .dta Stata files to Parquet format
     # Define paths {donwload, upload}
 convert = pd.read_stata(f"{download_path}/2024_T4.dta")
