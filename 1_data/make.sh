@@ -64,6 +64,17 @@ cd "${MAKE_SCRIPT_DIR}/source"
 #   echo -e "\nProcessing cohort $cohort_number of 63 ... ($percent% done)"
 #   run_R make_cohorts_enoe.r "${LOGFILE}" "$i" || exit 1
 #   echo -e "\nFinished processing cohort $cohort_number of 63."
+#   echo -e "\nSaved cohort data as Cohort_$cohort_number to Output folder."
+#   echo -e "\nEditing cohort $cohort_number of 63 ..."
+#   run_R edit_cohorts_enoe.r "${LOGFILE}" "$i" || exit 1
+#   echo -e "\nFinished Editing cohort $cohort_number of 63. Saved as CleanCohort_$cohort_number in Output folder."
+# done
+
+# for ((i=1; i<=63; i+=1)); do
+    #percent_2=$(( 100 * $i / 63 ))
+#   echo -e "\nEditing cohort $i of 63 ... ($percent_2% done)"
+#   run_R edit_cohorts_enoe.r "${LOGFILE}" "$i" || exit 1
+#   echo -e "\nFinished Editing cohort $i of 63. Saved as CleanCohort_$i in Output folder."
 # done
 
 run_python staple_cohorts.py "${LOGFILE}" || exit 1
