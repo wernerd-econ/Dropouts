@@ -45,7 +45,7 @@ death_reports <- glue("/Users/wernerd/Desktop/Daniel Werner/Deaths/DEFUN{years}.
 # read in and concatenate records from all files
 deaths <- map_dfr(death_reports, read_death_reports)
 
-
+setwd("/Users/wernerd/Desktop/Daniel Werner/Deaths")
 homicide_codes <- read_delim("cod-mapping.csv", delim = "|", guess_max = 5000)
 homicide_codes <- homicide_codes %>% filter(cod_group == "Homicides")
 
@@ -68,43 +68,67 @@ homicide_deaths <- deaths %>% #FILTER OUT DEATHS...
 
 ## Add population data
 pop <- read_excel(file.path("/Users/wernerd/Desktop/Daniel Werner/Population", "pop.xlsx"))
-pop <- pop %>% filter(AÑO %in% c(2007:2024)) %>%
-  group_by(CLAVE,AÑO) %>%
-  summarize(pop_tot = sum(POB_TOTAL), .groups = "drop") %>%
-  rename(municipality = CLAVE, year = AÑO)
+pop <- pop %>%
+  filter(AÑO %in% 2007:2024) %>%
+  group_by(CLAVE, AÑO) %>%
+  summarise(
+    pop_tot = sum(POB_TOTAL),
+    pop_hom = sum(POB_TOTAL[SEXO == "HOMBRES"]),
+    pop_fem = sum(POB_TOTAL[SEXO == "MUJERES"]),
+    pop_students = sum(POB_05_09 + POB_10_14 + POB_15_19),
+    .groups = "drop"
+  ) %>%
+  rename(municipality = CLAVE, year = AÑO) %>%
+  select(municipality, year, pop_tot, pop_hom, pop_fem, pop_students)
 
-fake_population <- fake_population %>% arrange(municipality, year) %>%
+pop <- pop %>%
+  arrange(municipality, year) %>%
   group_by(municipality) %>%
   mutate(
-    pop_next = lead(population),
+    pop_tot_next = lead(pop_tot),
+    pop_hom_next = lead(pop_hom),
+    pop_fem_next = lead(pop_fem),
+    pop_students_next = lead(pop_students),
     year_next = lead(year),
-    monthly_growth = (pop_next / population)^(1/12) - 1
+    tot_monthly_growth = (pop_tot_next / pop_tot)^(1/12) - 1,
+    hom_monthly_growth = (pop_hom_next / pop_hom)^(1/12) - 1,
+    fem_monthly_growth = (pop_fem_next / pop_fem)^(1/12) - 1,
+    students_monthly_growth = (pop_students_next / pop_students)^(1/12) - 1
   ) %>%
-  filter(!is.na(monthly_growth)) %>%
+  filter(!is.na(tot_monthly_growth),
+         !is.na(hom_monthly_growth),
+         !is.na(fem_monthly_growth),
+         !is.na(students_monthly_growth)) %>%
+  ungroup() %>%
+  # Expand each row into 12 months
   rowwise() %>%
-  do({
-    tibble(
-      municipality = .$municipality,
-      year = .$year,
-      month = 1:12,
-      pop_month = .$population * (1 + .$monthly_growth)^(0:11)
-    )
-  }) %>%
-  rename(pop_tot = pop_month) %>%
+  mutate(month_data = list(tibble(
+    month = 1:12,
+    pop_total = pop_tot * (1 + tot_monthly_growth)^(0:11),
+    pop_hombre = pop_hom * (1 + hom_monthly_growth)^(0:11),
+    pop_mujer = pop_fem * (1 + fem_monthly_growth)^(0:11),
+    pop_student = pop_students * (1 + students_monthly_growth)^(0:11)
+  ))) %>%
+  unnest(month_data) %>%
   ungroup()
+
+pop <- pop %>% select(municipality, year, month, pop_total,
+                      pop_hombre, pop_mujer, pop_student) %>%
+  rename(pop_hom = pop_hombre, pop_fem = pop_mujer, pop_tot = pop_total)
 
 pop <- pop %>% mutate(year = as.character(year),
                       month = as.character(month),
-                      municipality = as.character(municipality))
-                      
-homicide_deaths <- homicide_deaths %>%
-  left_join(pop, by = c("municipality", "year", "month")) %>%
-  mutate(hr_per_ten_thousand = (homicides / pop_tot) * 10000) %>%
-  drop_na()
+                      municipality = as.character(municipality),
+                      percent_pop_student = pop_student/pop_tot)
 
-
-#  keep the total population of school aged children as well
+hom_rate <- pop %>%
+  left_join(homicide_deaths, by = c("municipality", "year", "month")) %>%
+  mutate(
+    homicides = if_else(is.na(homicides), 0, homicides),
+    homicide_rate_per_tenk = (homicides / pop_tot) * 10000
+  )
 
 
 # save the final data set 
+write_dta(hom_rate, "/Users/wernerd/Desktop/Daniel Werner/Deaths/homicides.dta")
 

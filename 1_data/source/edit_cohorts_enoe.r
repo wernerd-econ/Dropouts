@@ -93,7 +93,7 @@ main <- function(){
                        "clase2", "h_mud", "sex", "d_mes", "d_anio",
                        "t_loc", "cs_p13_1", "fac", "n_ent")
   cohort <- delete_unnecessary_columns(cohort, columns_to_keep)
-  cohort_1 <- create_new_variables(cohort, cohort_number)
+  cohort <- create_new_variables(cohort, cohort_number)
   write_dta(cohort, paste0("../output/",
                            sprintf("CleanCohort_%d.dta", cohort_number)))
   

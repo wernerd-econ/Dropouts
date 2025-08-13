@@ -74,7 +74,9 @@ cd "${MAKE_SCRIPT_DIR}/source"
 #   echo -e "\nFinished Editing cohort $i of 59. Saved as CleanCohort_$i in Output folder."
 # done
 
-run_python staple_cohorts.py "${LOGFILE}" || exit 1
+#run_R crime_and_pop.r "${LOGFILE}" || exit 1
+
+#run_python staple_cohorts.py "${LOGFILE}" || exit 1
 
 ) || false
 

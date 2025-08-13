@@ -11,6 +11,9 @@
 library(tidyverse)
 library(ggplot2)
 library(sf)
+library(units)
+library(haven)
+
 base_path <- "/Users/wernerd/Desktop/Daniel Werner/GeoData/"
 municipal <- st_read(file.path(base_path, "Marco Geoestadistico/conjunto_de_datos/areas_geoestadisticas_municipales.shp"))
 n_border <- st_read(file.path(base_path,
@@ -54,7 +57,7 @@ p <- ggplot() +
         plot.subtitle = element_text(hjust = 0.5))
 
 #Calculate Relevant Distances
-municipal <- municipal %>% group_by(Municipio_code) %>% 
+municipal <- municipal %>% group_by(Municipio_code) %>%
   mutate(d_to_n_border = min(st_distance(centroid, n_border$geometry)),
          d_to_s_border = min(st_distance(centroid, s_border$geometry)),
          d_to_coast = min(st_distance(centroid, coast$geometry))) %>%
@@ -71,6 +74,7 @@ municipal <- municipal %>%
   select(Municipio_code, d_to_n_border, d_to_s_border, d_to_coast)
 
 #Save the data
-write_dta(municipal, file.path(base_path, "final_geo.dta"))
-ggsave(filename = "/Users/wernerd/Desktop/Daniel Werner/Figures/Figure1.png", plot = p,
-       width = 3.5, height = 2.5, units = "in", dpi = 300)
+write_dta(municipal, "/Users/wernerd/Desktop/Daniel Werner/final_geo.dta")
+
+ggsave(filename = "/Users/wernerd/Desktop/Daniel Werner/Figures/Figure1.png",
+       plot = p, width = 8, height = 6, units = "in", dpi = 300, bg = "white")
