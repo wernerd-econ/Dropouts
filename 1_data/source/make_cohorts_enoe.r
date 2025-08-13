@@ -118,11 +118,8 @@ main <- function(){
     "2022_T1.dta", "2022_T2.dta", "2022_T3.dta", "2022_T4.dta", "2023_T1.dta",
     "2022_T2.dta", "2022_T3.dta", "2022_T4.dta", "2023_T1.dta", "2023_T2.dta",
     "2022_T3.dta", "2022_T4.dta", "2023_T1.dta", "2023_T2.dta", "2023_T3.dta",
-    "2022_T4.dta", "2023_T1.dta", "2023_T2.dta", "2023_T3.dta", "2023_T4.dta",
-    "2023_T1.dta", "2023_T2.dta", "2023_T3.dta", "2023_T4.dta", "2024_T1.dta",
-    "2023_T2.dta", "2023_T3.dta", "2023_T4.dta", "2024_T1.dta", "2024_T2.dta",
-    "2023_T3.dta", "2023_T4.dta", "2024_T1.dta", "2024_T2.dta", "2024_T3.dta",
-    "2023_T4.dta", "2024_T1.dta", "2024_T2.dta", "2024_T3.dta", "2024_T4.dta")
+    "2022_T4.dta", "2023_T1.dta", "2023_T2.dta", "2023_T3.dta", "2023_T4.dta"
+    )
   download_path <- "/Users/wernerd/Desktop/Daniel Werner/Quarterly"
   #real download path is "../output/" but storing locally for testing
   args <- commandArgs(trailingOnly = TRUE)

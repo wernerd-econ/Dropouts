@@ -1,10 +1,10 @@
 ## =============================================================== ##
-        # This script takes in the raw INEGI municipal
-        # geostatistic frame and finds the municipal centroids.
-        # It also loads the data for the coast and both borders.
-        # This can be used to calculate distances from each
-        # municipality to the coast and borders.
-        # The data and a graph are saved in the output directory.
+# This script takes in the raw INEGI municipal
+# geostatistic frame and finds the municipal centroids.
+# It also loads the data for the coast and both borders.
+# This can be used to calculate distances from each
+# municipality to the coast and borders.
+# The data and a graph are saved in the output directory.
 ## =============================================================== ##
 
 # Load necessary libraries
@@ -12,17 +12,16 @@ library(tidyverse)
 library(ggplot2)
 library(sf)
 base_path <- "/Users/wernerd/Desktop/Daniel Werner/GeoData/"
-municipal <- st_read(file.path(base_path,
-                               "areas_geoestadisticas_municipales.shp"))
+municipal <- st_read(file.path(base_path, "Marco Geoestadistico/conjunto_de_datos/areas_geoestadisticas_municipales.shp"))
 n_border <- st_read(file.path(base_path,
-                              "tl_2023_us_internationalboundary.shp"))
+                              "US Border/tl_2023_us_internationalboundary.shp"))
 s_border <- st_read(file.path(base_path,
-                              "Southern_Border_MX_GUA.shp"))
-coast <- st_read(file.path(base_path, "coastline.shp"))
+                              "Gua Border/Southern_Border_MX_GUA.shp"))
+coast <- st_read(file.path(base_path, "Coast/lc2018gw.shp"))
 
 #Make Unique Municipality Code
 municipal$CVE_ENT <- sub("^0", "", municipal$CVE_ENT)
-municipal <- municipal %>% mutate(Municipio_code = paste0(`CVE_ENT`, `CVE_MUN`))
+municipal <- municipal %>% mutate(municipality= paste0(`CVE_ENT`, `CVE_MUN`))
 
 #Extract the centroid for each municipality (center of the polygon)
 municipal <- municipal %>%
@@ -35,24 +34,25 @@ n_border <- st_transform(n_border, crs = 6372)
 s_border <- st_transform(s_border, crs = 6372)
 municipal <- st_transform(municipal, crs = 6372)
 coast <- st_transform(coast, crs = 6372)
-geo_data$centroid <- st_transform(geo_data$centroid, crs = 6372)
+municipal$centroid <- st_transform(municipal$centroid, crs = 6372)
 
 #Keep only Mexican Border -- Get Rid of Canada and Alaska
 n_border <- n_border %>% filter(IBTYPE == "M")
 
 # Visually confirm that everything is in the right place
-ggplot() +
+p <- ggplot() +
   geom_sf(data = municipal, fill = "#fdfdfd", color = "black") +
   geom_sf(data = n_border, color = "red", size = 3) +
-  geom_sf(data = municipal, aes(geometry = centroid),
-          color = "purple", size = 0.5) +
+  geom_sf(data = municipal$centroid,
+          color = "purple", size = 0.1) +
   geom_sf(data = s_border, color = "red", size = 6) +
   geom_sf(data = coast, color = "red", size = 0.5) +
   theme_minimal() +
-  labs(title = "Municipalities and Borders",
-       subtitle = "Centroids in Purple, Borders and Coasts in Red") +
+  labs(title = "",
+       subtitle = "") +
   theme(plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5))
+
 #Calculate Relevant Distances
 municipal <- municipal %>% group_by(Municipio_code) %>% 
   mutate(d_to_n_border = min(st_distance(centroid, n_border$geometry)),
@@ -72,3 +72,5 @@ municipal <- municipal %>%
 
 #Save the data
 write_dta(municipal, file.path(base_path, "final_geo.dta"))
+ggsave(filename = "/Users/wernerd/Desktop/Daniel Werner/Figures/Figure1.png", plot = p,
+       width = 3.5, height = 2.5, units = "in", dpi = 300)

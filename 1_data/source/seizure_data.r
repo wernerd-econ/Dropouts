@@ -54,3 +54,5 @@ total_seizures <- total_seizures %>% rename(date = `FECHA HECHO`) %>%
          -`UNIDAD DE MEDIDA`, -`Type of Seizure`) %>%
   group_by(year, month) %>%
   distinct(year, month, .keep_all = TRUE)
+
+# Save the cleaned data
