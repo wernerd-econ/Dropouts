@@ -130,5 +130,5 @@ hom_rate <- pop %>%
 
 
 # save the final data set 
-write_dta(hom_rate, "/Users/wernerd/Desktop/Daniel Werner/Deaths/homicides.dta")
+write_dta(hom_rate, "/Users/wernerd/Desktop/Daniel Werner/homicides.dta")
 

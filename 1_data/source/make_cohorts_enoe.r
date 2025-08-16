@@ -108,18 +108,8 @@ main <- function(){
     "2018_T2.dta", "2018_T3.dta", "2018_T4.dta", "2019_T1.dta", "2019_T2.dta",
     "2018_T3.dta", "2018_T4.dta", "2019_T1.dta", "2019_T2.dta", "2019_T3.dta",
     "2018_T4.dta", "2019_T1.dta", "2019_T2.dta", "2019_T3.dta", "2019_T4.dta",
-    "2019_T1.dta", "2019_T2.dta", "2019_T3.dta", "2019_T4.dta", "2020_T1.dta",
-    "2020_T3.dta", "2020_T4.dta", "2021_T1.dta", "2021_T2.dta", "2021_T3.dta",
-    "2020_T4.dta", "2021_T1.dta", "2021_T2.dta", "2021_T3.dta", "2021_T4.dta",
-    "2021_T1.dta", "2021_T2.dta", "2021_T3.dta", "2021_T4.dta", "2022_T1.dta",
-    "2021_T2.dta", "2021_T3.dta", "2021_T4.dta", "2022_T1.dta", "2022_T2.dta",
-    "2021_T3.dta", "2021_T4.dta", "2022_T1.dta", "2022_T2.dta", "2022_T3.dta",
-    "2021_T4.dta", "2022_T1.dta", "2022_T2.dta", "2022_T3.dta", "2022_T4.dta",
-    "2022_T1.dta", "2022_T2.dta", "2022_T3.dta", "2022_T4.dta", "2023_T1.dta",
-    "2022_T2.dta", "2022_T3.dta", "2022_T4.dta", "2023_T1.dta", "2023_T2.dta",
-    "2022_T3.dta", "2022_T4.dta", "2023_T1.dta", "2023_T2.dta", "2023_T3.dta",
-    "2022_T4.dta", "2023_T1.dta", "2023_T2.dta", "2023_T3.dta", "2023_T4.dta"
-    )
+    "2019_T1.dta", "2019_T2.dta", "2019_T3.dta", "2019_T4.dta", "2020_T1.dta"
+  )
   download_path <- "/Users/wernerd/Desktop/Daniel Werner/Quarterly"
   #real download path is "../output/" but storing locally for testing
   args <- commandArgs(trailingOnly = TRUE)
