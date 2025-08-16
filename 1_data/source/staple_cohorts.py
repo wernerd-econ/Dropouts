@@ -45,7 +45,7 @@ import pandas as pd
 import gc
 import psutil
 
-directory = "/Users/wernerd/Desktop/Daniel Werner/Cohorts"
+directory = "/Users/wernerd/Desktop/Daniel Werner/CleanCohorts"
 dfs = []
 i = 0
 
