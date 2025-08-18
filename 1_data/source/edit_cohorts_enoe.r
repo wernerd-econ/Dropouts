@@ -31,8 +31,10 @@ create_new_variables <- function(df, cohort_number) {
                       household_moved = h_mud,
                       month = d_mes,
                       year = d_anio,
-                      max_edu = cs_p13_1
+                      max_edu = cs_p13_1,
+                      weights = fac
                       ) %>%
+    mutate(school = ifelse(school == 1, 1, 0)) %>%
     mutate(cohort = cohort_number,
            hrly_salary = as.numeric(hrly_salary),
            monthly_salary = as.numeric(monthly_salary),
@@ -93,7 +95,7 @@ main <- function(){
   columns_to_keep <- c("municipality", "id_viv", "id_hog", "id", "age", "ing_x_hrs",
                        "ingocup", "hrsocup", "anios_esc", "cs_p17", "clase1",
                        "clase2", "h_mud", "sex", "d_mes", "d_anio",
-                       "cs_p13_1", "n_ent")
+                       "cs_p13_1", "n_ent", "fac")
   cohort <- delete_unnecessary_columns(cohort, columns_to_keep)
   cohort <- create_new_variables(cohort, cohort_number)
   write_dta(cohort, paste0("../output/",

@@ -24,7 +24,7 @@ All the raw data can be found in the following dropbox folder: FILL THIS IN WITH
             - For years 2007-2020T1
                 - Download DTA, will come in the form of a zip file called "YYYYtrim#_dta.zip" (where # is a number 1-4, indicating the quarter)
                 - Open folder and only keep .dta files labeled COE1T#YY, COE2T#YY, HOGT#YY, SDEMT#YY, and VIVT#YY (disregard .txt file)
-            - For years 2020T2-2024
+            - For years 2020T2-2023
                 - Download DTA, will come in the form of a zip file called "enoe_n_YYYY_trim#_dta.zip" (where # is a number 1-4, indicating the quarter)
                 - Open folder and only keep .dta files labeled ENOE(N)_COE1T#YY, ENOE(N)_COE2T#YY, ENOE(N)_HOGT#YY, ENOE(N)_SDEMT#YY, and ENOE(N)_VIVT#YY 
 (disregard .txt file)
@@ -40,7 +40,7 @@ the directory and understand the organization and purpose of the files.
 All data used in this repo is public and can be used for any research or other purpose 
 ### Notes
 It is important to be very careful with downloading ENOE onto local hard drive.
-The raw files for the ENOE spanning from 2007-2024 take up roughly 72.0GB of 
+The raw files for the ENOE spanning from 2007-2023 take up roughly 72.0GB of 
 storage. I have chosen to use dropbox to store all the raw data and an external
 hard drive for all intermediary files in my code.
 
