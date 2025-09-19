@@ -17,19 +17,21 @@ ntl_homicide <- homicide_data %>%
 
 ntl_homicide$year_month <- as.Date(paste0(ntl_homicide$year_month, "-01"))
 
-ggplot(ntl_homicide, aes(x = year_month)) +
+p <- ggplot(ntl_homicide, aes(x = year_month)) +
   geom_line(aes(y = ntl_hom_per_tenk, color = "National Homicide Rate")) +
   geom_line(aes(y = avg_mun_hom, color = "Average Municipal Homicide Rate")) +
   annotate("rect",
            xmin = as.Date("2007-01-01"),
-           xmax = as.Date("2011-12-31"),
+           xmax = as.Date("2012-12-01"),
            ymin = -Inf, ymax = Inf,
            fill = "gray30", alpha = 0.2) +
   annotate("rect",
-           xmin = as.Date("2015-01-01"),
-           xmax = as.Date("2019-12-31"),
+           xmin = as.Date("2015-04-01"),
+           xmax = as.Date("2020-12-01"),
            ymin = -Inf, ymax = Inf,
            fill = "gray30", alpha = 0.2) +
+  geom_hline(yintercept = mean(ntl_homicide$ntl_hom_per_tenk, na.rm = TRUE),
+             linetype = "dashed", color = "black", size = 0.5) +
   labs(
     x = "Year-Month",
     y = "Homicide Rate per 10k",
@@ -42,3 +44,6 @@ ggplot(ntl_homicide, aes(x = year_month)) +
   )) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave(filename = "/Users/wernerd/Desktop/Daniel Werner/Figures/Homicide_TS.png",
+       plot = p, width = 8, height = 6, units = "in", dpi = 300, bg = "white")

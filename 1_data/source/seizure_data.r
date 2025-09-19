@@ -4,56 +4,99 @@
         # seized by year and month.
 ## =============================================================== ##
 
-# Load necessary libraries
+library(haven)
 library(tidyverse)
 library(readxl)
 
-base_path <- "/Users/wernerd/Desktop/Daniel Werner/Cocaine/"
+setwd("/Users/wernerd/Desktop/Daniel Werner/Cocaine")
 #Cocaine Seizures - Base Cocaine and Cocaine
-coca <- read_excel(file.path(base_path, "Cocaina.xlsx"))
-base_coca <- read_excel(file.path(base_path, "base.cocaina.xlsx"))
+
+coca <- read_excel("Cocaina.xlsx")
+base_coca <- read_excel("base.cocaina.xlsx")
 
 coca <- coca %>% mutate(`Type of Seizure` = "coca")
-base_coca <- base_coca %>% mutate(`Type of Seizure` = "base coca") %>% 
-  rename(`UNIDAD DE MEDIDA` = `UNIDADES DE MEDIDA`)
-total_seizures <- rbind(coca, base_coca)
+base_coca <- base_coca %>% mutate(`Type of Seizure` = "base coca") %>%
+  rename(`UNIDAD DE MEDIDA`=`UNIDADES DE MEDIDA`)
+total_seizures <- rbind(coca,base_coca)
 
 #Remove Seizures With Quantity of 0 KG
+
 total_seizures <- total_seizures %>% filter(`CANTIDAD` != 0)
 
 #Extract Year and Month
+
 total_seizures <- total_seizures %>%
   mutate(
-    year = format(`FECHA HECHO`, "%Y"),
-    month = format(`FECHA HECHO`, "%m")
+    Year = format(`FECHA HECHO`, "%Y"),
+    Month = format(`FECHA HECHO`, "%m") 
   )
 
 #Filter For Relevant Years
-total_seizures <- total_seizures %>% mutate(year = as.numeric(year)) %>%
-  filter(year %in% c(2007:2024))
- 
+
+total_seizures <- total_seizures %>% mutate(Year=as.numeric(Year)) %>%
+  filter(Year %in% c(2010:2021))
+
 #List of Departments On Atlantic/Pacific Coast
+
 ap <- c("LA GUAJIRA", "MAGDALENA", "ATLANTICO", "BOLIVAR", "SUCRE",
         "CORDOBA", "ANTIOQUIA", "CHOCO", "VALLE DEL CAUCA", "CAUCA",
         "NARIÑO", "SAN ANDRES ISLAS")
- 
+
 #Make Relevant Monthly Seizure Statistics
-total_seizures <- total_seizures %>% group_by(year, month) %>%
-  mutate(`Total Seizures (Tons)` = sum(`CANTIDAD`) / 1000,
-         `Seizure Events (#)` = n(),
-         `Seizures Above 0.5 Tons (Tons)` = sum(`CANTIDAD`[`CANTIDAD` >= 500])/1000,
-         `Seizure Events Above 0.5 Tons (#)` = sum(`CANTIDAD` >= 500),
-         `Coastal Seizures (Tons)` = sum(`CANTIDAD`[`DEPARTAMENTO` %in% ap])/1000,
-         `Coastal Seizure Events (#)` = sum(`DEPARTAMENTO` %in% ap),
-         `Coastal Seizures Above 0.5 Tons (Tons)` = sum(`CANTIDAD`[`CANTIDAD` >= 500 & `DEPARTAMENTO` %in% ap])/1000,
-         `Coastal Seizure Events Above 0.5 Tons (#)` = sum(`CANTIDAD` >= 500 & `DEPARTAMENTO` %in% ap)
-         ) %>%
+
+total_seizures <- total_seizures %>% group_by(Year, Month) %>%
+  mutate(ts = sum(`CANTIDAD`)/1000,
+         ts_n = n(),
+         ts_big = sum(`CANTIDAD`[`CANTIDAD` >= 500])/1000,
+         ts_big_n = sum(`CANTIDAD` >= 500),
+         cs = sum(`CANTIDAD`[`DEPARTAMENTO` %in% ap])/1000,
+         cs_n = sum(`DEPARTAMENTO` %in% ap),
+         cs_big = sum(`CANTIDAD`[`CANTIDAD` >= 500 & `DEPARTAMENTO` %in% ap])/1000,
+         cs_big_n = sum(`CANTIDAD` >= 500 & `DEPARTAMENTO` %in% ap)
+  ) %>%
   ungroup()
 
-total_seizures <- total_seizures %>% rename(date = `FECHA HECHO`) %>%
-  select(-COD_DEPTO, -COD_MUNI, -DEPARTAMENTO, -MUNICIPIO, -CANTIDAD,
-         -`UNIDAD DE MEDIDA`, -`Type of Seizure`) %>%
-  group_by(year, month) %>%
-  distinct(year, month, .keep_all = TRUE)
+total_seizures <- total_seizures %>% distinct(Year, Month, .keep_all = TRUE)
 
-# Save the cleaned data
+inc <- read_excel("Incautaciones.xlsx")
+
+inc <- inc %>% filter(`CLASE ELEMENTO` == "COCAINA Y DERIVADOS")
+inc <- inc %>% filter(`ELEMENTO` %in% c("BASE DE COCA", "CLORHIDRATO DE COCAINA"))
+inc <- inc %>% filter(`CANTIDAD` != 0)
+
+#Extract Year and Month
+
+inc <- inc %>%
+  mutate(
+    Year = format(`FECHA`, "%Y"),
+    Month = format(`FECHA`, "%m") 
+  )
+
+#Filter For Relevant Years
+
+inc <- inc %>% mutate(Year=as.numeric(Year)) %>%
+  filter(Year %in% c(2007:2009))
+
+inc <- inc %>% group_by(Year, Month) %>%
+  mutate(ts = sum(`CANTIDAD`)/1000,
+         ts_n = n(),
+         ts_big = sum(`CANTIDAD`[`CANTIDAD` >= 500])/1000,
+         ts_big_n = sum(`CANTIDAD` >= 500),
+         cs = sum(`CANTIDAD`[`DEPARTAMENTO` %in% ap])/1000,
+         cs_n = sum(`DEPARTAMENTO` %in% ap),
+         cs_big = sum(`CANTIDAD`[`CANTIDAD` >= 500 & `DEPARTAMENTO` %in% ap])/1000,
+         cs_big_n = sum(`CANTIDAD` >= 500 & `DEPARTAMENTO` %in% ap)
+  ) %>%
+  ungroup() %>% distinct(Year, Month, .keep_all = TRUE)
+
+### Merge the two datasets
+inc <- inc %>% select(Year, Month, ts, ts_n, ts_big, ts_big_n,
+                      cs, cs_n, cs_big, cs_big_n)
+
+total_seizures <- total_seizures %>% select(Year, Month, ts, ts_n, ts_big,
+                                            ts_big_n, cs, cs_n, cs_big, cs_big_n) %>% 
+  mutate(Year = as.numeric(Year), Month=as.character(Month))
+
+seizure_data <- bind_rows(inc, total_seizures)
+
+write_dta(seizure_data, "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta")
