@@ -1,6 +1,3 @@
-## ====================================================================== ##
-#using code from to generate the homicide count from the death reports and 
-#causes of death reported by the INEGI 
 
 # @misc{Gargiulo_Aburto_Floridi_2023,
 #   title={Monthly municipal-level homicide rates in Mexico (January 2000–December 2022)},
@@ -12,17 +9,29 @@
 #   month={March}
 # }
 
-#also loads in raw population data, interpolates it assuming linear growth,
-# and saves the final dataset with homicide counts, population, homicide rates
-#per 10,000 people for every municipality month year from 2000 to 2023.
-## ====================================================================== ##
+# =============================================================================
+# Description:
+#   This script uses code from Garguilo Abruto & Flordi (2023) to process
+#   death report data from INEGI to create a clean dataset of monthly
+#   municipal-level homicides in Mexico from 2007 to 2024. It also loads in 
+#   raw population data, interpolates it assuming linear growth,
+#   and saves the final dataset with homicide counts, population, homicide rates
+#   per 10,000 people for every municipality month year from 2007 to 2023.
+#
+# Author: Daniel Werner 
+# Date: Jan. 29, 2026
+# =============================================================================
 
+# =============================================================================
+# (1) Load libraries and data
+# =============================================================================
 if (!require(pacman)) {install.packages("pacman")}
 
 pacman::p_load(argparse, here, readr, dplyr, purrr, glue, janitor, stringr)
 
 library(foreign)
 library(tidyverse)
+library(haven)
 
 read_death_reports <- function(death_reports) {
   
@@ -38,20 +47,24 @@ read_death_reports <- function(death_reports) {
   
   return(deaths)
 }
-
-years <- 2007:2023
+years <- 2007:2024
 death_reports <- glue("/Users/wernerd/Desktop/Daniel Werner/Deaths/DEFUN{years}.dbf")
 
-# read in and concatenate records from all files
+# Read in and concatenate records from all files
 deaths <- map_dfr(death_reports, read_death_reports)
 
-setwd("/Users/wernerd/Desktop/Daniel Werner/Deaths")
-homicide_codes <- read_delim("cod-mapping.csv", delim = "|", guess_max = 5000)
+base_path <- "/Users/wernerd/Desktop/Daniel Werner"
+homicide_codes <- read_delim(file.path(base_path, "Deaths/cod-mapping.csv"), 
+                             delim = "|", guess_max = 5000)
+
+pop <- readxl::read_xlsx(file.path(base_path, "Population/pop.xlsx"))
+# =============================================================================
+# (2) Clean data (2007-2024) 
+# =============================================================================
 homicide_codes <- homicide_codes %>% filter(cod_group == "Homicides")
 
-
-
-homicide_deaths <- deaths %>% #FILTER OUT DEATHS...
+#FILTER OUT DEATHS...
+homicide_deaths <- deaths %>% 
   # that occurred outside of time period or are missing year information
   filter(year %in% as.character(years)) %>%
   # missing month information
@@ -66,8 +79,7 @@ homicide_deaths <- deaths %>% #FILTER OUT DEATHS...
   summarize(homicides = n()) %>%
   ungroup()
 
-## Add population data
-pop <- read_excel(file.path("/Users/wernerd/Desktop/Daniel Werner/Population", "pop.xlsx"))
+# Add population data
 pop <- pop %>%
   filter(AÑO %in% 2007:2024) %>%
   group_by(CLAVE, AÑO) %>%
@@ -79,9 +91,7 @@ pop <- pop %>%
     .groups = "drop"
   ) %>%
   rename(municipality = CLAVE, year = AÑO) %>%
-  select(municipality, year, pop_tot, pop_hom, pop_fem, pop_students)
-
-pop <- pop %>%
+  select(municipality, year, pop_tot, pop_hom, pop_fem, pop_students) %>%
   arrange(municipality, year) %>%
   group_by(municipality) %>%
   mutate(
@@ -114,21 +124,24 @@ pop <- pop %>%
 
 pop <- pop %>% select(municipality, year, month, pop_total,
                       pop_hombre, pop_mujer, pop_student) %>%
-  rename(pop_hom = pop_hombre, pop_fem = pop_mujer, pop_tot = pop_total)
+  rename(pop_male = pop_hombre, pop_fem = pop_mujer, pop_tot = pop_total)
 
 pop <- pop %>% mutate(year = as.character(year),
                       month = as.character(month),
                       municipality = as.character(municipality),
-                      percent_pop_student = pop_student/pop_tot)
+                      pct_pop_student = pop_student/pop_tot,
+                      pct_pop_male = pop_male/pop_tot,
+                      pct_pop_fem = pop_fem/pop_tot)
 
+# Join and make homicide rates per 10k people
 hom_rate <- pop %>%
   left_join(homicide_deaths, by = c("municipality", "year", "month")) %>%
   mutate(
     homicides = if_else(is.na(homicides), 0, homicides),
-    homicide_rate_per_tenk = (homicides / pop_tot) * 10000
+    hr = (homicides / pop_tot) * 10000
   )
 
 
-# save the final data set 
+# Save the final data set 
 write_dta(hom_rate, "/Users/wernerd/Desktop/Daniel Werner/homicides.dta")
 
