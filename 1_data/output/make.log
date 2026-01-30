@@ -1,6 +1,6 @@
 
-Script crime_and_pop.r in Rscript started at 2026-01-29 14:43:52
-Script crime_and_pop.r finished successfully at 2026-01-29 14:45:00
+Script crime_and_pop.r in Rscript started at 2026-01-29 14:54:07
+Script crime_and_pop.r finished successfully at 2026-01-29 14:55:15
 Output: Loading required package: pacman
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ forcats   1.0.0     ✔ tibble    3.3.0
@@ -20,8 +20,8 @@ chr (3): causa_def, base_code, cod_group
 `summarise()` has grouped output by 'municipality', 'year'. You can override
 using the `.groups` argument.
 
-Script make_final_data.r in Rscript started at 2026-01-29 14:45:00
-Script make_final_data.r finished successfully at 2026-01-29 14:45:23
+Script make_final_data.r in Rscript started at 2026-01-29 14:55:15
+Script make_final_data.r finished successfully at 2026-01-29 14:55:39
 Output: ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
@@ -33,7 +33,7 @@ Output: ── Attaching core tidyverse packages ──────────�
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
           used (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
-Ncells  856903 45.8    1378677  73.7         NA  1378677  73.7
-Vcells 1449320 11.1   23683779 180.7      24576 23786211 181.5
+Ncells  856912 45.8    1378677  73.7         NA  1378677  73.7
+Vcells 1449323 11.1   25692512 196.1      24576 25747949 196.5
 
-make.sh finished at 2026-01-29 14:45:23
+make.sh finished at 2026-01-29 14:55:39

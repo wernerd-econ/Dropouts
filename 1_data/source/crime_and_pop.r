@@ -139,7 +139,15 @@ hom_rate <- pop %>%
   mutate(
     homicides = if_else(is.na(homicides), 0, homicides),
     hr = (homicides / pop_tot) * 10000
-  )
+  ) %>%
+  arrange(municipality, year, month) %>%
+  group_by(municipality) %>%
+  mutate(
+    hr_lag1 = lag(hr, 1),
+    hr_lag2 = lag(hr, 2),
+    hr_lag3 = lag(hr, 3)
+  ) %>%
+  ungroup()
 
 
 # Save the final data set 
