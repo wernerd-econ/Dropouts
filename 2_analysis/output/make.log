@@ -1,6 +1,2316 @@
 
-Script my_shell_script.sh in bash started at 2025-07-22 16:02:14
-Script my_shell_script.sh finished successfully at 2025-07-22 16:02:14
-Output: Hello world!
+Script main_results.do in StataMP started at 2026-02-03 11:22:44
+Error in main_results.do at 2026-02-03 11:27:50:
 
-make.sh finished at 2025-07-22 16:02:14
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 19.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: Unlimited-user 4-core network, expiring 21 Jul 2026
+Serial number: 501909302705
+  Licensed to: Daniel Werner
+               Stanford
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased; see help set_maxvar.
+
+. do main_results.do 
+
+. *******************************************************************************
+. * This script runs the main IV analysis for the paper and produces the  
+. * regression tables found in the body and appendix of the paper 
+. * 
+. * Author: Daniel Werner 
+. *******************************************************************************
+. 
+. clear all
+
+. set more off
+
+. set seed 2042023
+
+. 
+. * -----------------------------
+. * 0) Set paths and create folders
+. * -----------------------------
+. global TABLES  "../output/Tables/"
+
+. global FIGURES "../output/Figures/"
+
+. capture mkdir "${TABLES}"
+
+. capture mkdir "${FIGURES}"
+
+. 
+. 
+. 
+. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear 
+
+. 
+. * -----------------------------------------------------------------------------
+. * GRAB THE MUNICIPAL DATA AND BRING IN THE MUNICIPAL LEVEL CONTROLS 
+. * -----------------------------------------------------------------------------
+. 
+. tempfile indiv_temp
+
+. save `indiv_temp', replace
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_52375.000001 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_52375.000001 saved as .dta format
+
+. 
+. * Load the municipal-level dataset
+. use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+
+.  
+. * Keep only the variables you need from municipal data
+. keep municipality year month avg_* employment_rate
+
+. 
+. * Save as temporary file
+. tempfile muni_temp
+
+. save `muni_temp', replace
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_52375.000002 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_52375.000002 saved as .dta format
+
+. 
+. * Reload individual data
+. use `indiv_temp', clear
+
+. 
+. * Merge with municipal data
+. merge m:1 municipality year month using `muni_temp'
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                       144,360
+        from master                         0  (_merge==1)
+        from using                    144,360  (_merge==2)
+
+    Matched                         3,003,478  (_merge==3)
+    -----------------------------------------
+
+. 
+. 
+. * Drop remaining unmerged and low population municipalities
+. drop if pop_tot < 10000
+(62,752 observations deleted)
+
+. drop if _merge != 3
+(144,360 observations deleted)
+
+. cap drop _merge
+
+. 
+. * Drop primary school children
+. drop if age >= 6 & age <=11
+(1,321,511 observations deleted)
+
+. 
+. * -----------------------------------------------------------------------------
+. * 2) Generate necessary variables
+. * -----------------------------------------------------------------------------
+. 
+. * Instrument 
+. gen iv = cs_big * d_to_pc
+
+. 
+. * Treatment
+. gen ln_homicide = log(1+hr)
+
+. 
+. 
+. * Controls
+. destring municipality, replace 
+municipality: all characters numeric; replaced as int
+
+. gen month_year_date = date(year_month, "YM")
+
+. format month_year_date %tm
+
+. gen ln_hom_lag1 = log(1+hr_lag1)
+
+. gen ln_hom_lag2 = log(1+hr_lag2)
+
+. gen ln_hom_lag3 = log(1+hr_lag3)
+
+. 
+. 
+. * -----------------------------------------------------------------------------
+. * 3) Main Specification
+. * -----------------------------------------------------------------------------
+. 
+. * OLS
+. reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student, /// 
+>         absorb(i.month_year_date i.id) cluster(id) 
+(dropped 33961 singleton observations)
+(MWFE estimator converged in 42 iterations)
+
+HDFE Linear regression                            Number of obs   =  1,477,248
+Absorbing 2 HDFE groups                           F(  26, 338758) =      18.15
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.2320
+                                                  Adj R-squared   =     0.0033
+                                                  Within R-sq.    =     0.0005
+Number of clusters (id)      =    338,759         Root MSE        =     0.1199
+
+                                                  (Std. err. adjusted for 338,759 clusters in id)
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |   .0007521   .0009473     0.79   0.427    -.0011046    .0026088
+                      hh_income |  -2.99e-06   1.71e-06    -1.75   0.080    -6.34e-06    3.59e-07
+             hh_adult_schooling |   .0038527   .0004336     8.88   0.000     .0030028    .0047026
+                 hh_adult_hours |   1.36e-06   9.83e-06     0.14   0.890    -.0000179    .0000206
+       hh_adult_employment_rate |  -.0072646   .0018705    -3.88   0.000    -.0109308   -.0035985
+           hh_n_employed_adults |   .0059873   .0006787     8.82   0.000     .0046571    .0073175
+            hh_n_other_children |   .0029178   .0006714     4.35   0.000      .001602    .0042336
+                    hh_children |  -.0018856   .0006233    -3.03   0.002    -.0031073    -.000664
+                    ln_hom_lag1 |  -.0006621   .0009271    -0.71   0.475    -.0024792    .0011551
+                    ln_hom_lag2 |   .0001447   .0009294     0.16   0.876    -.0016769    .0019663
+                    ln_hom_lag3 |   .0000824   .0009176     0.09   0.928    -.0017161     .001881
+                        pop_tot |   5.43e-08   2.82e-08     1.92   0.054    -9.94e-10    1.10e-07
+                    pct_pop_fem |  -71.61035   91.09161    -0.79   0.432    -250.1473    106.9266
+                        avg_age |    .000214   .0001515     1.41   0.158    -.0000829     .000511
+             avg_hh_adult_hours |  -.0005728    .000086    -6.66   0.000    -.0007415   -.0004042
+         avg_hh_adult_schooling |  -.0003195   .0003596    -0.89   0.374    -.0010243    .0003853
+                avg_hh_children |   .0020961   .0016402     1.28   0.201    -.0011186    .0053108
+                     avg_income |  -.0000496    .000045    -1.10   0.270    -.0001377    .0000385
+                    avg_hincome |  -.0002613   .0054342    -0.05   0.962    -.0109123    .0103896
+                employment_rate |  -.0228592   .0055115    -4.15   0.000    -.0336616   -.0120567
+       avg_hh_n_employed_adults |  -.0105248    .001826    -5.76   0.000    -.0141038   -.0069458
+                    avg_hh_size |   .0044429   .0012581     3.53   0.000     .0019772    .0069087
+        avg_weekly_hours_worked |   .0017376   .0001821     9.54   0.000     .0013807    .0020944
+avg_weekly_hours_worked_workers |  -.0002009   .0000893    -2.25   0.024     -.000376   -.0000258
+                   pct_pop_male |   -71.0105   91.10654    -0.78   0.436    -249.5767    107.5557
+                pct_pop_student |   -.412759   .2371455    -1.74   0.082    -.8775574    .0520393
+                          _cons |   71.39464   91.09911     0.78   0.433     -107.157    249.9462
+-------------------------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |       166           1         165     |
+              id |    338759      338759           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+. 
+. local b_1 = _b[ln_homicide]
+
+. local se_1 = _se[ln_homicide]
+
+. local N_1 = e(N)
+
+. quietly sum school if e(sample)
+
+. local mean_1 : display %6.3f r(mean)
+
+. 
+. * IV minimal controls 
+. ivreghdfe dropout ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot ///
+>                   (ln_homicide = iv), /// 
+>           absorb(i.month_year_date i.id) cluster(id) first
+(dropped 29783 singleton observations)
+(MWFE estimator converged in 42 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                1589432
+Number of clusters (id) =       353176
+------------------------------------------------------------------------------
+             |               Robust
+ ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          iv |  -1.24e-06   8.83e-08   -14.02   0.000    -1.41e-06   -1.06e-06
+ ln_hom_lag1 |   .1320926   .0021199    62.31   0.000     .1279377    .1362475
+ ln_hom_lag2 |   .0307133   .0019661    15.62   0.000     .0268597    .0345668
+ ln_hom_lag3 |   -.079421   .0017478   -45.44   0.000    -.0828466   -.0759955
+     pop_tot |   1.27e-07   2.47e-08     5.15   0.000     7.88e-08    1.76e-07
+------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1,353175) =   196.46
+  Prob > F      =   0.0000
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1,353175) =   196.46
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1,353175)  P-val | SW Chi-sq(  1) P-val | SW F(  1,353175)
+ln_homicide  |     196.46    0.0000 |      196.49   0.0000 |      196.46
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=196.45   P-val=0.0000
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                     240.81
+Kleibergen-Paap Wald rk F statistic                               196.46
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,353175)=    0.32     P-val=0.5693
+Anderson-Rubin Wald test           Chi-sq(1)=      0.32     P-val=0.5693
+Stock-Wright LM S statistic        Chi-sq(1)=      0.32     P-val=0.5693
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =     353176
+Number of observations               N  =    1589432
+Number of regressors                 K  =          5
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =          5
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =       353176                Number of obs =  1589432
+                                                      F(  5,353175) =     1.14
+                                                      Prob > F      =   0.3391
+Total (centered) SS     =  17825.55275                Centered R2   =  -0.0016
+Total (uncentered) SS   =  17825.55275                Uncentered R2 =  -0.0016
+Residual SS             =  17853.24029                Root MSE      =     .106
+
+------------------------------------------------------------------------------
+             |               Robust
+     dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ ln_homicide |   .0397362   .0698894     0.57   0.570    -.0972449    .1767173
+ ln_hom_lag1 |  -.0063826   .0092823    -0.69   0.492    -.0245756    .0118104
+ ln_hom_lag2 |  -.0005229   .0023224    -0.23   0.822    -.0050747    .0040289
+ ln_hom_lag3 |   .0032269   .0056165     0.57   0.566    -.0077813    .0142351
+     pop_tot |   4.32e-08   2.77e-08     1.56   0.119    -1.11e-08    9.75e-08
+------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):            196.451
+                                                   Chi-sq(1) P-val =    0.0000
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):              240.810
+                         (Kleibergen-Paap rk Wald F statistic):        196.464
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |       166           1         165     |
+              id |    353176      353176           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+.                   
+. local b_2 = _b[ln_homicide]
+
+. local se_2 = _se[ln_homicide]
+
+. local N_2 = e(N)
+
+. quietly sum school if e(sample)
+
+. local mean_2 : display %6.3f r(mean)
+
+. 
+. * IV main specification 
+. ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+>         absorb(i.month_year_date i.id) cluster(id) first
+(dropped 33961 singleton observations)
+(MWFE estimator converged in 42 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                1477248
+Number of clusters (id) =       338759
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                    ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                             iv |  -1.25e-06   9.05e-08   -13.76   0.000    -1.42e-06   -1.07e-06
+                      hh_income |   2.39e-06   2.06e-06     1.16   0.246    -1.65e-06    6.44e-06
+             hh_adult_schooling |   .0004758   .0004849     0.98   0.326    -.0004745    .0014261
+                 hh_adult_hours |  -2.76e-06   9.81e-06    -0.28   0.778     -.000022    .0000165
+       hh_adult_employment_rate |    .002376   .0018926     1.26   0.209    -.0013335    .0060855
+           hh_n_employed_adults |  -.0007576   .0006449    -1.17   0.240    -.0020216    .0005064
+            hh_n_other_children |  -.0014161   .0007224    -1.96   0.050     -.002832   -1.46e-07
+                    hh_children |  -.0008522   .0006368    -1.34   0.181    -.0021003    .0003959
+                    ln_hom_lag1 |   .1341627   .0022196    60.44   0.000     .1298123    .1385132
+                    ln_hom_lag2 |   .0309524    .002068    14.97   0.000     .0268992    .0350057
+                    ln_hom_lag3 |  -.0805134   .0018122   -44.43   0.000    -.0840653   -.0769615
+                        pop_tot |   7.50e-08   2.69e-08     2.79   0.005     2.23e-08    1.28e-07
+                    pct_pop_fem |  -1597.997   410.6148    -3.89   0.000    -2402.788   -793.2067
+                        avg_age |   .0003386   .0001877     1.80   0.071    -.0000293    .0007065
+             avg_hh_adult_hours |  -.0000936   .0001115    -0.84   0.401    -.0003122    .0001249
+         avg_hh_adult_schooling |   .0048347   .0004395    11.00   0.000     .0039734    .0056961
+                avg_hh_children |   .0125781   .0021018     5.98   0.000     .0084587    .0166976
+                     avg_income |  -.0002318   .0000637    -3.64   0.000    -.0003566    -.000107
+                    avg_hincome |  -.0392921   .0090862    -4.32   0.000    -.0571006   -.0214835
+                employment_rate |  -.0082136   .0070098    -1.17   0.241    -.0219526    .0055255
+       avg_hh_n_employed_adults |  -.0080933   .0024051    -3.37   0.001    -.0128071   -.0033795
+                    avg_hh_size |  -.0002553   .0016011    -0.16   0.873    -.0033934    .0028828
+        avg_weekly_hours_worked |   .0012686   .0002301     5.51   0.000     .0008176    .0017195
+avg_weekly_hours_worked_workers |  -.0003113   .0001196    -2.60   0.009    -.0005458   -.0000769
+                   pct_pop_male |  -1596.901   410.6201    -3.89   0.000    -2401.703   -792.1002
+                pct_pop_student |   -2.89122   .3332326    -8.68   0.000    -3.544344   -2.238096
+-------------------------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1,338758) =   189.22
+  Prob > F      =   0.0000
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1,338758) =   189.22
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1,338758)  P-val | SW Chi-sq(  1) P-val | SW F(  1,338758)
+ln_homicide  |     189.22    0.0000 |      189.24   0.0000 |      189.22
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=189.18   P-val=0.0000
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                     233.06
+Kleibergen-Paap Wald rk F statistic                               189.22
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,338758)=    0.37     P-val=0.5437
+Anderson-Rubin Wald test           Chi-sq(1)=      0.37     P-val=0.5436
+Stock-Wright LM S statistic        Chi-sq(1)=      0.37     P-val=0.5433
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =     338759
+Number of observations               N  =    1477248
+Number of regressors                 K  =         26
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =         26
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =       338759                Number of obs =  1477248
+                                                      F( 26,338758) =    18.11
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  16372.19499                Centered R2   =  -0.0014
+Total (uncentered) SS   =  16372.19499                Uncentered R2 =  -0.0014
+Residual SS             =  16394.99893                Root MSE      =    .1054
+
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |   .0437382   .0720941     0.61   0.544     -.097564    .1850405
+                      hh_income |  -3.09e-06   1.72e-06    -1.80   0.072    -6.46e-06    2.75e-07
+             hh_adult_schooling |   .0038317   .0004349     8.81   0.000     .0029794     .004684
+                 hh_adult_hours |   1.48e-06   9.84e-06     0.15   0.881    -.0000178    .0000208
+       hh_adult_employment_rate |   -.007367   .0018785    -3.92   0.000    -.0110487   -.0036852
+           hh_n_employed_adults |   .0060198   .0006809     8.84   0.000     .0046852    .0073544
+            hh_n_other_children |   .0029787   .0006796     4.38   0.000     .0016468    .0043107
+                    hh_children |  -.0018492   .0006265    -2.95   0.003    -.0030771   -.0006212
+                    ln_hom_lag1 |  -.0064301   .0097299    -0.66   0.509    -.0255005    .0126403
+                    ln_hom_lag2 |  -.0011887   .0024176    -0.49   0.623    -.0059271    .0035496
+                    ln_hom_lag3 |    .003538   .0058759     0.60   0.547    -.0079785    .0150545
+                        pop_tot |   5.11e-08   2.86e-08     1.78   0.074    -5.04e-09    1.07e-07
+                    pct_pop_fem |   -3.33652   146.2442    -0.02   0.982    -289.9709    283.2978
+                        avg_age |   .0001993   .0001538     1.30   0.195    -.0001021    .0005007
+             avg_hh_adult_hours |  -.0005686   .0000864    -6.58   0.000     -.000738   -.0003992
+         avg_hh_adult_schooling |  -.0005286   .0005034    -1.05   0.294    -.0015152    .0004581
+                avg_hh_children |   .0015581   .0018711     0.83   0.405    -.0021092    .0052255
+                     avg_income |  -.0000397   .0000482    -0.82   0.411    -.0001342    .0000548
+                    avg_hincome |    .001439   .0061093     0.24   0.814    -.0105351    .0134131
+                employment_rate |  -.0225297   .0055418    -4.07   0.000    -.0333915    -.011668
+       avg_hh_n_employed_adults |  -.0101773    .001919    -5.30   0.000    -.0139385    -.006416
+                    avg_hh_size |   .0044533    .001261     3.53   0.000     .0019819    .0069248
+        avg_weekly_hours_worked |   .0016836    .000203     8.29   0.000     .0012857    .0020815
+avg_weekly_hours_worked_workers |  -.0001877   .0000921    -2.04   0.042    -.0003683   -7.15e-06
+                   pct_pop_male |  -2.783626   146.1936    -0.02   0.985    -289.3188    283.7515
+                pct_pop_student |  -.2904627   .3147509    -0.92   0.356    -.9073653    .3264399
+-------------------------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):            189.184
+                                                   Chi-sq(1) P-val =    0.0000
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):              233.062
+                         (Kleibergen-Paap rk Wald F statistic):        189.219
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: hh_income hh_adult_schooling hh_adult_hours
+                      hh_adult_employment_rate hh_n_employed_adults
+                      hh_n_other_children hh_children ln_hom_lag1 ln_hom_lag2
+                      ln_hom_lag3 pop_tot pct_pop_fem avg_age avg_hh_adult_hours
+                      avg_hh_adult_schooling avg_hh_children avg_income
+                      avg_hincome employment_rate avg_hh_n_employed_adults
+                      avg_hh_size avg_weekly_hours_worked
+                      avg_weekly_hours_worked_workers pct_pop_male
+                      pct_pop_student
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |       166           1         165     |
+              id |    338759      338759           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+. 
+. local b_3 = _b[ln_homicide]
+
+. local se_3 = _se[ln_homicide]
+
+. local N_3 = e(N)
+
+. local kp_3 = e(rkf)
+
+. quietly sum school if e(sample)
+
+. local mean_3 : display %6.3f r(mean)
+
+. 
+. 
+. * -----------------------------------------------------------------------------
+. * 4) Time Periods
+. * -----------------------------------------------------------------------------
+. 
+. destring year, replace
+year: all characters numeric; replaced as int
+
+. 
+. * Period 1: 2007-2012
+. preserve
+
+. keep if year >= 2007 & year <= 2012
+(1,164,971 observations deleted)
+
+. 
+. ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+>         absorb(i.month_year_date i.id) cluster(id) first
+(dropped 22970 singleton observations)
+(MWFE estimator converged in 20 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                 400586
+Number of clusters (id) =       104801
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                    ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                             iv |  -6.57e-07   2.64e-07    -2.49   0.013    -1.17e-06   -1.40e-07
+                      hh_income |   5.05e-06   5.24e-06     0.96   0.335    -5.22e-06    .0000153
+             hh_adult_schooling |   .0014144   .0010863     1.30   0.193    -.0007148    .0035435
+                 hh_adult_hours |   9.59e-06   .0000216     0.44   0.658    -.0000328     .000052
+       hh_adult_employment_rate |   .0043442   .0043312     1.00   0.316    -.0041448    .0128332
+           hh_n_employed_adults |  -.0004672   .0014362    -0.33   0.745    -.0032821    .0023478
+            hh_n_other_children |     .00115    .001613     0.71   0.476    -.0020115    .0043114
+                    hh_children |  -.0020696   .0014516    -1.43   0.154    -.0049148    .0007755
+                    ln_hom_lag1 |   .1514724   .0044683    33.90   0.000     .1427147    .1602301
+                    ln_hom_lag2 |   .0088455   .0039682     2.23   0.026      .001068     .016623
+                    ln_hom_lag3 |  -.1259029   .0033782   -37.27   0.000    -.1325241   -.1192817
+                        pop_tot |  -1.95e-06   8.05e-08   -24.27   0.000    -2.11e-06   -1.80e-06
+                    pct_pop_fem |  -3536.761   353.3521   -10.01   0.000     -4229.32   -2844.201
+                        avg_age |   .0012644   .0004825     2.62   0.009     .0003186    .0022101
+             avg_hh_adult_hours |   .0004705   .0002374     1.98   0.048     5.11e-06    .0009358
+         avg_hh_adult_schooling |   .0073135   .0010692     6.84   0.000     .0052178    .0094092
+                avg_hh_children |   .0229412   .0048098     4.77   0.000      .013514    .0323683
+                     avg_income |   .0000136   .0001581     0.09   0.931    -.0002961    .0003234
+                    avg_hincome |  -.0348743    .021998    -1.59   0.113    -.0779898    .0082412
+                employment_rate |  -.0164002    .013827    -1.19   0.236    -.0435007    .0107004
+       avg_hh_n_employed_adults |  -.0085126   .0052433    -1.62   0.104    -.0187894    .0017641
+                    avg_hh_size |  -.0011497    .003585    -0.32   0.748    -.0081762    .0058767
+        avg_weekly_hours_worked |   .0009389   .0005208     1.80   0.071    -.0000817    .0019596
+avg_weekly_hours_worked_workers |  -.0001967    .000256    -0.77   0.442    -.0006983     .000305
+                   pct_pop_male |   -3531.33   353.1667   -10.00   0.000    -4223.526   -2839.134
+                pct_pop_student |  -1.101371   .8896803    -1.24   0.216    -2.845118    .6423757
+-------------------------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1,104800) =     6.20
+  Prob > F      =   0.0128
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1,104800) =     6.20
+  Prob > F      =   0.0128
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1,104800)  P-val | SW Chi-sq(  1) P-val | SW F(  1,104800)
+ln_homicide  |       6.20    0.0128 |        6.20   0.0128 |        6.20
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=6.19     P-val=0.0128
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                       9.27
+Kleibergen-Paap Wald rk F statistic                                 6.20
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,104800)=    2.20     P-val=0.1383
+Anderson-Rubin Wald test           Chi-sq(1)=      2.20     P-val=0.1382
+Stock-Wright LM S statistic        Chi-sq(1)=      2.21     P-val=0.1376
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =     104801
+Number of observations               N  =     400586
+Number of regressors                 K  =         26
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =         26
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =       104801                Number of obs =   400586
+                                                      F( 26,104800) =     4.35
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  4595.439066                Centered R2   =  -0.2670
+Total (uncentered) SS   =  4595.439066                Uncentered R2 =  -0.2670
+Residual SS             =  5822.214825                Root MSE      =    .1206
+
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |  -.4629561    .361143    -1.28   0.200    -1.170792    .2448794
+                      hh_income |  -4.65e-06   5.09e-06    -0.91   0.361    -.0000146    5.33e-06
+             hh_adult_schooling |   .0054441   .0011428     4.76   0.000     .0032043    .0076839
+                 hh_adult_hours |   6.35e-07   .0000224     0.03   0.977    -.0000433    .0000446
+       hh_adult_employment_rate |  -.0070686   .0047313    -1.49   0.135    -.0163419    .0022046
+           hh_n_employed_adults |   .0062383   .0015782     3.95   0.000      .003145    .0093316
+            hh_n_other_children |   .0019174   .0015957     1.20   0.230    -.0012102    .0050449
+                    hh_children |  -.0011362   .0016194    -0.70   0.483    -.0043102    .0020378
+                    ln_hom_lag1 |   .0694329   .0549405     1.26   0.206    -.0382497    .1771156
+                    ln_hom_lag2 |   .0027146   .0039495     0.69   0.492    -.0050264    .0104556
+                    ln_hom_lag3 |  -.0579128   .0455965    -1.27   0.204    -.1472813    .0314557
+                        pop_tot |  -8.65e-07   7.12e-07    -1.21   0.225    -2.26e-06    5.31e-07
+                    pct_pop_fem |  -2164.605   1299.192    -1.67   0.096    -4711.004    381.7947
+                        avg_age |   .0009648    .000643     1.50   0.134    -.0002955    .0022251
+             avg_hh_adult_hours |  -.0001898   .0002682    -0.71   0.479    -.0007155     .000336
+         avg_hh_adult_schooling |   .0030333    .002832     1.07   0.284    -.0025174     .008584
+                avg_hh_children |   .0152514    .009523     1.60   0.109    -.0034135    .0339163
+                     avg_income |   .0000232   .0001319     0.18   0.860    -.0002353    .0002817
+                    avg_hincome |  -.0194626   .0215777    -0.90   0.367    -.0617547    .0228295
+                employment_rate |  -.0325704   .0139039    -2.34   0.019    -.0598218   -.0053189
+       avg_hh_n_employed_adults |  -.0118379   .0056623    -2.09   0.037     -.022936   -.0007399
+                    avg_hh_size |   .0021434   .0033583     0.64   0.523     -.004439    .0087257
+        avg_weekly_hours_worked |   .0023491   .0005803     4.05   0.000     .0012116    .0034865
+avg_weekly_hours_worked_workers |  -.0004284    .000229    -1.87   0.061    -.0008772    .0000204
+                   pct_pop_male |  -2160.654   1297.217    -1.67   0.096    -4703.182    381.8735
+                pct_pop_student |  -.3518369   .7784544    -0.45   0.651    -1.877597    1.173923
+-------------------------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              6.195
+                                                   Chi-sq(1) P-val =    0.0128
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):                9.273
+                         (Kleibergen-Paap rk Wald F statistic):          6.200
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: hh_income hh_adult_schooling hh_adult_hours
+                      hh_adult_employment_rate hh_n_employed_adults
+                      hh_n_other_children hh_children ln_hom_lag1 ln_hom_lag2
+                      ln_hom_lag3 pop_tot pct_pop_fem avg_age avg_hh_adult_hours
+                      avg_hh_adult_schooling avg_hh_children avg_income
+                      avg_hincome employment_rate avg_hh_n_employed_adults
+                      avg_hh_size avg_weekly_hours_worked
+                      avg_weekly_hours_worked_workers pct_pop_male
+                      pct_pop_student
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |        36           1          35     |
+              id |    104801      104801           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+. 
+. local b_4 = _b[ln_homicide]
+
+. local se_4 = _se[ln_homicide]
+
+. local N_4 = e(N)
+
+. local kp_4 = e(rkf)
+
+. quietly sum school if e(sample)
+
+. local mean_4 : display %6.3f r(mean)
+
+. 
+. restore
+
+. 
+. * Period 2: 2013-2017
+. preserve
+
+. keep if year >= 2013 & year <= 2018
+(780,370 observations deleted)
+
+. 
+. ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+>         absorb(i.month_year_date i.id) cluster(id) first
+(dropped 27990 singleton observations)
+(MWFE estimator converged in 31 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                 756354
+Number of clusters (id) =       182980
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                    ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                             iv |  -2.50e-06   1.25e-07   -20.04   0.000    -2.75e-06   -2.26e-06
+                      hh_income |  -1.22e-06   2.73e-06    -0.45   0.653    -6.57e-06    4.12e-06
+             hh_adult_schooling |    -.00069   .0006455    -1.07   0.285    -.0019551    .0005751
+                 hh_adult_hours |   6.56e-06   .0000131     0.50   0.616    -.0000191    .0000322
+       hh_adult_employment_rate |   .0015231   .0026496     0.57   0.565    -.0036702    .0067163
+           hh_n_employed_adults |  -.0008867   .0009222    -0.96   0.336    -.0026942    .0009208
+            hh_n_other_children |  -.0024748   .0009896    -2.50   0.012    -.0044143   -.0005352
+                    hh_children |  -.0002596   .0008664    -0.30   0.764    -.0019576    .0014384
+                    ln_hom_lag1 |   .1331888   .0029943    44.48   0.000     .1273201    .1390574
+                    ln_hom_lag2 |   .0324518   .0028858    11.25   0.000     .0267958    .0381078
+                    ln_hom_lag3 |   -.072535   .0025421   -28.53   0.000    -.0775174   -.0675526
+                        pop_tot |   6.59e-07   3.43e-08    19.21   0.000     5.92e-07    7.26e-07
+                    pct_pop_fem |  -1538.012   655.0199    -2.35   0.019     -2821.83   -254.1946
+                        avg_age |   .0012553   .0002718     4.62   0.000     .0007225     .001788
+             avg_hh_adult_hours |  -.0007058   .0001565    -4.51   0.000    -.0010125   -.0003991
+         avg_hh_adult_schooling |      .0054    .000618     8.74   0.000     .0041887    .0066113
+                avg_hh_children |   .0215464   .0030127     7.15   0.000     .0156416    .0274512
+                     avg_income |  -.0004213   .0000794    -5.31   0.000    -.0005769   -.0002656
+                    avg_hincome |  -.0392629   .0104865    -3.74   0.000    -.0598161   -.0187096
+                employment_rate |   .0099511   .0103335     0.96   0.336    -.0103021    .0302044
+       avg_hh_n_employed_adults |   .0002304   .0036159     0.06   0.949    -.0068566    .0073175
+                    avg_hh_size |  -.0054809   .0023454    -2.34   0.019    -.0100777    -.000884
+        avg_weekly_hours_worked |   .0006941   .0003389     2.05   0.041     .0000299    .0013583
+avg_weekly_hours_worked_workers |   .0003048   .0001644     1.85   0.064    -.0000175    .0006272
+                   pct_pop_male |  -1537.287   654.9944    -2.35   0.019    -2821.054   -253.5193
+                pct_pop_student |   -2.21377   .4046116    -5.47   0.000    -3.006796   -1.420745
+-------------------------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1,182979) =   401.58
+  Prob > F      =   0.0000
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1,182979) =   401.58
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1,182979)  P-val | SW Chi-sq(  1) P-val | SW F(  1,182979)
+ln_homicide  |     401.58    0.0000 |      401.63   0.0000 |      401.58
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=400.23   P-val=0.0000
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                     555.64
+Kleibergen-Paap Wald rk F statistic                               401.58
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,182979)=    0.02     P-val=0.8921
+Anderson-Rubin Wald test           Chi-sq(1)=      0.02     P-val=0.8921
+Stock-Wright LM S statistic        Chi-sq(1)=      0.02     P-val=0.8919
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =     182980
+Number of observations               N  =     756354
+Number of regressors                 K  =         26
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =         26
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =       182980                Number of obs =   756354
+                                                      F( 26,182979) =     8.75
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  7958.252861                Centered R2   =   0.0004
+Total (uncentered) SS   =  7958.252861                Uncentered R2 =   0.0004
+Residual SS             =   7954.96533                Root MSE      =    .1026
+
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |  -.0067596   .0498534    -0.14   0.892    -.1044712    .0909519
+                      hh_income |  -1.40e-06   2.26e-06    -0.62   0.537    -5.83e-06    3.03e-06
+             hh_adult_schooling |   .0038431   .0006145     6.25   0.000     .0026386    .0050476
+                 hh_adult_hours |   .0000148   .0000136     1.08   0.278    -.0000119    .0000414
+       hh_adult_employment_rate |  -.0040191   .0027078    -1.48   0.138    -.0093263    .0012881
+           hh_n_employed_adults |   .0048444   .0009879     4.90   0.000     .0029081    .0067806
+            hh_n_other_children |   .0028818   .0009771     2.95   0.003     .0009667     .004797
+                    hh_children |   -.001622   .0009058    -1.79   0.073    -.0033973    .0001533
+                    ln_hom_lag1 |   .0016233   .0068091     0.24   0.812    -.0117225    .0149691
+                    ln_hom_lag2 |   .0015975   .0021047     0.76   0.448    -.0025276    .0057227
+                    ln_hom_lag3 |  -.0005915   .0038428    -0.15   0.878    -.0081232    .0069402
+                        pop_tot |   6.93e-08   4.95e-08     1.40   0.161    -2.77e-08    1.66e-07
+                    pct_pop_fem |  -386.6028   417.1885    -0.93   0.354    -1204.283    431.0771
+                        avg_age |  -3.35e-06   .0002346    -0.01   0.989    -.0004631    .0004564
+             avg_hh_adult_hours |  -.0006964   .0001282    -5.43   0.000    -.0009477   -.0004451
+         avg_hh_adult_schooling |   .0001212   .0005821     0.21   0.835    -.0010197    .0012621
+                avg_hh_children |  -.0007877   .0027205    -0.29   0.772    -.0061199    .0045445
+                     avg_income |   5.95e-06   .0000672     0.09   0.929    -.0001258    .0001377
+                    avg_hincome |  -.0096672    .007948    -1.22   0.224    -.0252451    .0059107
+                employment_rate |  -.0164825   .0079745    -2.07   0.039    -.0321124   -.0008526
+       avg_hh_n_employed_adults |  -.0121185   .0029368    -4.13   0.000    -.0178745   -.0063624
+                    avg_hh_size |   .0070723   .0019399     3.65   0.000     .0032703    .0108744
+        avg_weekly_hours_worked |   .0017434   .0002794     6.24   0.000     .0011959     .002291
+avg_weekly_hours_worked_workers |  -.0001643   .0001307    -1.26   0.209    -.0004205    .0000919
+                   pct_pop_male |  -386.0622    417.218    -0.93   0.355      -1203.8    431.6755
+                pct_pop_student |  -.7179915   .3429322    -2.09   0.036    -1.390131   -.0458524
+-------------------------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):            400.228
+                                                   Chi-sq(1) P-val =    0.0000
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):              555.638
+                         (Kleibergen-Paap rk Wald F statistic):        401.580
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: hh_income hh_adult_schooling hh_adult_hours
+                      hh_adult_employment_rate hh_n_employed_adults
+                      hh_n_other_children hh_children ln_hom_lag1 ln_hom_lag2
+                      ln_hom_lag3 pop_tot pct_pop_fem avg_age avg_hh_adult_hours
+                      avg_hh_adult_schooling avg_hh_children avg_income
+                      avg_hincome employment_rate avg_hh_n_employed_adults
+                      avg_hh_size avg_weekly_hours_worked
+                      avg_weekly_hours_worked_workers pct_pop_male
+                      pct_pop_student
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |        72           1          71     |
+              id |    182980      182980           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+. 
+. local b_5 = _b[ln_homicide]
+
+. local se_5 = _se[ln_homicide]
+
+. local N_5 = e(N)
+
+. local kp_5 = e(rkf)
+
+. quietly sum school if e(sample)
+
+. local mean_5 : display %6.3f r(mean)
+
+. 
+. restore
+
+. 
+. * Period 3: 2019-2024
+. preserve
+
+. keep if year >= 2019 & year <= 2024
+(1,293,089 observations deleted)
+
+. 
+. ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+>         absorb(i.month_year_date i.id) cluster(id) first
+(dropped 11911 singleton observations)
+(MWFE estimator converged in 23 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                 291398
+Number of clusters (id) =        71717
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                    ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                             iv |   5.99e-07   1.38e-07     4.35   0.000     3.29e-07    8.68e-07
+                      hh_income |   5.61e-06   4.66e-06     1.20   0.228    -3.52e-06    .0000148
+             hh_adult_schooling |   .0015176    .000996     1.52   0.128    -.0004346    .0034698
+                 hh_adult_hours |  -.0000358    .000021    -1.71   0.088     -.000077    5.33e-06
+       hh_adult_employment_rate |  -.0001612   .0035464    -0.05   0.964    -.0071121    .0067897
+           hh_n_employed_adults |  -.0003391   .0011887    -0.29   0.775    -.0026689    .0019907
+            hh_n_other_children |  -.0017866   .0015237    -1.17   0.241    -.0047731    .0011999
+                    hh_children |  -.0020341   .0013336    -1.53   0.127     -.004648    .0005797
+                    ln_hom_lag1 |   .1048434   .0045495    23.04   0.000     .0959265    .1137603
+                    ln_hom_lag2 |   .0486318   .0047636    10.21   0.000     .0392953    .0579683
+                    ln_hom_lag3 |  -.0852483    .004524   -18.84   0.000    -.0941151   -.0763814
+                        pop_tot |   6.38e-08   6.26e-08     1.02   0.308    -5.90e-08    1.87e-07
+                    pct_pop_fem |  -1061.109   518.7015    -2.05   0.041     -2077.75   -44.46892
+                        avg_age |  -.0004281   .0003331    -1.29   0.199    -.0010809    .0002247
+             avg_hh_adult_hours |   .0004483   .0002283     1.96   0.050     8.42e-07    .0008958
+         avg_hh_adult_schooling |   .0030578   .0008587     3.56   0.000     .0013747    .0047409
+                avg_hh_children |  -.0028223   .0037643    -0.75   0.453    -.0102002    .0045556
+                     avg_income |  -.0000648    .000111    -0.58   0.560    -.0002824    .0001529
+                    avg_hincome |  -.0293769   .0145311    -2.02   0.043    -.0578575   -.0008963
+                employment_rate |  -.0103634   .0141408    -0.73   0.464     -.038079    .0173521
+       avg_hh_n_employed_adults |  -.0139205   .0043506    -3.20   0.001    -.0224475   -.0053935
+                    avg_hh_size |   .0045998   .0029462     1.56   0.118    -.0011748    .0103743
+        avg_weekly_hours_worked |    .001781   .0004162     4.28   0.000     .0009653    .0025967
+avg_weekly_hours_worked_workers |  -.0011894    .000239    -4.98   0.000    -.0016578   -.0007209
+                   pct_pop_male |   -1060.57   518.8917    -2.04   0.041    -2077.583   -43.55657
+                pct_pop_student |   -2.28257   .8497743    -2.69   0.007    -3.948104   -.6170359
+-------------------------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1, 71716) =    18.95
+  Prob > F      =   0.0000
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1, 71716) =    18.95
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1, 71716)  P-val | SW Chi-sq(  1) P-val | SW F(  1, 71716)
+ln_homicide  |      18.95    0.0000 |       18.96   0.0000 |       18.95
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=18.95    P-val=0.0000
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                      17.36
+Kleibergen-Paap Wald rk F statistic                                18.95
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,71716)=     8.14     P-val=0.0043
+Anderson-Rubin Wald test           Chi-sq(1)=      8.14     P-val=0.0043
+Stock-Wright LM S statistic        Chi-sq(1)=      8.17     P-val=0.0043
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =      71717
+Number of observations               N  =     291398
+Number of regressors                 K  =         26
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =         26
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =        71717                Number of obs =   291398
+                                                      F( 26, 71716) =     3.52
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  3180.180418                Centered R2   =  -0.6411
+Total (uncentered) SS   =  3180.180418                Uncentered R2 =  -0.6411
+Residual SS             =  5218.955629                Root MSE      =    .1338
+
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |  -.8567454   .3623745    -2.36   0.018    -1.566998   -.1464923
+                      hh_income |   3.84e-06   6.37e-06     0.60   0.547    -8.64e-06    .0000163
+             hh_adult_schooling |   .0050435    .001538     3.28   0.001     .0020289     .008058
+                 hh_adult_hours |  -.0000356    .000032    -1.11   0.266    -.0000984    .0000271
+       hh_adult_employment_rate |  -.0084402   .0050239    -1.68   0.093    -.0182871    .0014067
+           hh_n_employed_adults |   .0068076   .0017706     3.84   0.000     .0033372    .0102779
+            hh_n_other_children |   .0038474   .0022068     1.74   0.081    -.0004779    .0081727
+                    hh_children |  -.0088751   .0020253    -4.38   0.000    -.0128447   -.0049055
+                    ln_hom_lag1 |   .0853823   .0381873     2.24   0.025     .0105353    .1602293
+                    ln_hom_lag2 |   .0424922   .0180166     2.36   0.018     .0071797    .0778048
+                    ln_hom_lag3 |  -.0740728   .0311343    -2.38   0.017     -.135096   -.0130497
+                        pop_tot |   1.23e-08   9.02e-08     0.14   0.892    -1.65e-07    1.89e-07
+                    pct_pop_fem |  -935.4387   608.7104    -1.54   0.124    -2128.509    257.6319
+                        avg_age |  -.0000792    .000415    -0.19   0.849    -.0008927    .0007343
+             avg_hh_adult_hours |  -.0003141   .0003181    -0.99   0.323    -.0009375    .0003093
+         avg_hh_adult_schooling |   .0019252   .0015009     1.28   0.200    -.0010165    .0048669
+                avg_hh_children |   .0010893   .0043496     0.25   0.802    -.0074358    .0096144
+                     avg_income |  -.0002495   .0001309    -1.91   0.057    -.0005061    7.07e-06
+                    avg_hincome |  -.0089895   .0186244    -0.48   0.629    -.0454932    .0275142
+                employment_rate |  -.0363339    .017636    -2.06   0.039    -.0709003   -.0017674
+       avg_hh_n_employed_adults |  -.0235327   .0069608    -3.38   0.001    -.0371759   -.0098894
+                    avg_hh_size |   .0069119     .00381     1.81   0.070    -.0005557    .0143795
+        avg_weekly_hours_worked |   .0031608   .0008172     3.87   0.000     .0015592    .0047625
+avg_weekly_hours_worked_workers |  -.0010324   .0005154    -2.00   0.045    -.0020427   -.0000222
+                   pct_pop_male |  -935.9511   608.6768    -1.54   0.124    -2128.956    257.0537
+                pct_pop_student |  -2.788483   1.303695    -2.14   0.032    -5.343721   -.2332446
+-------------------------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             18.948
+                                                   Chi-sq(1) P-val =    0.0000
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):               17.362
+                         (Kleibergen-Paap rk Wald F statistic):         18.950
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: hh_income hh_adult_schooling hh_adult_hours
+                      hh_adult_employment_rate hh_n_employed_adults
+                      hh_n_other_children hh_children ln_hom_lag1 ln_hom_lag2
+                      ln_hom_lag3 pop_tot pct_pop_fem avg_age avg_hh_adult_hours
+                      avg_hh_adult_schooling avg_hh_children avg_income
+                      avg_hincome employment_rate avg_hh_n_employed_adults
+                      avg_hh_size avg_weekly_hours_worked
+                      avg_weekly_hours_worked_workers pct_pop_male
+                      pct_pop_student
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |        58           1          57     |
+              id |     71717       71717           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+. 
+. local b_6 = _b[ln_homicide]
+
+. local se_6 = _se[ln_homicide]
+
+. local N_6 = e(N)
+
+. local kp_6 = e(rkf)
+
+. quietly sum school if e(sample)
+
+. local mean_6 : display %6.3f r(mean)
+
+. 
+. restore
+
+. 
+. * -----------------------------------------------------------------------------
+. * 5) Schooling cohort heterogeneity
+. * -----------------------------------------------------------------------------
+. 
+. * Middle School
+. preserve
+
+. keep if age >= 12 & age <=14
+(921,304 observations deleted)
+
+. ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+>         absorb(i.month_year_date i.id) cluster(id) first
+(dropped 28458 singleton observations)
+(MWFE estimator converged in 42 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                 622181
+Number of clusters (id) =       156733
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                    ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                             iv |  -1.37e-06   1.43e-07    -9.58   0.000    -1.65e-06   -1.09e-06
+                      hh_income |   3.55e-06   3.18e-06     1.12   0.265    -2.69e-06    9.78e-06
+             hh_adult_schooling |   .0005438   .0012105     0.45   0.653    -.0018288    .0029164
+                 hh_adult_hours |  -.0000192   .0000155    -1.25   0.213    -.0000495     .000011
+       hh_adult_employment_rate |   .0003684   .0031749     0.12   0.908    -.0058544    .0065912
+           hh_n_employed_adults |  -.0003155   .0011488    -0.27   0.784    -.0025672    .0019362
+            hh_n_other_children |  -.0017699   .0013025    -1.36   0.174    -.0043228    .0007831
+                    hh_children |   .0003045    .001433     0.21   0.832    -.0025041    .0031131
+                    ln_hom_lag1 |   .1284682   .0034782    36.93   0.000     .1216509    .1352854
+                    ln_hom_lag2 |   .0331052   .0032249    10.27   0.000     .0267844    .0394259
+                    ln_hom_lag3 |  -.0901287   .0028494   -31.63   0.000    -.0957133    -.084544
+                        pop_tot |   1.71e-08   4.41e-08     0.39   0.698    -6.94e-08    1.04e-07
+                    pct_pop_fem |  -2409.447   632.1064    -3.81   0.000    -3648.355   -1170.538
+                        avg_age |   6.65e-06   .0002957     0.02   0.982    -.0005729    .0005862
+             avg_hh_adult_hours |  -.0001103   .0001738    -0.63   0.526    -.0004509    .0002303
+         avg_hh_adult_schooling |    .005603   .0007033     7.97   0.000     .0042245    .0069815
+                avg_hh_children |   .0127224   .0032233     3.95   0.000     .0064049    .0190399
+                     avg_income |  -.0003558   .0000954    -3.73   0.000    -.0005428   -.0001688
+                    avg_hincome |  -.0306374   .0130775    -2.34   0.019    -.0562688    -.005006
+                employment_rate |  -.0078632   .0108562    -0.72   0.469     -.029141    .0134147
+       avg_hh_n_employed_adults |   -.008879   .0037541    -2.37   0.018     -.016237   -.0015211
+                    avg_hh_size |   .0002932   .0024888     0.12   0.906    -.0045847     .005171
+        avg_weekly_hours_worked |   .0013119   .0003584     3.66   0.000     .0006095    .0020143
+avg_weekly_hours_worked_workers |  -.0001316    .000185    -0.71   0.477    -.0004943     .000231
+                   pct_pop_male |  -2407.316    632.153    -3.81   0.000    -3646.315   -1168.316
+                pct_pop_student |  -2.995807   .5423088    -5.52   0.000    -4.058714   -1.932899
+-------------------------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1,156732) =    91.68
+  Prob > F      =   0.0000
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1,156732) =    91.68
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1,156732)  P-val | SW Chi-sq(  1) P-val | SW F(  1,156732)
+ln_homicide  |      91.68    0.0000 |       91.71   0.0000 |       91.68
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=91.71    P-val=0.0000
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                     115.41
+Kleibergen-Paap Wald rk F statistic                                91.68
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,156732)=    2.69     P-val=0.1012
+Anderson-Rubin Wald test           Chi-sq(1)=      2.69     P-val=0.1012
+Stock-Wright LM S statistic        Chi-sq(1)=      2.70     P-val=0.1002
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =     156733
+Number of observations               N  =     622181
+Number of regressors                 K  =         26
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =         26
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =       156733                Number of obs =   622181
+                                                      F( 26,156732) =     2.55
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  3264.024507                Centered R2   =  -0.0293
+Total (uncentered) SS   =  3264.024507                Uncentered R2 =  -0.0293
+Residual SS             =  3359.608504                Root MSE      =   .07349
+
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |   .1165249   .0722053     1.61   0.107    -.0249959    .2580458
+                      hh_income |  -1.45e-06   1.57e-06    -0.93   0.355    -4.53e-06    1.62e-06
+             hh_adult_schooling |   .0014568   .0007814     1.86   0.062    -.0000746    .0029883
+                 hh_adult_hours |  -.0000115   .0000112    -1.02   0.308    -.0000335    .0000106
+       hh_adult_employment_rate |  -.0023207   .0025316    -0.92   0.359    -.0072826    .0026411
+           hh_n_employed_adults |    .001874   .0009803     1.91   0.056    -.0000473    .0037953
+            hh_n_other_children |  -.0007968   .0009148    -0.87   0.384    -.0025898    .0009962
+                    hh_children |   .0019894   .0010826     1.84   0.066    -.0001326    .0041113
+                    ln_hom_lag1 |  -.0152599   .0093695    -1.63   0.103    -.0336239    .0031042
+                    ln_hom_lag2 |  -.0034952   .0026403    -1.32   0.186    -.0086702    .0016798
+                    ln_hom_lag3 |   .0111293   .0065913     1.69   0.091    -.0017894    .0240481
+                        pop_tot |  -2.76e-08   3.14e-08    -0.88   0.379    -8.93e-08    3.40e-08
+                    pct_pop_fem |   249.3806   220.1299     1.13   0.257    -182.0695    680.8307
+                        avg_age |   .0001102   .0001699     0.65   0.516    -.0002228    .0004433
+             avg_hh_adult_hours |  -.0002648   .0001021    -2.59   0.009    -.0004648   -.0000647
+         avg_hh_adult_schooling |   -.001301   .0005917    -2.20   0.028    -.0024608   -.0001412
+                avg_hh_children |  -.0004788   .0021631    -0.22   0.825    -.0047183    .0037608
+                     avg_income |   -.000025   .0000561    -0.45   0.656     -.000135     .000085
+                    avg_hincome |   .0052605   .0066495     0.79   0.429    -.0077725    .0182934
+                employment_rate |  -.0169964    .006284    -2.70   0.007    -.0293129     -.00468
+       avg_hh_n_employed_adults |  -.0028452    .002374    -1.20   0.231    -.0074981    .0018078
+                    avg_hh_size |   .0016795   .0015683     1.07   0.284    -.0013942    .0047533
+        avg_weekly_hours_worked |   .0007249   .0002398     3.02   0.003     .0002548     .001195
+avg_weekly_hours_worked_workers |   -.000077   .0001042    -0.74   0.460    -.0002812    .0001272
+                   pct_pop_male |   249.4598   220.0429     1.13   0.257    -181.8196    680.7392
+                pct_pop_student |   .6910213   .3573666     1.93   0.053    -.0094097    1.391452
+-------------------------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             91.713
+                                                   Chi-sq(1) P-val =    0.0000
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):              115.407
+                         (Kleibergen-Paap rk Wald F statistic):         91.684
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: hh_income hh_adult_schooling hh_adult_hours
+                      hh_adult_employment_rate hh_n_employed_adults
+                      hh_n_other_children hh_children ln_hom_lag1 ln_hom_lag2
+                      ln_hom_lag3 pop_tot pct_pop_fem avg_age avg_hh_adult_hours
+                      avg_hh_adult_schooling avg_hh_children avg_income
+                      avg_hincome employment_rate avg_hh_n_employed_adults
+                      avg_hh_size avg_weekly_hours_worked
+                      avg_weekly_hours_worked_workers pct_pop_male
+                      pct_pop_student
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |       166           1         165     |
+              id |    156733      156733           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+.                 
+. local b_7 = _b[ln_homicide]
+
+. local se_7 = _se[ln_homicide]
+
+. local N_7 = e(N)
+
+. local kp_7 = e(rkf)
+
+. quietly sum school if e(sample)
+
+. local mean_7 : display %6.3f r(mean)
+
+. restore
+
+. 
+. * High School
+. preserve
+
+. keep if age >= 15 & age <=18
+(697,911 observations deleted)
+
+. ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+>         absorb(i.month_year_date i.id) cluster(id) first
+(dropped 28851 singleton observations)
+(MWFE estimator converged in 43 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                 831719
+Number of clusters (id) =       201548
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                    ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                             iv |  -1.11e-06   1.20e-07    -9.20   0.000    -1.34e-06   -8.70e-07
+                      hh_income |   1.50e-06   2.82e-06     0.53   0.595    -4.04e-06    7.03e-06
+             hh_adult_schooling |   .0004227    .000538     0.79   0.432    -.0006318    .0014773
+                 hh_adult_hours |   .0000112   .0000131     0.85   0.393    -.0000144    .0000368
+       hh_adult_employment_rate |   .0032507    .002482     1.31   0.190    -.0016141    .0081154
+           hh_n_employed_adults |  -.0010542   .0008148    -1.29   0.196    -.0026512    .0005428
+            hh_n_other_children |  -.0015444   .0010192    -1.52   0.130     -.003542    .0004532
+                    hh_children |  -.0013991   .0007719    -1.81   0.070     -.002912    .0001137
+                    ln_hom_lag1 |   .1340443   .0029569    45.33   0.000     .1282489    .1398397
+                    ln_hom_lag2 |    .027972   .0027872    10.04   0.000     .0225092    .0334348
+                    ln_hom_lag3 |  -.0828482   .0024277   -34.13   0.000    -.0876065     -.07809
+                        pop_tot |   1.30e-07   3.64e-08     3.56   0.000     5.84e-08    2.01e-07
+                    pct_pop_fem |  -1476.508   545.5503    -2.71   0.007    -2545.769   -407.2478
+                        avg_age |   .0007064    .000254     2.78   0.005     .0002085    .0012042
+             avg_hh_adult_hours |   -.000061   .0001508    -0.40   0.686    -.0003566    .0002345
+         avg_hh_adult_schooling |   .0043603   .0005908     7.38   0.000     .0032025    .0055182
+                avg_hh_children |   .0129842   .0028697     4.52   0.000     .0073598    .0186087
+                     avg_income |  -.0001221   .0000881    -1.39   0.166    -.0002948    .0000507
+                    avg_hincome |  -.0475204   .0128358    -3.70   0.000    -.0726783   -.0223626
+                employment_rate |  -.0135914    .009542    -1.42   0.154    -.0322933    .0051105
+       avg_hh_n_employed_adults |  -.0084602   .0032579    -2.60   0.009    -.0148456   -.0020749
+                    avg_hh_size |  -.0000228   .0021613    -0.01   0.992    -.0042589    .0042134
+        avg_weekly_hours_worked |   .0014069   .0003118     4.51   0.000     .0007957    .0020181
+avg_weekly_hours_worked_workers |   -.000556   .0001621    -3.43   0.001    -.0008737   -.0002382
+                   pct_pop_male |  -1476.059    545.549    -2.71   0.007    -2545.317   -406.8016
+                pct_pop_student |  -2.753285   .4579887    -6.01   0.000    -3.650927   -1.855642
+-------------------------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1,201547) =    84.57
+  Prob > F      =   0.0000
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1,201547) =    84.57
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1,201547)  P-val | SW Chi-sq(  1) P-val | SW F(  1,201547)
+ln_homicide  |      84.57    0.0000 |       84.59   0.0000 |       84.57
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=84.56    P-val=0.0000
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                     106.40
+Kleibergen-Paap Wald rk F statistic                                84.57
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,201547)=    0.02     P-val=0.9020
+Anderson-Rubin Wald test           Chi-sq(1)=      0.02     P-val=0.9020
+Stock-Wright LM S statistic        Chi-sq(1)=      0.02     P-val=0.9019
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =     201548
+Number of observations               N  =     831719
+Number of regressors                 K  =         26
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =         26
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =       201548                Number of obs =   831719
+                                                      F( 26,201547) =    14.48
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  12465.76478                Centered R2   =   0.0004
+Total (uncentered) SS   =  12465.76478                Uncentered R2 =   0.0004
+Residual SS             =  12460.61809                Root MSE      =    .1224
+
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |  -.0157806   .1281321    -0.12   0.902    -.2669163    .2353551
+                      hh_income |  -3.64e-06   2.83e-06    -1.28   0.199    -9.19e-06    1.91e-06
+             hh_adult_schooling |   .0040715   .0005132     7.93   0.000     .0030655    .0050774
+                 hh_adult_hours |   .0000154   .0000156     0.99   0.323    -.0000152     .000046
+       hh_adult_employment_rate |   -.003515   .0027727    -1.27   0.205    -.0089494    .0019194
+           hh_n_employed_adults |   .0063228   .0009397     6.73   0.000      .004481    .0081645
+            hh_n_other_children |   .0031818   .0011436     2.78   0.005     .0009404    .0054232
+                    hh_children |  -.0012666   .0008402    -1.51   0.132    -.0029133    .0003802
+                    ln_hom_lag1 |   .0011869   .0172554     0.07   0.945    -.0326332     .035007
+                    ln_hom_lag2 |   .0006283   .0038654     0.16   0.871    -.0069477    .0082044
+                    ln_hom_lag3 |  -.0019353   .0107153    -0.18   0.857     -.022937    .0190663
+                        pop_tot |   9.06e-08   4.74e-08     1.91   0.056    -2.19e-09    1.83e-07
+                    pct_pop_fem |  -91.05295   235.5764    -0.39   0.699     -552.777    370.6711
+                        avg_age |   .0003228   .0002567     1.26   0.209    -.0001803     .000826
+             avg_hh_adult_hours |  -.0007832   .0001352    -5.79   0.000    -.0010483   -.0005182
+         avg_hh_adult_schooling |  -.0003391   .0008003    -0.42   0.672    -.0019077    .0012294
+                avg_hh_children |   .0024222   .0030293     0.80   0.424    -.0035152    .0083596
+                     avg_income |  -.0000365   .0000728    -0.50   0.617    -.0001791    .0001062
+                    avg_hincome |   -.001921   .0102033    -0.19   0.851    -.0219193    .0180773
+                employment_rate |   -.025093   .0088745    -2.83   0.005    -.0424868   -.0076991
+       avg_hh_n_employed_adults |  -.0151839   .0029869    -5.08   0.000    -.0210382   -.0093297
+                    avg_hh_size |   .0062491   .0019345     3.23   0.001     .0024575    .0100406
+        avg_weekly_hours_worked |   .0022925   .0003325     6.90   0.000     .0016409    .0029442
+avg_weekly_hours_worked_workers |  -.0002535   .0001578    -1.61   0.108    -.0005628    .0000558
+                   pct_pop_male |   -90.5601   235.5304    -0.38   0.701    -552.1939    371.0737
+                pct_pop_student |   -1.04869   .5135608    -2.04   0.041    -2.055257   -.0421234
+-------------------------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             84.561
+                                                   Chi-sq(1) P-val =    0.0000
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):              106.397
+                         (Kleibergen-Paap rk Wald F statistic):         84.571
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: hh_income hh_adult_schooling hh_adult_hours
+                      hh_adult_employment_rate hh_n_employed_adults
+                      hh_n_other_children hh_children ln_hom_lag1 ln_hom_lag2
+                      ln_hom_lag3 pop_tot pct_pop_fem avg_age avg_hh_adult_hours
+                      avg_hh_adult_schooling avg_hh_children avg_income
+                      avg_hincome employment_rate avg_hh_n_employed_adults
+                      avg_hh_size avg_weekly_hours_worked
+                      avg_weekly_hours_worked_workers pct_pop_male
+                      pct_pop_student
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |       166           1         165     |
+              id |    201548      201548           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+.                 
+. local b_8 = _b[ln_homicide]
+
+. local se_8 = _se[ln_homicide]
+
+. local N_8 = e(N)
+
+. local kp_8 = e(rkf)
+
+. quietly sum school if e(sample)
+
+. local mean_8 : display %6.3f r(mean)
+
+. restore
+
+. 
+. * -----------------------------------------------------------------------------
+. * 6) Gender -- Only want coefficients and SE (no table presented)
+. * -----------------------------------------------------------------------------
+. 
+. * Males only
+. preserve
+
+. keep if sex == 1
+(784,529 observations deleted)
+
+. 
+. ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+>         absorb(i.month_year_date i.id) cluster(id) first
+(dropped 17734 singleton observations)
+(MWFE estimator converged in 42 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                 761467
+Number of clusters (id) =       174864
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                    ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                             iv |  -1.25e-06   1.26e-07    -9.94   0.000    -1.50e-06   -1.00e-06
+                      hh_income |   1.53e-06   2.86e-06     0.53   0.593    -4.08e-06    7.14e-06
+             hh_adult_schooling |   .0003024   .0006769     0.45   0.655    -.0010242    .0016291
+                 hh_adult_hours |   1.00e-06   .0000137     0.07   0.942    -.0000259    .0000279
+       hh_adult_employment_rate |   .0021572   .0026545     0.81   0.416    -.0030455    .0073599
+           hh_n_employed_adults |  -.0008189   .0009059    -0.90   0.366    -.0025945    .0009567
+            hh_n_other_children |   -.001026   .0010184    -1.01   0.314     -.003022      .00097
+                    hh_children |  -.0009776   .0009006    -1.09   0.278    -.0027429    .0007876
+                    ln_hom_lag1 |   .1355056   .0030955    43.78   0.000     .1294385    .1415726
+                    ln_hom_lag2 |   .0337705   .0029094    11.61   0.000     .0280681    .0394728
+                    ln_hom_lag3 |  -.0790063   .0025051   -31.54   0.000    -.0839161   -.0740965
+                        pop_tot |   3.52e-08   3.73e-08     0.94   0.346    -3.80e-08    1.08e-07
+                    pct_pop_fem |  -1133.225   503.8957    -2.25   0.025    -2120.845   -145.6065
+                        avg_age |   .0003389   .0002635     1.29   0.198    -.0001775    .0008554
+             avg_hh_adult_hours |  -.0000561    .000155    -0.36   0.717      -.00036    .0002477
+         avg_hh_adult_schooling |   .0052843   .0006138     8.61   0.000     .0040813    .0064872
+                avg_hh_children |   .0154383   .0028575     5.40   0.000     .0098378    .0210389
+                     avg_income |  -.0002532   .0000883    -2.87   0.004    -.0004262   -.0000802
+                    avg_hincome |  -.0456903   .0125446    -3.64   0.000    -.0702773   -.0211032
+                employment_rate |   -.009319   .0099758    -0.93   0.350    -.0288712    .0102332
+       avg_hh_n_employed_adults |  -.0066111    .003325    -1.99   0.047    -.0131281   -.0000942
+                    avg_hh_size |  -.0026243   .0021738    -1.21   0.227    -.0068849    .0016362
+        avg_weekly_hours_worked |   .0012085   .0003206     3.77   0.000     .0005801     .001837
+avg_weekly_hours_worked_workers |  -.0003173   .0001642    -1.93   0.053    -.0006392    4.56e-06
+                   pct_pop_male |  -1131.149   503.9327    -2.24   0.025     -2118.84   -143.4571
+                pct_pop_student |  -2.808247   .4666682    -6.02   0.000    -3.722901   -1.893592
+-------------------------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1,174863) =    98.75
+  Prob > F      =   0.0000
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1,174863) =    98.75
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1,174863)  P-val | SW Chi-sq(  1) P-val | SW F(  1,174863)
+ln_homicide  |      98.75    0.0000 |       98.78   0.0000 |       98.75
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=98.77    P-val=0.0000
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                     120.43
+Kleibergen-Paap Wald rk F statistic                                98.75
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,174863)=    2.04     P-val=0.1533
+Anderson-Rubin Wald test           Chi-sq(1)=      2.04     P-val=0.1533
+Stock-Wright LM S statistic        Chi-sq(1)=      2.04     P-val=0.1528
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =     174864
+Number of observations               N  =     761467
+Number of regressors                 K  =         26
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =         26
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =       174864                Number of obs =   761467
+                                                      F( 26,174863) =     9.79
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  9389.521204                Centered R2   =  -0.0203
+Total (uncentered) SS   =  9389.521204                Uncentered R2 =  -0.0203
+Residual SS             =  9579.971027                Root MSE      =    .1122
+
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |   .1496477   .1059411     1.41   0.158    -.0579945      .35729
+                      hh_income |  -1.98e-06   2.64e-06    -0.75   0.455    -7.16e-06    3.21e-06
+             hh_adult_schooling |    .002614   .0006216     4.21   0.000     .0013957    .0038323
+                 hh_adult_hours |    .000013   .0000147     0.89   0.375    -.0000158    .0000418
+       hh_adult_employment_rate |  -.0048397   .0028071    -1.72   0.085    -.0103416    .0006621
+           hh_n_employed_adults |   .0052882   .0010055     5.26   0.000     .0033175    .0072589
+            hh_n_other_children |   .0026725   .0009985     2.68   0.007     .0007154    .0046296
+                    hh_children |  -.0016563   .0009266    -1.79   0.074    -.0034723    .0001598
+                    ln_hom_lag1 |  -.0210515   .0144556    -1.46   0.145    -.0493841    .0072812
+                    ln_hom_lag2 |  -.0058216   .0038478    -1.51   0.130    -.0133631    .0017199
+                    ln_hom_lag3 |   .0118663    .008488     1.40   0.162      -.00477    .0285026
+                        pop_tot |   2.16e-08   4.09e-08     0.53   0.597    -5.85e-08    1.02e-07
+                    pct_pop_fem |   39.05842   167.3918     0.23   0.816    -289.0258    367.1426
+                        avg_age |   .0005479   .0002289     2.39   0.017     .0000992    .0009967
+             avg_hh_adult_hours |  -.0006888   .0001294    -5.32   0.000    -.0009424   -.0004353
+         avg_hh_adult_schooling |  -.0006552   .0007716    -0.85   0.396    -.0021674    .0008571
+                avg_hh_children |   .0027354   .0029294     0.93   0.350    -.0030062     .008477
+                     avg_income |  -.0000585   .0000738    -0.79   0.428    -.0002032    .0000862
+                    avg_hincome |   .0120597   .0098259     1.23   0.220    -.0071988    .0313183
+                employment_rate |  -.0260743   .0080525    -3.24   0.001    -.0418571   -.0102915
+       avg_hh_n_employed_adults |  -.0133327   .0027777    -4.80   0.000    -.0187769   -.0078885
+                    avg_hh_size |   .0064311   .0019196     3.35   0.001     .0026687    .0101934
+        avg_weekly_hours_worked |   .0023075   .0002958     7.80   0.000     .0017278    .0028872
+avg_weekly_hours_worked_workers |  -.0002661   .0001377    -1.93   0.053     -.000536    3.90e-06
+                   pct_pop_male |   39.09632   167.2591     0.23   0.815    -288.7277    366.9203
+                pct_pop_student |  -.1183982   .4562071    -0.26   0.795    -1.012554    .7757575
+-------------------------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             98.765
+                                                   Chi-sq(1) P-val =    0.0000
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):              120.426
+                         (Kleibergen-Paap rk Wald F statistic):         98.750
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: hh_income hh_adult_schooling hh_adult_hours
+                      hh_adult_employment_rate hh_n_employed_adults
+                      hh_n_other_children hh_children ln_hom_lag1 ln_hom_lag2
+                      ln_hom_lag3 pop_tot pct_pop_fem avg_age avg_hh_adult_hours
+                      avg_hh_adult_schooling avg_hh_children avg_income
+                      avg_hincome employment_rate avg_hh_n_employed_adults
+                      avg_hh_size avg_weekly_hours_worked
+                      avg_weekly_hours_worked_workers pct_pop_male
+                      pct_pop_student
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |       166           1         165     |
+              id |    174864      174864           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+. 
+. local b_9 = _b[ln_homicide]
+
+. local se_9 = _se[ln_homicide]
+
+. restore
+
+. 
+. * Females only
+. preserve
+
+. keep if sex == 2
+(834,686 observations deleted)
+
+. 
+. ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+>                 hh_n_employed_adults hh_n_other_children hh_children /// 
+>                 ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+>                 avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+>                 avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+>                 avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+>                 pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+>         absorb(i.month_year_date i.id) cluster(id) first
+(dropped 16227 singleton observations)
+(MWFE estimator converged in 42 iterations)
+
+First-stage regressions
+-----------------------
+
+
+First-stage regression of ln_homicide:
+
+Statistics robust to heteroskedasticity and clustering on id
+Number of obs =                 715781
+Number of clusters (id) =       163895
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                    ln_homicide | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                             iv |  -1.24e-06   1.30e-07    -9.51   0.000    -1.49e-06   -9.82e-07
+                      hh_income |   3.14e-06   2.98e-06     1.05   0.293    -2.71e-06    8.98e-06
+             hh_adult_schooling |   .0006719   .0006949     0.97   0.334    -.0006901    .0020339
+                 hh_adult_hours |  -6.87e-06    .000014    -0.49   0.625    -.0000344    .0000207
+       hh_adult_employment_rate |   .0025719   .0026987     0.95   0.341    -.0027175    .0078612
+           hh_n_employed_adults |  -.0006758   .0009181    -0.74   0.462    -.0024752    .0011236
+            hh_n_other_children |  -.0018431   .0010245    -1.80   0.072    -.0038511    .0001649
+                    hh_children |  -.0007093   .0009004    -0.79   0.431    -.0024741    .0010554
+                    ln_hom_lag1 |   .1327558   .0031837    41.70   0.000     .1265157    .1389958
+                    ln_hom_lag2 |   .0279346    .002936     9.51   0.000     .0221802     .033689
+                    ln_hom_lag3 |  -.0821645   .0026237   -31.32   0.000    -.0873068   -.0770222
+                        pop_tot |   1.18e-07   3.87e-08     3.05   0.002     4.24e-08    1.94e-07
+                    pct_pop_fem |  -2238.282   642.5982    -3.48   0.000    -3497.753   -978.8104
+                        avg_age |   .0003418   .0002668     1.28   0.200     -.000181    .0008647
+             avg_hh_adult_hours |  -.0001308   .0001605    -0.81   0.415    -.0004454    .0001838
+         avg_hh_adult_schooling |   .0043672   .0006297     6.94   0.000     .0031331    .0056014
+                avg_hh_children |   .0096064    .003067     3.13   0.002     .0035951    .0156178
+                     avg_income |   -.000206   .0000911    -2.26   0.024    -.0003845   -.0000274
+                    avg_hincome |  -.0328324   .0129771    -2.53   0.011    -.0582671   -.0073976
+                employment_rate |   -.006799   .0098353    -0.69   0.489    -.0260759    .0124779
+       avg_hh_n_employed_adults |  -.0097121   .0034774    -2.79   0.005    -.0165277   -.0028966
+                    avg_hh_size |   .0022146   .0023493     0.94   0.346    -.0023899    .0068191
+        avg_weekly_hours_worked |   .0013317     .00033     4.04   0.000     .0006849    .0019785
+avg_weekly_hours_worked_workers |  -.0003102   .0001742    -1.78   0.075    -.0006517    .0000312
+                   pct_pop_male |  -2238.261   642.5584    -3.48   0.000    -3497.654   -978.8674
+                pct_pop_student |  -2.978632   .4755156    -6.26   0.000    -3.910627   -2.046636
+-------------------------------------------------------------------------------------------------
+F test of excluded instruments:
+  F(  1,163894) =    90.38
+  Prob > F      =   0.0000
+Sanderson-Windmeijer multivariate F test of excluded instruments:
+  F(  1,163894) =    90.38
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+                                           (Underid)            (Weak id)
+Variable     | F(  1,163894)  P-val | SW Chi-sq(  1) P-val | SW F(  1,163894)
+ln_homicide  |      90.38    0.0000 |       90.41   0.0000 |       90.38
+
+NB: first-stage test statistics cluster-robust
+
+Stock-Yogo weak ID F test critical values for single endogenous regressor:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for i.i.d. errors only.
+
+Underidentification test
+Ho: matrix of reduced form coefficients has rank=K1-1 (underidentified)
+Ha: matrix has rank=K1 (identified)
+Kleibergen-Paap rk LM statistic          Chi-sq(1)=90.36    P-val=0.0000
+
+Weak identification test
+Ho: equation is weakly identified
+Cragg-Donald Wald F statistic                                     112.52
+Kleibergen-Paap Wald rk F statistic                                90.38
+
+Stock-Yogo weak ID test critical values for K1=1 and L1=1:
+                                   10% maximal IV size             16.38
+                                   15% maximal IV size              8.96
+                                   20% maximal IV size              6.66
+                                   25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and orthogonality conditions are valid
+Anderson-Rubin Wald test           F(1,163894)=    0.55     P-val=0.4601
+Anderson-Rubin Wald test           Chi-sq(1)=      0.55     P-val=0.4601
+Stock-Wright LM S statistic        Chi-sq(1)=      0.55     P-val=0.4594
+
+NB: Underidentification, weak identification and weak-identification-robust
+    test statistics cluster-robust
+
+Number of clusters             N_clust  =     163895
+Number of observations               N  =     715781
+Number of regressors                 K  =         26
+Number of endogenous regressors      K1 =          1
+Number of instruments                L  =         26
+Number of excluded instruments       L1 =          1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on id
+
+Number of clusters (id) =       163895                Number of obs =   715781
+                                                      F( 26,163894) =     9.57
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  6978.889332                Centered R2   =  -0.0057
+Total (uncentered) SS   =  6978.889332                Uncentered R2 =  -0.0057
+Residual SS             =  7018.588661                Root MSE      =   .09904
+
+-------------------------------------------------------------------------------------------------
+                                |               Robust
+                        dropout | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------------------+----------------------------------------------------------------
+                    ln_homicide |  -.0725071   .0984912    -0.74   0.462    -.2655478    .1205336
+                      hh_income |  -4.07e-06   2.26e-06    -1.80   0.072    -8.50e-06    3.62e-07
+             hh_adult_schooling |   .0051573   .0006146     8.39   0.000     .0039527    .0063618
+                 hh_adult_hours |  -.0000114   .0000132    -0.87   0.386    -.0000372    .0000144
+       hh_adult_employment_rate |   -.009998   .0025263    -3.96   0.000    -.0149495   -.0050465
+           hh_n_employed_adults |   .0068045   .0009279     7.33   0.000     .0049858    .0086232
+            hh_n_other_children |   .0031631   .0009323     3.39   0.001     .0013358    .0049904
+                    hh_children |  -.0019303   .0008572    -2.25   0.024    -.0036104   -.0002502
+                    ln_hom_lag1 |   .0093115   .0131488     0.71   0.479    -.0164599    .0350829
+                    ln_hom_lag2 |   .0031828   .0030311     1.05   0.294     -.002758    .0091237
+                    ln_hom_lag3 |  -.0059715   .0081853    -0.73   0.466    -.0220145    .0100716
+                        pop_tot |   9.28e-08   4.07e-08     2.28   0.023     1.31e-08    1.72e-07
+                    pct_pop_fem |  -166.9752   290.4652    -0.57   0.565    -736.2807    402.3303
+                        avg_age |  -.0001689   .0002086    -0.81   0.418    -.0005777    .0002399
+             avg_hh_adult_hours |  -.0004463   .0001158    -3.85   0.000    -.0006733   -.0002193
+         avg_hh_adult_schooling |   -.000497   .0006615    -0.75   0.452    -.0017935    .0007994
+                avg_hh_children |  -.0003298   .0024183    -0.14   0.892    -.0050696    .0044101
+                     avg_income |  -.0000144   .0000637    -0.23   0.821    -.0001393    .0001105
+                    avg_hincome |  -.0081438   .0076462    -1.07   0.287    -.0231302    .0068425
+                employment_rate |  -.0189355   .0077685    -2.44   0.015    -.0341615   -.0037095
+       avg_hh_n_employed_adults |  -.0068804   .0026954    -2.55   0.011    -.0121633   -.0015974
+                    avg_hh_size |   .0027489   .0016985     1.62   0.106    -.0005801     .006078
+        avg_weekly_hours_worked |   .0010026   .0002817     3.56   0.000     .0004504    .0015549
+avg_weekly_hours_worked_workers |  -.0000974   .0001242    -0.78   0.433    -.0003408    .0001459
+                   pct_pop_male |  -166.0642   290.4744    -0.57   0.568    -735.3877    403.2593
+                pct_pop_student |   -.477373   .4395012    -1.09   0.277    -1.338786    .3840399
+-------------------------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             90.358
+                                                   Chi-sq(1) P-val =    0.0000
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):              112.523
+                         (Kleibergen-Paap rk Wald F statistic):         90.385
+Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
+                                         15% maximal IV size              8.96
+                                         20% maximal IV size              6.66
+                                         25% maximal IV size              5.53
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         0.000
+                                                 (equation exactly identified)
+------------------------------------------------------------------------------
+Instrumented:         ln_homicide
+Included instruments: hh_income hh_adult_schooling hh_adult_hours
+                      hh_adult_employment_rate hh_n_employed_adults
+                      hh_n_other_children hh_children ln_hom_lag1 ln_hom_lag2
+                      ln_hom_lag3 pop_tot pct_pop_fem avg_age avg_hh_adult_hours
+                      avg_hh_adult_schooling avg_hh_children avg_income
+                      avg_hincome employment_rate avg_hh_n_employed_adults
+                      avg_hh_size avg_weekly_hours_worked
+                      avg_weekly_hours_worked_workers pct_pop_male
+                      pct_pop_student
+Excluded instruments: iv
+Partialled-out:       _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+ month_year_date |       166           1         165     |
+              id |    163895      163895           0    *|
+---------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+. 
+. local b_10 = _b[ln_homicide]
+
+. local se_10 = _se[ln_homicide]
+
+. restore
+
+. 
+. 
+. * -----------------------------------------------------------------------------
+. * 7) Build Tables
+. * -----------------------------------------------------------------------------
+. forvalues j = 1/8 {
+  2.     local b  = `b_`j''  
+  3.     local se = `se_`j''  
+  4.     
+.     * t/z statistic
+.     local t = abs(`b' / `se')  
+  5.     local p = 2 * normal(-`t')
+  6.     
+.     * stars
+.     local stars ""
+  7.     if (`p' < 0.10) local stars "*"
+  8.     if (`p' < 0.05) local stars "**"
+  9.     if (`p' < 0.01) local stars "***"
+ 10. 
+.     * formatted numbers
+.     local b_tex  : display %6.3f `b'
+ 11.     local se_tex : display %6.3f `se'
+ 12.         if (`j' != 1){
+ 13.                 local kp_tex : display %6.2f `kp_`j''
+ 14.     }
+ 15.     * store LaTeX-ready output
+.     local coef`j' "\$`b_tex'^{`stars'}\$"
+ 16.     local seout`j' "(`se_tex')"
+ 17.         if (`j' != 1){
+ 18.                 local kpout`j' "`kp_tex'"
+ 19.         }
+ 20.     
+.     local N = `N_`j'' 
+ 21.     * Add comma if N > 10,000
+.     if `N' >= 10000 {
+ 22.         local Nout`j' : display %9.0fc `N'
+ 23.     }
+ 24.     else {
+ 25.         local Nout`j' : display %9.0f `N'  
+ 26.     }
+ 27. }
+
+. 
+. // ============================================
+. // WRITE LATEX TABLE (Main Spec)
+. // ============================================
+. 
+. file open myfile using "${TABLES}main_iv.tex", write replace
+(file ../output/Tables/main_iv.tex not found)
+
+. 
+. * Write table header
+. file write myfile "\begin{tabular}{l c c c }" _n
+
+. file write myfile "\hline\hline" _n
+
+. file write myfile ///
+> " & \shortstack{OLS \\ (1)}" ///
+> " & \shortstack{Minimal \\ controls \\ (2)}" ///
+> " & \shortstack{Primary \\ Specification \\  (3)} \\"  _n
+
+. file write myfile "\hline" _n
+
+. 
+. * Coefficient row
+. file write myfile "\$ \hat{\beta}_2 \$" _n
+
+. file write myfile " & `coef1' & `coef2' & `coef3'  \\" _n
+
+. file write myfile " & `seout1' & `seout2' & `seout3'  \\" _n
+
+. 
+. * Mean of dependent variable row
+. file write myfile "\hline" _n
+
+. file write myfile "Mean of school enrollment" _n
+
+. file write myfile " & \$`mean_1'\$ & \$`mean_2'\$ & \$`mean_3'\$ \\" _n
+
+. 
+. * Kleibergen-Paap F-stat row
+. file write myfile "Kleibergen-Paap F-stat" _n
+
+. file write myfile " & – & `kpout2' & `kpout3' \\" _n
+
+. 
+. * Observations row
+. file write myfile "\hline" _n
+
+. file write myfile "Observations" _n
+
+. file write myfile " & `Nout1' & `Nout2' & `Nout3' \\" _n
+
+. 
+. * Close table
+. file write myfile "\hline\hline" _n
+
+. file write myfile "\end{tabular}" _n
+
+. 
+. file close myfile
+
+. 
+. // ============================================
+. // WRITE LATEX TABLE (Additional Specifications)
+. // ============================================
+. 
+. file open myfile using "${TABLES}het_iv.tex", write replace
+(file ../output/Tables/het_iv.tex not found)
+
+. 
+. * Write table header
+. file write myfile "\begin{tabular}{l c c c c c c}" _n
+
+. file write myfile "\hline\hline" _n
+
+. file write myfile ///
+> " & \shortstack{Full \\ sample \\ (1)}" ///
+> " & \shortstack{2007 - 2012 \\ (2)}" ///
+> " & \shortstack{2013 - 2018  \\  (3)} " ///
+> " & \shortstack{2019 - 2024  \\  (4)} " ///
+> " & \shortstack{Secondary  \\ school \\  (5)} " ///
+> " & \shortstack{High  \\ school \\  (6)} \\ " _n
+
+. file write myfile "\hline" _n
+
+. 
+. * Coefficient row
+. file write myfile "\$ \hat{\beta}_2 \$" _n
+
+. file write myfile " & `coef3' & `coef4' & `coef5' & `coef6' & `coef7' & `coef8'  \\" _n
+
+. file write myfile " & `seout3' & `seout4' & `seout5' & `seout6' & `seout7' & `seout8'    \\" _n
+
+. 
+. * Mean of dependent variable row
+. file write myfile "\hline" _n
+
+. file write myfile "Mean of school enrollment" _n
+
+. file write myfile " & \$`mean_3'\$ & \$`mean_4'\$ & \$`mean_5'\$  & \$`mean_6'\$ & \$`mean_7'\$ & \$`mean_8'\$ \\" _n
+
+. 
+. * Kleibergen-Paap F-stat row
+. file write myfile "Kleibergen-Paap F-stat" _n
+
+. file write myfile " &`kpout3' &`kpout4' &`kpout5' &`kpout6' &`kpout7' &`kpout8' \\" _n
+
+. 
+. * Observations row
+. file write myfile "\hline" _n
+
+. file write myfile "Observations" _n
+
+. file write myfile " & `Nout3' & `Nout4' & `Nout5' & `Nout6' & `Nout7' & `Nout8'  \\" _n
+
+. 
+. * Close table
+. file write myfile "\hline\hline" _n
+
+. file write myfile "\end{tabular}" _n
+
+. 
+. file close myfile
+
+. 
+. * -----------------------------------------------------------------------------
+. * 8) Save scalars
+. * -----------------------------------------------------------------------------
+. file open scalars using "${TABLES}main_analysis_scalars.tex", write replace
+(file ../output/Tables/main_analysis_scalars.tex not found)
+
+. 
+. file write scalars "\newcommand{\MaleBeta}{" %4.3f (`coef9') "}" _n
+invalid syntax
+r(198);
+
+end of do-file
+r(198);
+
+Warning: There was an error, but these files were created: het_iv.tex main_iv.tex main_analysis_scalars.tex 

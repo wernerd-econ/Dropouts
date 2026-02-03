@@ -46,7 +46,7 @@ merge m:1 municipality year month using `muni_temp'
 
 
 * Drop remaining unmerged and low population municipalities
-drop if pop_tot < 10000
+drop if pop_tot < 50000
 drop if _merge != 3
 cap drop _merge
 
@@ -62,9 +62,6 @@ gen iv = cs_big * d_to_pc
 
 * Treatment
 gen ln_homicide = log(1+hr)
-gen ln_hom_lag1 = log(1+hr_lag1)
-gen ln_hom_lag2 = log(1+hr_lag2)
-gen ln_hom_lag3 = log(1+hr_lag3)
 
 
 * Controls
@@ -104,6 +101,7 @@ ivreghdfe dropout ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot ///
 local b_2 = _b[ln_homicide]
 local se_2 = _se[ln_homicide]
 local N_2 = e(N)
+local kp_2 = e(rkf)
 quietly sum school if e(sample)
 local mean_2 : display %6.3f r(mean)
 
@@ -153,9 +151,9 @@ local mean_4 : display %6.3f r(mean)
 
 restore
 
-* Period 2: 2013-2017
+* Period 2: 2013-2016
 preserve
-keep if year >= 2013 & year <= 2018
+keep if year >= 2013 & year <= 2016
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
@@ -175,9 +173,9 @@ local mean_5 : display %6.3f r(mean)
 
 restore
 
-* Period 3: 2019-2024
+* Period 3: 2017-2024
 preserve
-keep if year >= 2019 & year <= 2024
+keep if year >= 2017 & year <= 2024
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
@@ -198,7 +196,51 @@ local mean_6 : display %6.3f r(mean)
 restore
 
 * -----------------------------------------------------------------------------
-* 5) Gender -- Only want coefficients and SE (no table presented)
+* 5) Schooling cohort heterogeneity
+* -----------------------------------------------------------------------------
+
+* Middle School
+preserve
+keep if age >= 12 & age <=14
+ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+		hh_n_employed_adults hh_n_other_children hh_children /// 
+		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+        absorb(i.month_year_date i.id) cluster(id) first
+		
+local b_7 = _b[ln_homicide]
+local se_7 = _se[ln_homicide]
+local N_7 = e(N)
+local kp_7 = e(rkf)
+quietly sum school if e(sample)
+local mean_7 : display %6.3f r(mean)
+restore
+
+* High School
+preserve
+keep if age >= 15 & age <=18
+ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+		hh_n_employed_adults hh_n_other_children hh_children /// 
+		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
+		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
+		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
+		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
+        absorb(i.month_year_date i.id) cluster(id) first
+		
+local b_8 = _b[ln_homicide]
+local se_8 = _se[ln_homicide]
+local N_8 = e(N)
+local kp_8 = e(rkf)
+quietly sum school if e(sample)
+local mean_8 : display %6.3f r(mean)
+restore
+
+* -----------------------------------------------------------------------------
+* 6) Gender -- Only want coefficients and SE (no table presented)
 * -----------------------------------------------------------------------------
 
 * Males only
@@ -214,10 +256,8 @@ ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employmen
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
         absorb(i.month_year_date i.id) cluster(id) first
 
-local b_7 = _b[ln_homicide]
-local se_7 = _se[ln_homicide]
-local N_7 = e(N)
-local kp_7 = e(rkf)
+local b_9 = _b[ln_homicide]
+local se_9 = _se[ln_homicide]
 restore
 
 * Females only
@@ -233,55 +273,10 @@ ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employmen
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
         absorb(i.month_year_date i.id) cluster(id) first
 
-local b_8 = _b[ln_homicide]
-local se_8 = _se[ln_homicide]
-local N_8 = e(N)
-local kp_8 = e(rkf)
-restore
-
-* -----------------------------------------------------------------------------
-* 6) Schooling cohort heterogeneity
-* -----------------------------------------------------------------------------
-
-* Middle School
-preserve
-keep if age >= 12 & age <=14
-ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
-		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
-		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
-		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
-		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
-		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
-		
-local b_9 = _b[ln_homicide]
-local se_9 = _se[ln_homicide]
-local N_9 = e(N)
-local kp_9 = e(rkf)
-quietly sum school if e(sample)
-local mean_9 : display %6.3f r(mean)
-restore
-
-* High School
-preserve
-keep if age >= 15 & age <=18
-ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
-		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
-		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
-		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
-		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
-		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
-		
 local b_10 = _b[ln_homicide]
 local se_10 = _se[ln_homicide]
-local N_10 = e(N)
-local kp_10 = e(rkf)
-quietly sum school if e(sample)
-local mean_10 : display %6.3f r(mean)
 restore
+
 
 * -----------------------------------------------------------------------------
 * 7) Build Tables
@@ -375,30 +370,30 @@ file write myfile "\hline\hline" _n
 file write myfile ///
 " & \shortstack{Full \\ sample \\ (1)}" ///
 " & \shortstack{2007 - 2012 \\ (2)}" ///
-" & \shortstack{2013 - 2018  \\  (3)} " ///
-" & \shortstack{2019 - 2024  \\  (4)} " ///
+" & \shortstack{2013 - 2016  \\  (3)} " ///
+" & \shortstack{2017 - 2024  \\  (4)} " ///
 " & \shortstack{Secondary  \\ school \\  (5)} " ///
 " & \shortstack{High  \\ school \\  (6)} \\ " _n
 file write myfile "\hline" _n
 
 * Coefficient row
 file write myfile "\$ \hat{\beta}_2 \$" _n
-file write myfile " & `coef3' & `coef4' & `coef5' & `coef6' & `coef9' & `coef10'  \\" _n
-file write myfile " & `seout3' & `seout4' & `seout5' & `seout6' & `seout9' & `seout10'    \\" _n
+file write myfile " & `coef3' & `coef4' & `coef5' & `coef6' & `coef7' & `coef8'  \\" _n
+file write myfile " & `seout3' & `seout4' & `seout5' & `seout6' & `seout7' & `seout8'    \\" _n
 
 * Mean of dependent variable row
 file write myfile "\hline" _n
 file write myfile "Mean of school enrollment" _n
-file write myfile " & \$`mean_3'\$ & \$`mean_4'\$ & \$`mean_5'\$  & \$`mean_6'\$ & \$`mean_9'\$ & \$`mean_10'\$ \\" _n
+file write myfile " & \$`mean_3'\$ & \$`mean_4'\$ & \$`mean_5'\$  & \$`mean_6'\$ & \$`mean_7'\$ & \$`mean_8'\$ \\" _n
 
 * Kleibergen-Paap F-stat row
 file write myfile "Kleibergen-Paap F-stat" _n
-file write myfile " &`kpout3' &`kpout4' &`kpout5' &`kpout6' &`kpout9' &`kpout10' \\" _n
+file write myfile " &`kpout3' &`kpout4' &`kpout5' &`kpout6' &`kpout7' &`kpout8' \\" _n
 
 * Observations row
 file write myfile "\hline" _n
 file write myfile "Observations" _n
-file write myfile " & `Nout3' & `Nout4' & `Nout5' & `Nout6' & `Nout9' & `Nout10'  \\" _n
+file write myfile " & `Nout3' & `Nout4' & `Nout5' & `Nout6' & `Nout7' & `Nout8'  \\" _n
 
 * Close table
 file write myfile "\hline\hline" _n
@@ -411,12 +406,12 @@ file close myfile
 * -----------------------------------------------------------------------------
 file open scalars using "${TABLES}main_analysis_scalars.tex", write replace
 
-file write scalars "\newcommand{\MaleBeta}{" `coef7' "}" _n
-file write scalars "\newcommand{\MaleSE}{" `seout7' "}" _n
-file write scalars "\newcommand{\FemaleBeta}{" `coef8' "}" _n
-file write scalars "\newcommand{\FemaleSE}{" `seout8' "}" _n
-file write scalars "\newcommand{\TotalBeta}{" `coef3' "}" _n
-file write scalars "\newcommand{\RecentBeta}{" `coef6' "}" _n
-file write scalars "\newcommand{\SecondaryBeta}{" `coef9' "}" _n
+file write scalars "\newcommand{\MaleBeta}{" %4.3f (`b_9') "}" _n
+file write scalars "\newcommand{\MaleSE}{" %4.3f (`se_9') "}" _n
+file write scalars "\newcommand{\FemaleBeta}{" %4.3f (`b_10') "}" _n
+file write scalars "\newcommand{\FemaleSE}{" %4.3f (`se_10') "}" _n
+file write scalars "\newcommand{\TotalBeta}{" %4.3f (`b_3') "}" _n
+file write scalars "\newcommand{\RecentBeta}{" %4.3f (`b_6') "}" _n
+file write scalars "\newcommand{\SecondaryBeta}{" %4.3f (`b_7') "}" _n
 
 file close scalars
