@@ -11,7 +11,7 @@ ntl_homicide <- homicide_data %>%
   summarise(hom_ntl = sum(homicides),
             pop_ntl = sum(pop_tot),
             ntl_hom_per_tenk = hom_ntl/pop_ntl * 10000,
-            avg_mun_hom = mean(homicide_rate_per_tenk),
+            avg_mun_hom = mean(hr),
             year_month = paste0(year, "-", month)) %>%
   distinct(year_month, .keep_all = TRUE)
 
