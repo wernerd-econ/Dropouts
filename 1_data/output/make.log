@@ -1,15 +1,104 @@
 
-Script crime_and_pop.r in Rscript started at 2026-01-29 14:54:07
-Script crime_and_pop.r finished successfully at 2026-01-29 14:55:15
+Script mun_and_individual_panels.r in Rscript started at 2026-02-04 17:09:06
+Script mun_and_individual_panels.r finished successfully at 2026-02-04 17:13:04
+Output: ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   4.0.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Warning message:
+package ‘ggplot2’ was built under R version 4.5.2 
+`summarise()` has grouped output by 'municipality', 'month'. You can override
+using the `.groups` argument.
+            used   (Mb) gc trigger    (Mb) limit (Mb)   max used    (Mb)
+Ncells   1148444   61.4   92477295  4938.9         NA  144495772  7717.0
+Vcells 819425013 6251.8 1673208564 12765.6      24576 1673198334 12765.5
+
+Script municipal_geo.r in Rscript started at 2026-02-04 17:13:04
+Script municipal_geo.r finished successfully at 2026-02-04 17:14:06
+Output: Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   4.0.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Warning message:
+package ‘ggplot2’ was built under R version 4.5.2 
+udunits database from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/units/share/udunits/udunits2.xml
+Reading layer `areas_geoestadisticas_municipales' from data source 
+  `/Users/wernerd/Desktop/Daniel Werner/GeoData/Marco Geoestadistico/conjunto_de_datos/areas_geoestadisticas_municipales.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 2458 features and 3 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 911292 ymin: 319149.1 xmax: 4082997 ymax: 2349615
+Projected CRS: MEXICO_ITRF_2008_LCC
+Reading layer `tl_2023_us_internationalboundary' from data source 
+  `/Users/wernerd/Desktop/Daniel Werner/GeoData/US Border/tl_2023_us_internationalboundary.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 4759 features and 3 fields
+Geometry type: LINESTRING
+Dimension:     XY
+Bounding box:  xmin: -141.0028 ymin: 25.83705 xmax: -66.88544 ymax: 69.70365
+Geodetic CRS:  NAD83
+Reading layer `lc2018gw' from data source 
+  `/Users/wernerd/Desktop/Daniel Werner/GeoData/Coast/lc2018gw.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 4955 features and 9 fields
+Geometry type: MULTILINESTRING
+Dimension:     XY
+Bounding box:  xmin: -118.3665 ymin: 14.52975 xmax: -86.71042 ymax: 32.71864
+Geodetic CRS:  WGS 84
+Reading layer `border_x' from data source 
+  `/Users/wernerd/Desktop/Daniel Werner/GeoData/Entry Points/border_x.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 171 features and 20 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -141.0014 ymin: 25.88342 xmax: -66.98008 ymax: 64.08552
+Geodetic CRS:  WGS 84
+
+Script seizure_data.r in Rscript started at 2026-02-04 17:14:06
+Script seizure_data.r finished successfully at 2026-02-04 17:14:18
+Output: ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   4.0.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Warning message:
+package ‘ggplot2’ was built under R version 4.5.2 
+New names:
+• `` -> `...44`
+There were 50 or more warnings (use warnings() to see the first 50)
+
+Script crime_and_pop.r in Rscript started at 2026-02-04 17:14:18
+Script crime_and_pop.r finished successfully at 2026-02-04 17:15:27
 Output: Loading required package: pacman
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ forcats   1.0.0     ✔ tibble    3.3.0
-✔ ggplot2   3.5.2     ✔ tidyr     1.3.1
+✔ ggplot2   4.0.2     ✔ tidyr     1.3.1
 ✔ lubridate 1.9.4     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Warning message:
+package ‘ggplot2’ was built under R version 4.5.2 
 Rows: 7087 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: "|"
@@ -20,20 +109,22 @@ chr (3): causa_def, base_code, cod_group
 `summarise()` has grouped output by 'municipality', 'year'. You can override
 using the `.groups` argument.
 
-Script make_final_data.r in Rscript started at 2026-01-29 14:55:15
-Script make_final_data.r finished successfully at 2026-01-29 14:55:39
+Script make_final_data.r in Rscript started at 2026-02-04 17:15:27
+Script make_final_data.r finished successfully at 2026-02-04 17:15:51
 Output: ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.0
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ✔ purrr     1.1.0     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Warning message:
+package ‘ggplot2’ was built under R version 4.5.2 
           used (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
-Ncells  856912 45.8    1378677  73.7         NA  1378677  73.7
-Vcells 1449323 11.1   25692512 196.1      24576 25747949 196.5
+Ncells 1137977 60.8    2201562 117.6         NA  2201562 117.6
+Vcells 1928425 14.8   25792584 196.8      24576 26226975 200.1
 
-make.sh finished at 2026-01-29 14:55:39
+make.sh finished at 2026-02-04 17:15:51

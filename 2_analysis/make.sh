@@ -46,6 +46,11 @@ mkdir -p "${MAKE_SCRIPT_DIR}/output"
 (
 cd "${MAKE_SCRIPT_DIR}/source"
 
+run_stata distance.do "${LOGFILE}" || exit 1
+run_stata cocaine_seiz.do "${LOGFILE}" || exit 1
+run_stata homicides.do "${LOGFILE}" || exit 1
+run_stata enoe.do "${LOGFILE}" || exit 1
+run_R maps.R "${LOGFILE}" || exit 1
 run_stata main_results.do "${LOGFILE}" || exit 1
 ) || false
 

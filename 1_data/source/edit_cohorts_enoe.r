@@ -76,10 +76,10 @@ create_new_variables <- function(df, cohort_number) {
   cpi_us <- cpi_us %>% mutate(US_CPI = as.numeric(US_CPI))
   df <- df %>% left_join(cpi_mex, by = c("year", "month")) %>%
     left_join(cpi_us, by = c("year", "month")) %>%
-    mutate(hrly_salary_real = hrly_salary / MEX_CPI,
-           monthly_salary_real = monthly_salary / MEX_CPI,
-           hrly_salary_real_usd = hrly_salary_usd / US_CPI,
-           monthly_salary_real_usd = monthly_salary_usd / US_CPI) %>%
+    mutate(hrly_salary_real = hrly_salary / MEX_CPI * 100,
+           monthly_salary_real = monthly_salary / MEX_CPI * 100,
+           hrly_salary_real_usd = hrly_salary_usd / US_CPI * 100,
+           monthly_salary_real_usd = monthly_salary_usd / US_CPI * 100) %>%
     select(-US_CPI, -MEX_CPI)
   #done
 }

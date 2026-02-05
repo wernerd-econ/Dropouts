@@ -37,13 +37,13 @@ panel <- panel %>%
   ) %>%
   group_by(id_hog, month, year) %>%
     mutate(
-      hh_income = mean(monthly_salary_real[is_adult & employed == 1],
+      hh_income = sum(monthly_salary_real[is_adult & employed == 1],
                              na.rm = TRUE),
-      hh_income_usd = mean(monthly_salary_real_usd[is_adult & employed == 1],
+      hh_income_usd = sum(monthly_salary_real_usd[is_adult & employed == 1],
                             na.rm = TRUE),
-      hh_hincome = mean(hrly_salary_real[is_adult & employed == 1],
+      hh_hincome = sum(hrly_salary_real[is_adult & employed == 1],
                             na.rm = TRUE),
-      hh_hincome_usd = mean(hrly_salary_real_usd[is_adult & employed == 1],
+      hh_hincome_usd = sum(hrly_salary_real_usd[is_adult & employed == 1],
                                 na.rm = TRUE),
       hh_adult_schooling = mean(years_schooling[is_adult & years_schooling != 99],
                                 na.rm = TRUE),

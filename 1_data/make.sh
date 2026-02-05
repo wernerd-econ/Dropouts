@@ -67,16 +67,16 @@ cd "${MAKE_SCRIPT_DIR}/source"
 #   echo -e "\nSaved cohort data as Cohort_$cohort_number to Output folder."
 # done
 
-#for ((i=1; i<=59; i+=1)); do
+# for ((i=1; i<=59; i+=1)); do
 #    percent_2=$(( 100 * $i / 59 ))
 #    echo -e "\nEditing cohort $i of 59 ... ($percent_2% done)"
 #    run_R edit_cohorts_enoe.r "${LOGFILE}" "$i" || exit 1
 #    echo -e "\nFinished Editing cohort $i of 59. Saved as CleanCohort_$i in Output folder."
-#done
+# done
 #run_python staple_cohorts.py "${LOGFILE}" || exit 1
-#run_R mun_and_individual_panels.r "${LOGFILE}" || exit 1
-#run_R municipal_geo.r "${LOGFILE}" || exit 1
-#run_R seizure_data.r "${LOGFILE}" || exit 1
+run_R mun_and_individual_panels.r "${LOGFILE}" || exit 1
+run_R municipal_geo.r "${LOGFILE}" || exit 1
+run_R seizure_data.r "${LOGFILE}" || exit 1
 run_R crime_and_pop.r "${LOGFILE}" || exit 1
 run_R make_final_data.r "${LOGFILE}" || exit 1
 ) || false
