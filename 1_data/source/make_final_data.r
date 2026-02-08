@@ -50,18 +50,15 @@ total_seizures <- total_seizures %>% rename(month = Month)
 years <- as.character(unique(total_seizures$year))
 
 municipal_data <- municipal_data %>% 
-  mutate(year = paste0("20", year)) %>%
+  mutate(year = sprintf("%02d", year),
+         year = paste0("20", year),
+         month = sprintf("%02d", month)) %>%
   filter(year %in% years) %>%
-  mutate(
-    year = as.character(year),
-    month = sprintf("%02d", as.integer(month)),  # adds leading zero
-    year_month = paste0(year, "-", month)        # combine into YYYY-MM
-  )
+  mutate(year_month = paste0(year, "-", month))       
 
 homicide_data <- homicide_data %>% 
   filter(year %in% years) %>%
   mutate(
-    year = as.character(year),
     month = sprintf("%02d", as.integer(month)),  # adds leading zero
     year_month = paste0(year, "-", month)        # combine into YYYY-MM
   )
@@ -69,7 +66,6 @@ homicide_data <- homicide_data %>%
 total_seizures <- total_seizures %>%
   mutate(
     year = as.character(year),
-    month = sprintf("%02d", as.integer(month)),  # adds leading zero
     year_month = paste0(year, "-", month)        # combine into YYYY-MM
   )
 
@@ -140,18 +136,15 @@ total_seizures <- total_seizures %>% rename(month = Month)
 years <- as.character(unique(total_seizures$year))
 
 individual_data <- individual_data %>% 
-  mutate(year = paste0("20", year)) %>% 
+  mutate(year = sprintf("%02d", year),
+         year = paste0("20", year),
+         month = sprintf("%02d", month)) %>%
   filter(year %in% years) %>%
-  mutate(
-    year = as.character(year),
-    month = sprintf("%02d", as.integer(month)),  # adds leading zero
-    year_month = paste0(year, "-", month)        # combine into YYYY-MM
-  )
+  mutate(year_month = paste0(year, "-", month))       
 
 homicide_data <- homicide_data %>% 
   filter(year %in% years) %>%
   mutate(
-    year = as.character(year),
     month = sprintf("%02d", as.integer(month)),  # adds leading zero
     year_month = paste0(year, "-", month)        # combine into YYYY-MM
   )
@@ -159,7 +152,6 @@ homicide_data <- homicide_data %>%
 total_seizures <- total_seizures %>%
   mutate(
     year = as.character(year),
-    month = sprintf("%02d", as.integer(month)),  # adds leading zero
     year_month = paste0(year, "-", month)        # combine into YYYY-MM
   )
 

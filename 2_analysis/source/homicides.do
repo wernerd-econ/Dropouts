@@ -123,6 +123,72 @@ format year_month %tm
 
 sort year month
 
+* SAVE NECESSARY SCALARS BEFORE PLOT 
+* ============================================================================
+* Period 1: 2007-2012 (Min and Max)
+* ============================================================================
+preserve
+keep if year >= 2007 & year <= 2012
+
+* Find minimum
+egen min_hr = min(ntl_hr)
+gen is_min = (ntl_hr == min_hr)
+sum year if is_min == 1
+local calderon_min_year = r(mean)
+sum month if is_min == 1
+local calderon_min_month = r(mean)
+sum ntl_hr if is_min == 1
+local calderon_min_hr = r(mean)
+
+* Find maximum
+egen max_hr = max(ntl_hr)
+gen is_max = (ntl_hr == max_hr)
+sum year if is_max == 1
+local calderon_max_year = r(mean)
+sum month if is_max == 1
+local calderon_max_month = r(mean)
+sum ntl_hr if is_max == 1
+local calderon_max_hr = r(mean)
+
+restore
+
+* ============================================================================
+* Period 2: 2013-2016 (Min)
+* ============================================================================
+preserve
+keep if year >= 2013 & year <= 2016
+
+* Find minimum
+egen min_hr = min(ntl_hr)
+gen is_min = (ntl_hr == min_hr)
+sum year if is_min == 1
+local interim_min_year = r(mean)
+sum month if is_min == 1
+local interim_min_month = r(mean)
+sum ntl_hr if is_min == 1
+local interim_min_hr = r(mean)
+
+restore
+
+* ============================================================================
+* Period 3: 2017-2024 (Max)
+* ============================================================================
+preserve
+keep if year >= 2017 & year <= 2024
+
+* Find maximum
+egen max_hr = max(ntl_hr)
+gen is_max = (ntl_hr == max_hr)
+sum year if is_max == 1
+local respike_max_year = r(mean)
+sum month if is_max == 1
+local respike_max_month = r(mean)
+sum ntl_hr if is_max == 1
+local respike_max_hr = r(mean)
+
+restore
+
+
 * Create the plot
 twoway ///
     (line ntl_hr year_month, lwidth(medium)) ///
@@ -162,4 +228,49 @@ twoway ///
 
 * Save the graph
 graph export "${FIGURES}Homicide_TS.pdf", replace
+
+* -----------------------------------------------------------------------------
+* Make scalars
+* -----------------------------------------------------------------------------
+* ============================================================================
+* Format and save as LaTeX commands
+* ============================================================================
+
+* Format homicide rates
+local calderon_min_hr_fmt : display %6.2f `calderon_min_hr'
+local calderon_max_hr_fmt : display %6.2f `calderon_max_hr'
+local interim_min_hr_fmt : display %6.2f `interim_min_hr'
+local respike_max_hr_fmt : display %6.2f `respike_max_hr'
+
+* Create month names (optional)
+local months "January February March April May June July August September October November December"
+local calderon_min_month_name : word `calderon_min_month' of `months'
+local calderon_max_month_name : word `calderon_max_month' of `months'
+local interim_min_month_name : word `interim_min_month' of `months'
+local respike_max_month_name : word `respike_max_month' of `months'
+
+* Write to LaTeX file
+file open scalars using "${TABLES}homicide_extrema.tex", write replace
+
+* Calderón period min
+file write scalars "\newcommand{\CalderonMinHR}{" `calderon_min_hr_fmt' "}" _n
+file write scalars "\newcommand{\CalderonMinYear}{" `calderon_min_year' "}" _n
+file write scalars "\newcommand{\CalderonMinMonthName}{" "`calderon_min_month_name'" "}" _n
+
+* Calderón period max
+file write scalars "\newcommand{\CalderonMaxHR}{" `calderon_max_hr_fmt' "}" _n
+file write scalars "\newcommand{\CalderonMaxYear}{" `calderon_max_year' "}" _n
+file write scalars "\newcommand{\CalderonMaxMonthName}{" "`calderon_max_month_name'" "}" _n
+
+* Interim period min
+file write scalars "\newcommand{\InterimMinHR}{" `interim_min_hr_fmt' "}" _n
+file write scalars "\newcommand{\InterimMinYear}{" `interim_min_year' "}" _n
+file write scalars "\newcommand{\InterimMinMonthName}{" "`interim_min_month_name'" "}" _n
+
+* Respike period max
+file write scalars "\newcommand{\RespikeMaxHR}{" `respike_max_hr_fmt' "}" _n
+file write scalars "\newcommand{\RespikeMaxYear}{" `respike_max_year' "}" _n
+file write scalars "\newcommand{\RespikeMaxMonthName}{" "`respike_max_month_name'" "}" _n
+
+file close scalars
 

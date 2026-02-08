@@ -50,7 +50,7 @@ my_labels <- paste0(
 )
 
 # =============================================================================
-# (3) Define mapping function with FIXED bins
+# (3) Define mapping function with FIXED bins and better formatting
 # =============================================================================
 mapa_mun_crimen <- function(df, years, breaks, labels) {
   
@@ -83,52 +83,59 @@ mapa_mun_crimen <- function(df, years, breaks, labels) {
     mxmunicipio_choropleth(
       num_colors = length(breaks) - 1,
       title = "",
-      show_states = TRUE
+      show_states = FALSE
     ) +
     scale_fill_brewer(
       palette = "Reds",
       name = "",
       limits = labels,
       drop = FALSE
+    ) +
+    theme(
+      panel.border = element_blank(),
+      panel.background = element_blank(),
+      plot.background = element_blank()
     )
   
   return(p)
 }
 
 # =============================================================================
-# (4) Generate maps (ALL share identical legend)
+# (4) Generate maps with better dimensions
 # =============================================================================
 whole_samp <- mapa_mun_crimen(
   homicides, 2007:2024,
   breaks = my_breaks,
   labels = my_labels
 )
-
-ggsave(filename = file.path(fig_path, "total_hom_map.pdf"), plot = whole_samp)
+ggsave(filename = file.path(fig_path, "total_hom_map.pdf"), 
+       plot = whole_samp, 
+       width = 8, height = 6, units = "in")
 
 war <- mapa_mun_crimen(
   homicides, 2007:2012,
   breaks = my_breaks,
   labels = my_labels
 )
-
-ggsave(filename = file.path(fig_path, "war_hom_map.pdf"), plot = war)
+ggsave(filename = file.path(fig_path, "war_hom_map.pdf"), 
+       plot = war, 
+       width = 8, height = 6, units = "in")
 
 inter <- mapa_mun_crimen(
   homicides, 2013:2016,
   breaks = my_breaks,
   labels = my_labels
 )
-
-ggsave(filename = file.path(fig_path, "interim_hom_map.pdf"), plot = inter)
-
+ggsave(filename = file.path(fig_path, "interim_hom_map.pdf"), 
+       plot = inter, 
+       width = 8, height = 6, units = "in")
 
 respike <- mapa_mun_crimen(
   homicides, 2017:2024,
   breaks = my_breaks,
   labels = my_labels
 )
-
-ggsave(filename = file.path(fig_path, "respike_hom_map.pdf"), plot = respike)
-
+ggsave(filename = file.path(fig_path, "respike_hom_map.pdf"), 
+       plot = respike, 
+       width = 8, height = 6, units = "in")
 

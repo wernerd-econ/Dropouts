@@ -164,7 +164,7 @@ local total_women_rate = (`total_women_dropouts' / `total_women_started') * 100
 * Write the LaTeX table
 file open mytable using "${TABLES}dropout_stats.tex", write replace
 
-file write mytable "\begin{tabular}{llrrrl}" _n
+file write mytable "\begin{tabular}{llcccc}" _n
 file write mytable "\toprule" _n
 file write mytable "Age Group & Category & Total People & Started Panel In School & Dropouts & Dropout Rate\\" _n
 file write mytable "\midrule" _n
@@ -375,3 +375,191 @@ file write mytable "\hline" _n
 file write mytable "\end{tabular}" _n
 
 file close mytable
+
+* =============================================================================
+* III. Create sample construction
+* =============================================================================
+use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+
+* Starting 
+cap drop tag 
+egen tag = tag(sid)
+count if tag == 1
+local N_indiv_start = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_start = r(N)
+
+* Dropping primary school children 
+drop if age >= 6 & age <= 11
+cap drop tag 
+egen tag = tag(sid)
+count if tag == 1
+local N_indiv_noprim = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_noprim = r(N)
+
+* Dropping municipalities with fewer than 15,000
+drop if pop_tot < 15000
+cap drop tag 
+egen tag = tag(sid)
+count if tag == 1
+local N_indiv_nosmall = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_nosmall = r(N)
+
+* Format numbers with commas
+local N_indiv_start_fmt : display %12.0fc `N_indiv_start'
+local N_mun_start_fmt : display %12.0fc `N_mun_start'
+
+local N_indiv_noprim_fmt : display %12.0fc `N_indiv_noprim'
+local N_mun_noprim_fmt : display %12.0fc `N_mun_noprim'
+
+local N_indiv_nosmall_fmt : display %12.0fc `N_indiv_nosmall'
+local N_mun_nosmall_fmt : display %12.0fc `N_mun_nosmall'
+
+* Write LaTeX table
+file open mytable using "${TABLES}sample_construction.tex", write replace
+
+file write mytable "\begin{tabular}{l c c}" _n
+file write mytable "\hline\hline" _n
+file write mytable " & Number of Individuals & Number of Municipalities \\" _n
+file write mytable "\hline" _n
+
+* Starting sample
+file write mytable "Starting sample & `N_indiv_start_fmt' & `N_mun_start_fmt' \\" _n
+
+* After dropping primary
+file write mytable "Drop primary school children (ages 6-11) & `N_indiv_noprim_fmt' & `N_mun_noprim_fmt' \\" _n
+
+* After dropping small municipalities
+file write mytable "Drop municipalities with population $<$ 15,000 & `N_indiv_nosmall_fmt' & `N_mun_nosmall_fmt' \\" _n
+
+file write mytable "\hline\hline" _n
+file write mytable "\end{tabular}" _n
+
+file close mytable
+
+* =============================================================================
+* III. Create sample by year table
+* =============================================================================
+use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+
+* Whole Sample
+cap drop tag 
+egen tag = tag(sid)
+count if tag == 1
+local N_indiv_whole = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_whole = r(N)
+
+* war
+preserve
+keep if year >= 2007 & year <= 2012
+cap drop tag 
+egen tag = tag(sid)
+count if tag == 1
+local N_indiv_war = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_war = r(N)
+restore 
+
+* interim
+preserve
+keep if year >= 2013 & year <= 2016
+cap drop tag 
+egen tag = tag(sid)
+count if tag == 1
+local N_indiv_interim = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_interim = r(N)
+restore 
+
+* respike
+preserve
+keep if year >= 2017 & year <= 2024
+cap drop tag 
+egen tag = tag(sid)
+count if tag == 1
+local N_indiv_respike = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_respike = r(N)
+restore 
+
+* Format numbers with commas
+local N_indiv_whole_fmt : display %12.0fc `N_indiv_whole'
+local N_mun_whole_fmt : display %12.0fc `N_mun_whole'
+
+local N_indiv_war_fmt : display %12.0fc `N_indiv_war'
+local N_mun_war_fmt : display %12.0fc `N_mun_war'
+
+local N_indiv_interim_fmt : display %12.0fc `N_indiv_interim'
+local N_mun_interim_fmt : display %12.0fc `N_mun_interim'
+
+local N_indiv_respike_fmt : display %12.0fc `N_indiv_respike'
+local N_mun_respike_fmt : display %12.0fc `N_mun_respike'
+
+* Write LaTeX table
+file open mytable using "${TABLES}sample_time_period.tex", write replace
+
+file write mytable "\begin{tabular}{l c c}" _n
+file write mytable "\hline\hline" _n
+file write mytable " & Number of Individuals & Number of Municipalities \\" _n
+file write mytable "\hline" _n
+
+* Starting sample
+file write mytable "Whole sample & `N_indiv_start_fmt' & `N_mun_start_fmt' \\" _n
+
+* After dropping primary
+file write mytable "War on drugs (2007-2012) & `N_indiv_noprim_fmt' & `N_mun_noprim_fmt' \\" _n
+
+* After dropping small municipalities
+file write mytable "Interim (2013-2016) & `N_indiv_nosmall_fmt' & `N_mun_nosmall_fmt' \\" _n
+file write mytable "Resurgence (2017-2018) & `N_indiv_nosmall_fmt' & `N_mun_nosmall_fmt' \\" _n
+
+file write mytable "\hline\hline" _n
+file write mytable "\end{tabular}" _n
+
+file close mytable
+
+
+* -----------------------------------------------------------------------------
+* Save scalars
+* -----------------------------------------------------------------------------
+file open scalars using "${TABLES}enoe_scalars.tex", write replace
+
+file write scalars "\newcommand{\dRateSecondary}{" %4.1f (`sec_rate') "}" _n
+file write scalars "\newcommand{\dRateHigh}{" %4.1f (`high_rate') "}" _n
+file write scalars "\newcommand{\totalKids}{" %12.0fc (`total_total') "}" _n
+file write scalars "\newcommand{\Avgincome}{" %5.0f (`inc_1') "}" _n
+file write scalars "\newcommand{\AvgincomeUSD}{" %3.0f (`incusd_1') "}" _n
+
+
+file close scalars
+
+
+
+
+
+
+

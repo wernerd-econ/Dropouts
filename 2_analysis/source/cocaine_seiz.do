@@ -175,7 +175,7 @@ sort year_month
 * Create the plot
 twoway ///
     (line cs_big_monthly year_month, lwidth(thin) lcolor(navy)) ///
-    (line cs_big_yearly year_month, lwidth(thin) lcolor(red) lpattern(solid)) ///
+    (line cs_big_yearly year_month, lwidth(thin) lcolor(red) lpattern(dash)) ///
     , ///
     xline(`=ym(2013,1)' `=ym(2017,1)', ///
           lpattern(dash) lcolor(black) lwidth(thin)) ///
@@ -210,3 +210,17 @@ twoway ///
 		
 * Save the graph
 graph export "${FIGURES}Seizure_TS.pdf", replace
+
+* -----------------------------------------------------------------------------
+* Save scalars
+* -----------------------------------------------------------------------------
+file open scalars using "${TABLES}cocaine_scalars.tex", write replace
+
+file write scalars "\newcommand{\nSeizeWholeSamp}{" %1.0f (`overall_n') "}" _n
+file write scalars "\newcommand{\nSeizeRespike}{" %2.0f (`respike_n') "}" _n
+file write scalars "\newcommand{\kgSeizeWholeSamp}{" %4.1f (`overall_big') "}" _n
+file write scalars "\newcommand{\kgSeizeRespike}{" %4.1f (`respike_big') "}" _n
+file write scalars "\newcommand{\sdSeizeWholeSamp}{" %3.1f (`overall_big_sd') "}" _n
+
+
+file close scalars
