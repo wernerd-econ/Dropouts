@@ -52,6 +52,7 @@ run_stata homicides.do "${LOGFILE}" || exit 1
 run_stata enoe.do "${LOGFILE}" || exit 1
 run_R maps.R "${LOGFILE}" || exit 1
 run_stata main_results.do "${LOGFILE}" || exit 1
+run_stata iv_validation.do "${LOGFILE}" || exit 1
 ) || false
 
 echo -e "\nmake.sh finished at $(date '+%Y-%m-%d %H:%M:%S')" | tee -a "${LOGFILE}"

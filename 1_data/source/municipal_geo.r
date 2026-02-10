@@ -73,11 +73,13 @@ p <- ggplot() +
   geom_sf(data = border$geometry,
           shape = 23, size = 4, stroke = 2, color = "blue4", fill = "white" ) +
   geom_sf(data = pacific_coast, color = "blue", size = 0.5) +
-  theme_minimal() +
+  theme_void() +
   labs(title = "",
        subtitle = "") +
-  theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5))
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
 
 # Save the plot
 ggsave(filename = "/Users/wernerd/Desktop/Daniel Werner/Figures/Map_w_Borders.pdf",

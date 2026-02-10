@@ -135,6 +135,7 @@ local b_3 = _b[ln_homicide]
 local se_3 = _se[ln_homicide]
 local N_3 = e(N)
 local kp_3 = e(rkf)
+local k_stat_whole = e(rkf)
 quietly sum school if e(sample)
 local mean_3 : display %6.3f r(mean)
 
@@ -437,7 +438,6 @@ reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult
         absorb(i.month_year_date i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
-local coef_secondary = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
 local N_1 = e(N)
 quietly sum school if e(sample)
@@ -489,6 +489,7 @@ ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employmen
         absorb(i.month_year_date i.id) cluster(id) first
 		
 local b_4 = _b[ln_homicide]
+local coef_high = _b[ln_homicide]
 local se_4 = _se[ln_homicide]
 local N_4 = e(N)
 local kp_4 = e(rkf)
@@ -511,7 +512,6 @@ reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult
         absorb(i.month_year_date i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
-local coef_male = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
 local N_5 = e(N)
 quietly sum school if e(sample)
@@ -527,6 +527,7 @@ ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employmen
         absorb(i.month_year_date i.id) cluster(id) first
 
 local b_6 = _b[ln_homicide]
+local coef_male = _b[ln_homicide]
 local se_6 = _se[ln_homicide]
 local N_6 = e(N)
 local kp_6 = e(rkf)
@@ -674,7 +675,6 @@ reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult
         absorb(i.month_year_date i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
-local coef_secondary = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
 local N_1 = e(N)
 quietly sum school if e(sample)
@@ -748,7 +748,6 @@ reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult
         absorb(i.month_year_date i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
-local coef_male = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
 local N_5 = e(N)
 quietly sum school if e(sample)
@@ -906,7 +905,6 @@ reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult
         absorb(i.month_year_date i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
-local coef_secondary = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
 local N_1 = e(N)
 quietly sum school if e(sample)
@@ -980,7 +978,6 @@ reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult
         absorb(i.month_year_date i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
-local coef_male = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
 local N_5 = e(N)
 quietly sum school if e(sample)
@@ -1138,7 +1135,6 @@ reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult
         absorb(i.month_year_date i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
-local coef_secondary = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
 local N_1 = e(N)
 quietly sum school if e(sample)
@@ -1212,7 +1208,6 @@ reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult
         absorb(i.month_year_date i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
-local coef_male = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
 local N_5 = e(N)
 quietly sum school if e(sample)
@@ -1354,18 +1349,68 @@ file write myfile "\end{tabular}" _n
 file close myfile
 
 
+* Calculate a few more scalars
+
+use "/Users/wernerd/Desktop/Daniel Werner/homicides.dta", clear 
+
+* Calculate SD across all municipality-month observations
+summarize hr
+local hr_sd = r(sd)
+
+destring year, replace 
+summarize hr if year >= 2017 & year <= 2024
+local hr_mean_17124 = r(mean)
+
+local delta_log = ln(1 + `hr_mean_17124' + `hr_sd') - ln(1 + `hr_mean_17124')
+
+local effect_1sd_resurge = `coef_respike' * `delta_log'
+local effect_1sd_resurge_high = `coef_high' * `delta_log'
+local effect_1sd_resurge_male = `coef_male' * `delta_log'
+
+use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear 
+summarize cs_big
+local cs_mean = r(mean)
+
+use "/Users/wernerd/Desktop/Daniel Werner/final_geo.dta", clear 
+summarize d_to_pc
+local sd_d_to_pc = r(sd)
+
+local delta_log_seiz = -1 * `sd_d_to_pc' * `fs_coef_whole' * `cs_mean'
+local pct_effect_100km = exp(`delta_log_seiz') - 1
 
 * -----------------------------------------------------------------------------
-* 8) Save scalars
+* 1) Format locals for LaTeX output
+* -----------------------------------------------------------------------------
+local fs_coef_fmt                : display %12.10f `fs_coef_whole'
+local fs_se_fmt                  : display %12.10f `fs_se_whole'
+local k_stat_fmt                 : display %6.2f   `k_stat_whole'
+local respike_coef_fmt            : display %5.3f   `coef_respike'
+local high_coef_fmt          : display %5.3f   `coef_high'
+local male_coef_fmt               : display %5.3f   `coef_male'
+local hr_sd_fmt                   : display %4.2f   `hr_sd'
+local sd_effect_respike_fmt       : display %5.3f   `effect_1sd_resurge'
+local sd_effect_respike_high_fmt   : display %5.3f   `effect_1sd_resurge_high'
+local sd_effect_respike_male_fmt  : display %5.3f   `effect_1sd_resurge_male'
+local dist_first_stage_fmt        : display %12.10f `pct_effect_100km'
+local sd_distance_fmt             : display %4.0f `sd_d_to_pc'
+
+* -----------------------------------------------------------------------------
+* 2) Write LaTeX scalars
 * -----------------------------------------------------------------------------
 file open scalars using "${TABLES}main_analysis_scalars.tex", write replace
 
-file write scalars "\newcommand{\FirstStageCoef}{" %12.3f (`fs_coef_whole') "}" _n
-file write scalars "\newcommand{\FirstStageSe}{" %12.3f (`fs_se_whole') "}" _n
-file write scalars "\newcommand{\RespikeCoef}{" %5.3f (`coef_respike') "}" _n
-file write scalars "\newcommand{\SecondaryCoef}{" %5.3f (`coef_secondary') "}" _n
-file write scalars "\newcommand{\MaleCoef}{" %5.3f (`coef_male') "}" _n
-
+file write scalars "\newcommand{\FirstStageCoef}{ `fs_coef_fmt' }" _n
+file write scalars "\newcommand{\FirstStageSe}{ `fs_se_fmt' }" _n
+file write scalars "\newcommand{\Fstat}{ `k_stat_fmt' }" _n
+file write scalars "\newcommand{\RespikeCoef}{ `respike_coef_fmt' }" _n
+file write scalars "\newcommand{\HighCoef}{ `high_coef_fmt' }" _n
+file write scalars "\newcommand{\MaleCoef}{ `male_coef_fmt' }" _n
+file write scalars "\newcommand{\MunicipalHRSD}{ `hr_sd_fmt' }" _n
+file write scalars "\newcommand{\sdEffectRespike}{ `sd_effect_respike_fmt' }" _n
+file write scalars "\newcommand{\sdEffectRespikeHigh}{ `sd_effect_respike_high_fmt' }" _n
+file write scalars "\newcommand{\sdEffectRespikeMale}{ `sd_effect_respike_male_fmt' }" _n
+file write scalars "\newcommand{\DistanceFirstStageEffect}{ `dist_first_stage_fmt' }" _n
+file write scalars "\newcommand{\DistanceSd}{ `sd_distance_fmt' }" _n
 
 file close scalars
 

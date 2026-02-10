@@ -221,6 +221,9 @@ twoway ///
     xtitle("") ///
     ytitle("Homicides per ten thousand") ///
     title("") ///
+	text(.25 `=ym(2010,1)' "War on Drugs", size(medium) placement(n)) ///
+    text(.25 `=ym(2015,2)' "Interim", size(medium) placement(n)) ///
+    text(.25 `=ym(2020,7)' "Resurgence", size(medium) placement(n)) ///
     legend( ///
         order(1 "National homicide rate" 2 "Average municipal homicide rate") ///
         position(6) ring(1) cols(2))
@@ -250,27 +253,28 @@ local interim_min_month_name : word `interim_min_month' of `months'
 local respike_max_month_name : word `respike_max_month' of `months'
 
 * Write to LaTeX file
-file open scalars using "${TABLES}homicide_extrema.tex", write replace
+file open scalars using "${TABLES}homicide_scalars.tex", write replace
 
 * Calderón period min
-file write scalars "\newcommand{\CalderonMinHR}{" `calderon_min_hr_fmt' "}" _n
-file write scalars "\newcommand{\CalderonMinYear}{" `calderon_min_year' "}" _n
-file write scalars "\newcommand{\CalderonMinMonthName}{" "`calderon_min_month_name'" "}" _n
+file write scalars "\newcommand{\CalderonMinHR}{`calderon_min_hr_fmt'}" _n
+file write scalars "\newcommand{\CalderonMinYear}{`calderon_min_year'}" _n
+file write scalars "\newcommand{\CalderonMinMonthName}{`calderon_min_month_name'}" _n
 
 * Calderón period max
-file write scalars "\newcommand{\CalderonMaxHR}{" `calderon_max_hr_fmt' "}" _n
-file write scalars "\newcommand{\CalderonMaxYear}{" `calderon_max_year' "}" _n
-file write scalars "\newcommand{\CalderonMaxMonthName}{" "`calderon_max_month_name'" "}" _n
+file write scalars "\newcommand{\CalderonMaxHR}{`calderon_max_hr_fmt'}" _n
+file write scalars "\newcommand{\CalderonMaxYear}{`calderon_max_year'}" _n
+file write scalars "\newcommand{\CalderonMaxMonthName}{`calderon_max_month_name'}" _n
 
 * Interim period min
-file write scalars "\newcommand{\InterimMinHR}{" `interim_min_hr_fmt' "}" _n
-file write scalars "\newcommand{\InterimMinYear}{" `interim_min_year' "}" _n
-file write scalars "\newcommand{\InterimMinMonthName}{" "`interim_min_month_name'" "}" _n
+file write scalars "\newcommand{\InterimMinHR}{`interim_min_hr_fmt'}" _n
+file write scalars "\newcommand{\InterimMinYear}{`interim_min_year'}" _n
+file write scalars "\newcommand{\InterimMinMonthName}{`interim_min_month_name'}" _n
 
 * Respike period max
-file write scalars "\newcommand{\RespikeMaxHR}{" `respike_max_hr_fmt' "}" _n
-file write scalars "\newcommand{\RespikeMaxYear}{" `respike_max_year' "}" _n
-file write scalars "\newcommand{\RespikeMaxMonthName}{" "`respike_max_month_name'" "}" _n
+file write scalars "\newcommand{\RespikeMaxHR}{`respike_max_hr_fmt'}" _n
+file write scalars "\newcommand{\RespikeMaxYear}{`respike_max_year'}" _n
+file write scalars "\newcommand{\RespikeMaxMonthName}{`respike_max_month_name'}" _n
 
 file close scalars
+
 

@@ -172,11 +172,11 @@ file write mytable "\midrule" _n
 * Primary School
 file write mytable "Primary School (6-12) & Total & " %12.0fc (`prim_total') " & " %12.0fc (`prim_started') " & " %12.0fc (`prim_dropouts') " & " %5.1f (`prim_rate') "\%\\" _n
 file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`prim_men_total') " & " %12.0fc (`prim_men_started') " & " %12.0fc (`prim_men_dropouts') " & " %5.1f (`prim_men_rate') "\%\\" _n
-file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`prim_women_total') " & " %12.0fc (`prim_women_started') " & " %12.0fc (`prim_women_dropouts') " & " %5.3f (`prim_women_rate') "\%\\" _n
+file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`prim_women_total') " & " %12.0fc (`prim_women_started') " & " %12.0fc (`prim_women_dropouts') " & " %5.1f (`prim_women_rate') "\%\\" _n
 
 * Secondary School
 file write mytable "Secondary School (12-15) & Total & " %12.0fc (`sec_total') " & " %12.0fc (`sec_started') " & " %12.0fc (`sec_dropouts') " & " %5.1f (`sec_rate') "\%\\" _n
-file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`sec_men_total') " & " %12.0fc (`sec_men_started') " & " %12.0fc (`sec_men_dropouts') " & " %5.3f (`sec_men_rate') "\%\\" _n
+file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`sec_men_total') " & " %12.0fc (`sec_men_started') " & " %12.0fc (`sec_men_dropouts') " & " %5.1f (`sec_men_rate') "\%\\" _n
 file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`sec_women_total') " & " %12.0fc (`sec_women_started') " & " %12.0fc (`sec_women_dropouts') " & " %5.1f (`sec_women_rate') "\%\\" _n
 
 * High School
@@ -383,7 +383,7 @@ use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
 
 * Starting 
 cap drop tag 
-egen tag = tag(sid)
+egen tag = tag(id)
 count if tag == 1
 local N_indiv_start = r(N)
 
@@ -395,7 +395,7 @@ local N_mun_start = r(N)
 * Dropping primary school children 
 drop if age >= 6 & age <= 11
 cap drop tag 
-egen tag = tag(sid)
+egen tag = tag(id)
 count if tag == 1
 local N_indiv_noprim = r(N)
 
@@ -407,7 +407,7 @@ local N_mun_noprim = r(N)
 * Dropping municipalities with fewer than 15,000
 drop if pop_tot < 15000
 cap drop tag 
-egen tag = tag(sid)
+egen tag = tag(id)
 count if tag == 1
 local N_indiv_nosmall = r(N)
 
@@ -453,9 +453,11 @@ file close mytable
 * =============================================================================
 use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
 
+destring year, replace 
+
 * Whole Sample
 cap drop tag 
-egen tag = tag(sid)
+egen tag = tag(id)
 count if tag == 1
 local N_indiv_whole = r(N)
 
@@ -468,7 +470,7 @@ local N_mun_whole = r(N)
 preserve
 keep if year >= 2007 & year <= 2012
 cap drop tag 
-egen tag = tag(sid)
+egen tag = tag(id)
 count if tag == 1
 local N_indiv_war = r(N)
 
@@ -482,7 +484,7 @@ restore
 preserve
 keep if year >= 2013 & year <= 2016
 cap drop tag 
-egen tag = tag(sid)
+egen tag = tag(id)
 count if tag == 1
 local N_indiv_interim = r(N)
 
@@ -496,7 +498,7 @@ restore
 preserve
 keep if year >= 2017 & year <= 2024
 cap drop tag 
-egen tag = tag(sid)
+egen tag = tag(id)
 count if tag == 1
 local N_indiv_respike = r(N)
 
@@ -528,14 +530,14 @@ file write mytable " & Number of Individuals & Number of Municipalities \\" _n
 file write mytable "\hline" _n
 
 * Starting sample
-file write mytable "Whole sample & `N_indiv_start_fmt' & `N_mun_start_fmt' \\" _n
+file write mytable "Whole sample & `N_indiv_whole_fmt' & `N_mun_whole_fmt' \\" _n
 
 * After dropping primary
-file write mytable "War on drugs (2007-2012) & `N_indiv_noprim_fmt' & `N_mun_noprim_fmt' \\" _n
+file write mytable "War on drugs (2007-2012) & `N_indiv_war_fmt' & `N_mun_war_fmt' \\" _n
 
 * After dropping small municipalities
-file write mytable "Interim (2013-2016) & `N_indiv_nosmall_fmt' & `N_mun_nosmall_fmt' \\" _n
-file write mytable "Resurgence (2017-2018) & `N_indiv_nosmall_fmt' & `N_mun_nosmall_fmt' \\" _n
+file write mytable "Interim (2013-2016) & `N_indiv_interim_fmt' & `N_mun_interim_fmt' \\" _n
+file write mytable "Resurgence (2017-2018) & `N_indiv_respike_fmt' & `N_mun_respike_fmt' \\" _n
 
 file write mytable "\hline\hline" _n
 file write mytable "\end{tabular}" _n
@@ -543,6 +545,8 @@ file write mytable "\end{tabular}" _n
 file close mytable
 
 
+local pct_kids = (`prim_total' / `total_total') * 100 
+local pct_kids_dropout = (`prim_dropouts' / `total_dropouts') * 100
 * -----------------------------------------------------------------------------
 * Save scalars
 * -----------------------------------------------------------------------------
@@ -551,8 +555,10 @@ file open scalars using "${TABLES}enoe_scalars.tex", write replace
 file write scalars "\newcommand{\dRateSecondary}{" %4.1f (`sec_rate') "}" _n
 file write scalars "\newcommand{\dRateHigh}{" %4.1f (`high_rate') "}" _n
 file write scalars "\newcommand{\totalKids}{" %12.0fc (`total_total') "}" _n
-file write scalars "\newcommand{\Avgincome}{" %5.0f (`inc_1') "}" _n
-file write scalars "\newcommand{\AvgincomeUSD}{" %3.0f (`incusd_1') "}" _n
+file write scalars "\newcommand{\pctPrimKids}{" %4.0f (`pct_kids') "}" _n
+file write scalars "\newcommand{\pctPrimDropouts}{" %4.0f (`pct_kids_dropout') "}" _n
+file write scalars "\newcommand{\Avgincome}{`inc_1'}" _n
+file write scalars "\newcommand{\AvgincomeUSD}{`incusd_1'}" _n
 
 
 file close scalars
