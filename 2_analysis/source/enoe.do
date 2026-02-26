@@ -613,6 +613,84 @@ twoway ///
 * Save the graph
 graph export "${FIGURES}enrollment_TS.pdf", replace
 
+* =============================================================================
+* Demographic Table by Time Period with F-tests
+* =============================================================================
+use "/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta", clear
+replace year = 2000 + year
+duplicates drop id year, force
+
+drop if age < 6 | age > 18
+
+* Create time period indicators
+gen period = .
+replace period = 1 if year >= 2007 & year <= 2012
+replace period = 2 if year >= 2013 & year <= 2016
+replace period = 3 if year >= 2017 & year <= 2024
+
+* Create demographic variables
+cap drop primary secondary high
+gen male = (sex == 1)
+gen female = (sex == 2)
+gen primary = (age >= 6 & age <= 11)
+gen secondary = (age >= 12 & age <= 14)
+gen high = (age >= 15 & age <= 18)
+
+* Calculate descriptive statistics
+preserve
+collapse (mean) avg_age=age pct_male=male pct_female=female ///
+               pct_primary=primary pct_secondary=secondary pct_high=high, ///
+          by(period)
+
+* Convert percentages to 0-100 scale
+replace pct_male = pct_male * 100
+replace pct_female = pct_female * 100
+replace pct_primary = pct_primary * 100
+replace pct_secondary = pct_secondary * 100
+replace pct_high = pct_high * 100
+
+* Format for display
+foreach var in avg_age pct_male pct_female pct_primary pct_secondary pct_high {
+    local `var'_1 : display %6.2f `var'[1]
+    local `var'_2 : display %6.2f `var'[2]
+    local `var'_3 : display %6.2f `var'[3]
+}
+
+restore
+
+
+* Write LaTeX table
+file open mytable using "${TABLES}demographics_by_period.tex", write replace
+
+file write mytable "\begin{tabular}{l c c c}" _n
+file write mytable "\hline\hline" _n
+file write mytable " & War on Drugs & Interim & Resurgence  \\" _n
+file write mytable " & (2007-2012) & (2013-2016) & (2017-2024) \\" _n
+file write mytable "\hline" _n
+
+* Average age
+file write mytable "Average age & `avg_age_1' & `avg_age_2' & `avg_age_3'  \\" _n
+
+* Percent male
+file write mytable "Percent male & `pct_male_1' & `pct_male_2' & `pct_male_3'  \\" _n
+
+* Percent female
+file write mytable "Percent female & `pct_female_1' & `pct_female_2' & `pct_female_3'  \\" _n
+
+* Percent primary school age
+file write mytable "Percent primary (ages 6-11) & `pct_primary_1' & `pct_primary_2' & `pct_primary_3' \\" _n
+
+* Percent secondary school age
+file write mytable "Percent secondary (ages 12-14) & `pct_secondary_1' & `pct_secondary_2' & `pct_secondary_3'  \\" _n
+
+* Percent high school age
+file write mytable "Percent high school (ages 15-18) & `pct_high_1' & `pct_high_2' & `pct_high_3'  \\" _n
+
+file write mytable "\hline\hline" _n
+file write mytable "\end{tabular}" _n
+
+file close mytable
+
 
 
 

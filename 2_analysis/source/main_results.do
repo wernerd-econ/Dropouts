@@ -131,6 +131,7 @@ ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employmen
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
         absorb(i.month_year_date i.id) cluster(id) first
 
+		
 local b_3 = _b[ln_homicide]
 local se_3 = _se[ln_homicide]
 local N_3 = e(N)
