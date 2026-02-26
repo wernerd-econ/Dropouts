@@ -108,3 +108,34 @@ total_seizures <- total_seizures %>% select(Year, Month, ts, ts_n, ts_big,
 seizure_data <- bind_rows(inc, total_seizures)
 
 write_dta(seizure_data, "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta")
+
+# =============================================================================
+# (5) Create QUARTERLY version
+# =============================================================================
+
+# Add quarter variable to monthly data
+seizure_data_quarterly <- seizure_data %>%
+  mutate(
+    Month = as.numeric(Month),
+    quarter = case_when(
+      Month %in% 1:3 ~ "T1",
+      Month %in% 4:6 ~ "T2",
+      Month %in% 7:9 ~ "T3",
+      Month %in% 10:12 ~ "T4"
+    )
+  ) %>%
+  group_by(Year, quarter) %>%
+  summarise(
+    ts = sum(ts, na.rm = TRUE),
+    ts_n = sum(ts_n, na.rm = TRUE),
+    ts_big = sum(ts_big, na.rm = TRUE),
+    ts_big_n = sum(ts_big_n, na.rm = TRUE),
+    cs = sum(cs, na.rm = TRUE),
+    cs_n = sum(cs_n, na.rm = TRUE),
+    cs_big = sum(cs_big, na.rm = TRUE),
+    cs_big_n = sum(cs_big_n, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  rename(year = Year, trim = quarter)
+
+write_dta(seizure_data_quarterly, "/Users/wernerd/Desktop/Daniel Werner/seizure_data_quarterly.dta")
