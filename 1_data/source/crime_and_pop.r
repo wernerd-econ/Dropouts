@@ -1,14 +1,3 @@
-
-# @misc{Gargiulo_Aburto_Floridi_2023,
-#   title={Monthly municipal-level homicide rates in Mexico (January 2000–December 2022)},
-#   url={osf.io/u8dc3},
-#   DOI={10.17605/OSF.IO/U8DC3},
-#   publisher={OSF},
-#   author={Gargiulo, Maria and Aburto, José Manuel and Floridi, Ginevra},
-#   year={2024},
-#   month={March}
-# }
-
 # =============================================================================
 # Description:
 #   This script uses code from Garguilo Abruto & Flordi (2023) to process

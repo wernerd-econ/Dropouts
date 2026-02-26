@@ -85,37 +85,37 @@ keep if _merge == 3
 egen total_mex = rowtotal(marijuana cocaine heroin meth opium)
 
 * Regression 1: cs_big on marijuana
-regress marijuana cs_big 
+regress marijuana cs_big, vce(robust)
 local b_1 = _b[cs_big]
 local se_1 = _se[cs_big]
 local N_1 = e(N)
 
 * Regression 2: cs_big on cocaine
-regress cocaine cs_big
+regress cocaine cs_big, vce(robust)
 local b_2 = _b[cs_big]
 local se_2 = _se[cs_big]
 local N_2 = e(N)
 
 * Regression 3: cs_big on heroin
-regress heroin cs_big
+regress heroin cs_big, vce(robust)
 local b_3 = _b[cs_big]
 local se_3 = _se[cs_big]
 local N_3 = e(N)
 
 * Regression 4: cs_big on meth
-regress meth cs_big
+regress meth cs_big, vce(robust)
 local b_4 = _b[cs_big]
 local se_4 = _se[cs_big]
 local N_4 = e(N)
 
 * Regression 5: cs_big on opium
-regress opium cs_big
+regress opium cs_big, vce(robust)
 local b_5 = _b[cs_big]
 local se_5 = _se[cs_big]
 local N_5 = e(N)
 
 * Regression 6: cs_big on total Mexican seizures
-regress total_mex cs_big 
+regress total_mex cs_big, vce(robust)
 local b_6 = _b[cs_big]
 local se_6 = _se[cs_big]
 local N_6 = e(N)
@@ -268,7 +268,7 @@ merge 1:1 year month using `gdp_temp'
 keep if _merge == 3
 
 
-regress gdp cs_big i.year
+regress gdp cs_big i.year, vce(robust)
 local b_7 = _b[cs_big]
 local se_7 = _se[cs_big]
 local N_7 = e(N)

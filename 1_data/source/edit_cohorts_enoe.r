@@ -94,7 +94,7 @@ main <- function(){
   columns_to_keep <- c("municipality", "id_viv", "id_hog", "id", "age", "ing_x_hrs",
                        "ingocup", "hrsocup", "anios_esc", "cs_p17", "clase1",
                        "clase2", "h_mud", "sex", "d_mes", "d_anio",
-                       "cs_p13_1", "n_ent")
+                       "cs_p13_1", "n_ent", "trim")
   cohort <- delete_unnecessary_columns(cohort, columns_to_keep)
   cohort <- create_new_variables(cohort, cohort_number)
   write_dta(cohort, paste0("../output/",

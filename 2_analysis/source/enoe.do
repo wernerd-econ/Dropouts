@@ -537,7 +537,7 @@ file write mytable "War on drugs (2007-2012) & `N_indiv_war_fmt' & `N_mun_war_fm
 
 * After dropping small municipalities
 file write mytable "Interim (2013-2016) & `N_indiv_interim_fmt' & `N_mun_interim_fmt' \\" _n
-file write mytable "Resurgence (2017-2018) & `N_indiv_respike_fmt' & `N_mun_respike_fmt' \\" _n
+file write mytable "Resurgence (2017-2024) & `N_indiv_respike_fmt' & `N_mun_respike_fmt' \\" _n
 
 file write mytable "\hline\hline" _n
 file write mytable "\end{tabular}" _n
