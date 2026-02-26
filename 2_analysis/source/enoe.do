@@ -563,6 +563,58 @@ file write scalars "\newcommand{\AvgincomeUSD}{`incusd_1'}" _n
 
 file close scalars
 
+* =============================================================================
+* IV. Create time series of enrollment rate
+* =============================================================================
+use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+
+destring year month, replace
+
+collapse (mean) school, by(year month)
+
+gen year_month = ym(year, month)
+format year_month %tm
+
+twoway ///
+    (line school year_month, lcolor(dknavy) lwidth(medium)) ///
+    , ///
+	xline(`=ym(2013,1)' `=ym(2017,1)', ///
+          lpattern(dash) lcolor(black) lwidth(thin)) ///
+    xlabel( ///
+        `=ym(2007,1)' "2007" ///
+        `=ym(2008,1)' "2008" ///
+        `=ym(2009,1)' "2009" ///
+        `=ym(2010,1)' "2010" ///
+        `=ym(2011,1)' "2011" ///
+        `=ym(2012,1)' "2012" ///
+        `=ym(2013,1)' "2013" ///
+        `=ym(2014,1)' "2014" ///
+        `=ym(2015,1)' "2015" ///
+        `=ym(2016,1)' "2016" ///
+        `=ym(2017,1)' "2017" ///
+        `=ym(2018,1)' "2018" ///
+        `=ym(2019,1)' "2019" ///
+        `=ym(2020,1)' "2020" ///
+        `=ym(2021,1)' "2021" ///
+        `=ym(2022,1)' "2022" ///
+        `=ym(2023,1)' "2023" ///
+        `=ym(2024,1)' "2024", ///
+        angle(45) nogrid ///
+    ) ///
+    ylabel(0.86 "86%" 0.88 "88%" 0.90 "90%" 0.92 "92%", angle(0) nogrid) ///
+    xtitle("") ///
+    ytitle("Avg. enrollment rate") ///
+    title("") ///
+	text(.925 `=ym(2010,1)' "War on Drugs", size(medium) placement(n)) ///
+    text(.925 `=ym(2015,2)' "Interim", size(medium) placement(n)) ///
+    text(.925 `=ym(2020,7)' "Resurgence", size(medium) placement(n))
+	
+
+* Save the graph
+graph export "${FIGURES}enrollment_TS.pdf", replace
+
+
+
 
 
 
