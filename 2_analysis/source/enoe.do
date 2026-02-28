@@ -19,9 +19,10 @@ capture mkdir "${FIGURES}"
 * =============================================================================
 use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
 
-keep id year month primary secondary high sex dropout school
+keep id year month primary secondary high sex dropout school total_n
 
-destring year month, replace
+destring year month total_n, replace
+drop if total_n != 5
 
 gsort id year month
 
@@ -392,6 +393,18 @@ egen tag = tag(municipality)
 count if tag == 1
 local N_mun_start = r(N)
 
+* Drop attriters
+drop if total_n != 5
+cap drop tag 
+egen tag = tag(id)
+count if tag == 1
+local N_indiv_attriter = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_attriter = r(N)
+
 * Dropping primary school children 
 drop if age >= 6 & age <= 11
 cap drop tag 
@@ -420,6 +433,9 @@ local N_mun_nosmall = r(N)
 local N_indiv_start_fmt : display %12.0fc `N_indiv_start'
 local N_mun_start_fmt : display %12.0fc `N_mun_start'
 
+local N_indiv_attriter_fmt : display %12.0fc `N_indiv_attriter'
+local N_mun_attriter_fmt : display %12.0fc `N_mun_attriter'
+
 local N_indiv_noprim_fmt : display %12.0fc `N_indiv_noprim'
 local N_mun_noprim_fmt : display %12.0fc `N_mun_noprim'
 
@@ -437,6 +453,9 @@ file write mytable "\hline" _n
 * Starting sample
 file write mytable "Starting sample & `N_indiv_start_fmt' & `N_mun_start_fmt' \\" _n
 
+* Starting sample
+file write mytable "Drop attriters & `N_indiv_attriter_fmt' & `N_mun_attriter_fmt' \\" _n
+
 * After dropping primary
 file write mytable "Drop primary school children (ages 6-11) & `N_indiv_noprim_fmt' & `N_mun_noprim_fmt' \\" _n
 
@@ -453,7 +472,8 @@ file close mytable
 * =============================================================================
 use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
 
-destring year, replace 
+destring year total_n, replace 
+drop if total_n != 5
 
 * Whole Sample
 cap drop tag 
@@ -617,6 +637,9 @@ graph export "${FIGURES}enrollment_TS.pdf", replace
 * Demographic Table by Time Period with F-tests
 * =============================================================================
 use "/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta", clear
+destring total_n, replace
+drop if total_n != 5
+
 replace year = 2000 + year
 duplicates drop id year, force
 

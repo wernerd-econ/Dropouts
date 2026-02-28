@@ -23,6 +23,7 @@ capture mkdir "${FIGURES}"
 ********************************************************************************
 
 use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear 
+destring total_n, replace
 
 * Bring in municipal controls
 tempfile indiv_temp
@@ -63,6 +64,7 @@ local controls hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_r
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 
 * Whole sample
@@ -82,6 +84,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 
 * 2013-2016
@@ -95,6 +98,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 
 * 2017-2024
@@ -110,7 +114,7 @@ restore
 * ============================================================================
 * Note: Would need to load data without this restriction
 * For now, using same data but you'd load ENOE_panel without cohort restriction
-/*
+
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
@@ -158,13 +162,14 @@ ivreghdfe dropout `controls' (ln_homicide = iv), ///
 local b_2_4 = _b[ln_homicide]
 local se_2_4 = _se[ln_homicide]
 restore
-*/
+
 * ============================================================================
 * ROW 3: Different population threshold (10,000 instead of 15,000)
 * ============================================================================
 preserve
 drop if pop_tot < 10000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 
 ivreghdfe dropout `controls' (ln_homicide = iv), ///
@@ -176,6 +181,7 @@ restore
 preserve
 drop if pop_tot < 10000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 keep if year >= 2007 & year <= 2012
 
@@ -188,6 +194,7 @@ restore
 preserve
 drop if pop_tot < 10000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 keep if year >= 2013 & year <= 2016
 
@@ -200,6 +207,7 @@ restore
 preserve
 drop if pop_tot < 10000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 keep if year >= 2017 & year <= 2024
 
@@ -215,6 +223,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = ts * d_to_pc  // Total seizures instead of cs_big
 
 ivreghdfe dropout `controls' (ln_homicide = iv), ///
@@ -226,6 +235,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = ts * d_to_pc
 keep if year >= 2007 & year <= 2012
 
@@ -238,6 +248,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = ts * d_to_pc
 keep if year >= 2013 & year <= 2016
 
@@ -250,6 +261,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = ts * d_to_pc
 keep if year >= 2017 & year <= 2024
 
@@ -266,6 +278,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 drop if year == 2020
 gen iv = cs_big * d_to_pc
 
@@ -278,6 +291,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 drop if year == 2020
 gen iv = cs_big * d_to_pc
 keep if year >= 2007 & year <= 2012
@@ -291,6 +305,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 drop if year == 2020
 gen iv = cs_big * d_to_pc
 keep if year >= 2013 & year <= 2016
@@ -304,6 +319,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 drop if year == 2020
 gen iv = cs_big * d_to_pc
 keep if year >= 2017 & year <= 2024
@@ -320,6 +336,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 
 ivreghdfe school `controls' (ln_homicide = iv), ///
@@ -331,6 +348,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 keep if year >= 2007 & year <= 2012
 
@@ -343,6 +361,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 keep if year >= 2013 & year <= 2016
 
@@ -355,6 +374,7 @@ restore
 preserve
 drop if pop_tot < 15000
 drop if age >= 6 & age <=11
+drop if total_n != 5
 gen iv = cs_big * d_to_pc
 keep if year >= 2017 & year <= 2024
 
@@ -367,32 +387,7 @@ restore
 * ============================================================================
 * Format coefficients and standard errors
 * ============================================================================
-forvalues i = 1/1 {
-    forvalues j = 1/4 {
-        local b  = `b_`i'_`j''  
-        local se = `se_`i'_`j''  
-        
-        * t/z statistic and p-value
-        local t = abs(`b' / `se')  
-        local p = 2 * normal(-`t')
-        
-        * Stars
-        local stars ""
-        if (`p' < 0.10) local stars "*"
-        if (`p' < 0.05) local stars "**"
-        if (`p' < 0.01) local stars "***"
-
-        * Formatted numbers
-        local b_tex  : display %6.3f `b'
-        local se_tex : display %6.3f `se'
-
-        * Store LaTeX-ready output
-        local coef`i'_`j' "\$`b_tex'^{`stars'}\$"
-        local seout`i'_`j' "(`se_tex')"
-    }
-}
-
-forvalues i = 3/6 {
+forvalues i = 1/6 {
     forvalues j = 1/4 {
         local b  = `b_`i'_`j''  
         local se = `se_`i'_`j''  
@@ -434,13 +429,10 @@ file write myfile "Main specification" _n
 file write myfile " & `coef1_1' & `coef1_2' & `coef1_3' & `coef1_4' \\" _n
 file write myfile " & `seout1_1' & `seout1_2' & `seout1_3' & `seout1_4' \\" _n
 
-/*
 * Row 2: No 5-quarter restriction
-///file write myfile "No 5-quarter restriction" _n
+///file write myfile "No 5 quarter restriction" _n
 file write myfile " & `coef2_1' & `coef2_2' & `coef2_3' & `coef2_4' \\" _n
 file write myfile " & `seout2_1' & `seout2_2' & `seout2_3' & `seout2_4' \\" _n
-*/
-
 
 * Row 3: Different population threshold
 file write myfile "Population threshold: 10,000" _n
