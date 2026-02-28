@@ -19,7 +19,7 @@ capture mkdir "${FIGURES}"
 
 
 
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear 
+use "/Users/wernerd/Desktop/Daniel Werner/final_indiv_quarterly.dta", clear 
 
 * -----------------------------------------------------------------------------
 * GRAB THE MUNICIPAL DATA AND BRING IN THE MUNICIPAL LEVEL CONTROLS 
@@ -29,10 +29,10 @@ tempfile indiv_temp
 save `indiv_temp', replace
 
 * Load the municipal-level dataset
-use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+use "/Users/wernerd/Desktop/Daniel Werner/final_mun_quarterly.dta", clear
  
 * Keep only the variables you need from municipal data
-keep municipality year month avg_* employment_rate
+keep municipality trim avg_* employment_rate
 
 * Save as temporary file
 tempfile muni_temp
@@ -42,7 +42,11 @@ save `muni_temp', replace
 use `indiv_temp', clear
 
 * Merge with municipal data
-merge m:1 municipality year month using `muni_temp'
+merge m:1 municipality trim using `muni_temp'
+
+drop year month
+gen year = real(substr(trim, 1, 4))
+encode trim, gen(trim_f)
 
 
 * Drop remaining unmerged and low population municipalities
@@ -66,11 +70,7 @@ gen ln_homicide = log(1+hr)
 
 * Controls
 destring municipality, replace 
-gen month_year_date = date(year_month, "YM")
-format month_year_date %tm
 gen ln_hom_lag1 = log(1+hr_lag1)
-gen ln_hom_lag2 = log(1+hr_lag2)
-gen ln_hom_lag3 = log(1+hr_lag3)
 
 ********************************************************************************
 * PART 1: First stage scalars 
@@ -79,12 +79,12 @@ gen ln_hom_lag3 = log(1+hr_lag3)
 * Run first stage separately to get coefficients
 reghdfe ln_homicide iv hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, ///
-        absorb(i.month_year_date i.id) cluster(id)
+        absorb(i.trim_f i.id) cluster(id)
 
 local fs_coef_whole = _b[iv]
 local fs_se_whole = _se[iv]
@@ -96,12 +96,12 @@ local fs_se_whole = _se[iv]
 * OLS
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
@@ -110,9 +110,9 @@ quietly sum school if e(sample)
 local mean_1 : display %6.3f r(mean)
 
 * IV minimal controls 
-ivreghdfe dropout ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot ///
+ivreghdfe dropout ln_hom_lag1 pop_tot ///
 		  (ln_homicide = iv), /// 
-          absorb(i.month_year_date i.id) cluster(id) first
+          absorb(i.trim_f i.id) cluster(id) first
 		  
 local b_2 = _b[ln_homicide]
 local se_2 = _se[ln_homicide]
@@ -124,14 +124,13 @@ local mean_2 : display %6.3f r(mean)
 * IV main specification	
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
-		
 local b_3 = _b[ln_homicide]
 local se_3 = _se[ln_homicide]
 local N_3 = e(N)
@@ -185,7 +184,7 @@ forvalues j = 1/3 {
 // WRITE LATEX TABLE (Main Spec)
 // ============================================
 
-file open myfile using "${TABLES}main_iv.tex", write replace
+file open myfile using "${TABLES}main_iv_quarterly.tex", write replace
 
 * Write table header
 file write myfile "\begin{tabular}{l c c c }" _n
@@ -234,12 +233,12 @@ keep if year >= 2007 & year <= 2012
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
@@ -249,12 +248,12 @@ local mean_1 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_2 = _b[ln_homicide]
 local se_2 = _se[ln_homicide]
@@ -271,12 +270,12 @@ keep if year >= 2013 & year <= 2016
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_3 = _b[ln_homicide]
 local se_3 = _se[ln_homicide]
@@ -286,12 +285,12 @@ local mean_3 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_4 = _b[ln_homicide]
 local se_4 = _se[ln_homicide]
@@ -308,12 +307,12 @@ keep if year >= 2017 & year <= 2024
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
@@ -323,12 +322,12 @@ local mean_5 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_6 = _b[ln_homicide]
 local coef_respike = _b[ln_homicide]
@@ -385,7 +384,7 @@ forvalues j = 1/6 {
 // WRITE LATEX TABLE (Time Period Specifications)
 // ============================================
 
-file open myfile using "${TABLES}period_iv.tex", write replace
+file open myfile using "${TABLES}period_iv_quarterly.tex", write replace
 
 * Write table header
 file write myfile "\begin{tabular}{l c c c c c c}" _n
@@ -431,12 +430,12 @@ keep if age >= 12 & age <=14 & year >= 2017 & year <= 2024
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
@@ -446,12 +445,12 @@ local mean_1 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 		
 local b_2 = _b[ln_homicide]
 local se_2 = _se[ln_homicide]
@@ -467,12 +466,12 @@ keep if age >= 15 & age <=18 & year >= 2017 & year <= 2024
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_3 = _b[ln_homicide]
 local se_3 = _se[ln_homicide]
@@ -482,12 +481,12 @@ local mean_3 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 		
 local b_4 = _b[ln_homicide]
 local coef_high = _b[ln_homicide]
@@ -505,12 +504,12 @@ keep if sex == 1 & year >= 2017 & year <= 2024
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
@@ -520,12 +519,12 @@ local mean_5 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_6 = _b[ln_homicide]
 local coef_male = _b[ln_homicide]
@@ -542,12 +541,12 @@ keep if sex == 2 & year >= 2017 & year <= 2024
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_7 = _b[ln_homicide]
 local se_7 = _se[ln_homicide]
@@ -557,12 +556,12 @@ local mean_7 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_8 = _b[ln_homicide]
 local se_8 = _se[ln_homicide]
@@ -618,7 +617,7 @@ forvalues j = 1/8 {
 // WRITE LATEX TABLE (Time Period Specifications)
 // ============================================
 
-file open myfile using "${TABLES}subgroup_iv_respike.tex", write replace
+file open myfile using "${TABLES}subgroup_iv_respike_quarterly.tex", write replace
 
 * Write table header
 file write myfile "\begin{tabular}{l c c c c c c c c}" _n
@@ -668,12 +667,12 @@ keep if age >= 12 & age <=14
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
@@ -683,12 +682,12 @@ local mean_1 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 		
 local b_2 = _b[ln_homicide]
 local se_2 = _se[ln_homicide]
@@ -704,12 +703,12 @@ keep if age >= 15 & age <=18
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_3 = _b[ln_homicide]
 local se_3 = _se[ln_homicide]
@@ -719,12 +718,12 @@ local mean_3 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 		
 local b_4 = _b[ln_homicide]
 local se_4 = _se[ln_homicide]
@@ -741,12 +740,12 @@ keep if sex == 1
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
@@ -756,12 +755,12 @@ local mean_5 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_6 = _b[ln_homicide]
 local se_6 = _se[ln_homicide]
@@ -777,12 +776,12 @@ keep if sex == 2
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_7 = _b[ln_homicide]
 local se_7 = _se[ln_homicide]
@@ -792,12 +791,12 @@ local mean_7 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_8 = _b[ln_homicide]
 local se_8 = _se[ln_homicide]
@@ -853,7 +852,7 @@ forvalues j = 1/8 {
 // WRITE LATEX TABLE (Time Period Specifications)
 // ============================================
 
-file open myfile using "${TABLES}subgroup_iv_whole_samp.tex", write replace
+file open myfile using "${TABLES}subgroup_iv_whole_samp_quarterly.tex", write replace
 
 * Write table header
 file write myfile "\begin{tabular}{l c c c c c c c c}" _n
@@ -898,12 +897,12 @@ keep if age >= 12 & age <=14 & year >= 2007 & year <= 2012
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
@@ -913,12 +912,12 @@ local mean_1 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 		
 local b_2 = _b[ln_homicide]
 local se_2 = _se[ln_homicide]
@@ -934,12 +933,12 @@ keep if age >= 15 & age <=18 & year >= 2007 & year <= 2012
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_3 = _b[ln_homicide]
 local se_3 = _se[ln_homicide]
@@ -949,12 +948,12 @@ local mean_3 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 		
 local b_4 = _b[ln_homicide]
 local se_4 = _se[ln_homicide]
@@ -971,12 +970,12 @@ keep if sex == 1 & year >= 2007 & year <= 2012
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
@@ -986,12 +985,12 @@ local mean_5 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_6 = _b[ln_homicide]
 local se_6 = _se[ln_homicide]
@@ -1007,12 +1006,12 @@ keep if sex == 2 & year >= 2007 & year <= 2012
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_7 = _b[ln_homicide]
 local se_7 = _se[ln_homicide]
@@ -1022,12 +1021,12 @@ local mean_7 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_8 = _b[ln_homicide]
 local se_8 = _se[ln_homicide]
@@ -1083,7 +1082,7 @@ forvalues j = 1/8 {
 // WRITE LATEX TABLE (Time Period Specifications)
 // ============================================
 
-file open myfile using "${TABLES}subgroup_iv_war.tex", write replace
+file open myfile using "${TABLES}subgroup_iv_war_quarterly.tex", write replace
 
 * Write table header
 file write myfile "\begin{tabular}{l c c c c c c c c}" _n
@@ -1128,12 +1127,12 @@ keep if age >= 12 & age <=14 & year >= 2013 & year <= 2016
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_1 = _b[ln_homicide]
 local se_1 = _se[ln_homicide]
@@ -1143,12 +1142,12 @@ local mean_1 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 		
 local b_2 = _b[ln_homicide]
 local se_2 = _se[ln_homicide]
@@ -1164,12 +1163,12 @@ keep if age >= 15 & age <=18 & year >= 2013 & year <= 2016
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_3 = _b[ln_homicide]
 local se_3 = _se[ln_homicide]
@@ -1179,12 +1178,12 @@ local mean_3 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 		
 local b_4 = _b[ln_homicide]
 local se_4 = _se[ln_homicide]
@@ -1201,12 +1200,12 @@ keep if sex == 1 & year >= 2013 & year <= 2016
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_5 = _b[ln_homicide]
 local se_5 = _se[ln_homicide]
@@ -1216,12 +1215,12 @@ local mean_5 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_6 = _b[ln_homicide]
 local se_6 = _se[ln_homicide]
@@ -1237,12 +1236,12 @@ keep if sex == 2 & year >= 2013 & year <= 2016
 
 reghdfe dropout ln_homicide hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student, /// 
-        absorb(i.month_year_date i.id) cluster(id) 
+        absorb(i.trim_f i.id) cluster(id) 
 
 local b_7 = _b[ln_homicide]
 local se_7 = _se[ln_homicide]
@@ -1252,12 +1251,12 @@ local mean_7 : display %6.3f r(mean)
 
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
-		ln_hom_lag1 ln_hom_lag2 ln_hom_lag3 pop_tot pct_pop_fem ///
+		ln_hom_lag1   pop_tot pct_pop_fem ///
 		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children /// 
 		avg_income avg_hincome employment_rate avg_hh_n_employed_adults /// 
 		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers /// 
 		pct_pop_male pct_pop_student (ln_homicide = iv), /// 
-        absorb(i.month_year_date i.id) cluster(id) first
+        absorb(i.trim_f i.id) cluster(id) first
 
 local b_8 = _b[ln_homicide]
 local se_8 = _se[ln_homicide]
@@ -1313,7 +1312,7 @@ forvalues j = 1/8 {
 // WRITE LATEX TABLE (Time Period Specifications)
 // ============================================
 
-file open myfile using "${TABLES}subgroup_iv_interim.tex", write replace
+file open myfile using "${TABLES}subgroup_iv_interim_quarterly.tex", write replace
 
 * Write table header
 file write myfile "\begin{tabular}{l c c c c c c c c}" _n
@@ -1350,70 +1349,6 @@ file write myfile "\end{tabular}" _n
 file close myfile
 
 
-* Calculate a few more scalars
-
-use "/Users/wernerd/Desktop/Daniel Werner/homicides.dta", clear 
-
-* Calculate SD across all municipality-month observations
-summarize hr
-local hr_sd = r(sd)
-
-destring year, replace 
-summarize hr if year >= 2017 & year <= 2024
-local hr_mean_17124 = r(mean)
-
-local delta_log = ln(1 + `hr_mean_17124' + `hr_sd') - ln(1 + `hr_mean_17124')
-
-local effect_1sd_resurge = `coef_respike' * `delta_log'
-local effect_1sd_resurge_high = `coef_high' * `delta_log'
-local effect_1sd_resurge_male = `coef_male' * `delta_log'
-
-use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear 
-summarize cs_big
-local cs_mean = r(mean)
-
-use "/Users/wernerd/Desktop/Daniel Werner/final_geo.dta", clear 
-summarize d_to_pc
-local sd_d_to_pc = r(sd)
-
-local delta_log_seiz = -1 * `sd_d_to_pc' * `fs_coef_whole' * `cs_mean'
-local pct_effect_100km = exp(`delta_log_seiz') - 1
-
-* -----------------------------------------------------------------------------
-* 1) Format locals for LaTeX output
-* -----------------------------------------------------------------------------
-local fs_coef_fmt                : display %12.10f `fs_coef_whole'
-local fs_se_fmt                  : display %12.10f `fs_se_whole'
-local k_stat_fmt                 : display %6.2f   `k_stat_whole'
-local respike_coef_fmt            : display %5.3f   `coef_respike'
-local high_coef_fmt          : display %5.3f   `coef_high'
-local male_coef_fmt               : display %5.3f   `coef_male'
-local hr_sd_fmt                   : display %4.2f   `hr_sd'
-local sd_effect_respike_fmt       : display %5.3f   `effect_1sd_resurge'
-local sd_effect_respike_high_fmt   : display %5.3f   `effect_1sd_resurge_high'
-local sd_effect_respike_male_fmt  : display %5.3f   `effect_1sd_resurge_male'
-local dist_first_stage_fmt        : display %12.10f `pct_effect_100km'
-local sd_distance_fmt             : display %4.0f `sd_d_to_pc'
-
-* -----------------------------------------------------------------------------
-* 2) Write LaTeX scalars
-* -----------------------------------------------------------------------------
-file open scalars using "${TABLES}main_analysis_scalars.tex", write replace
-
-file write scalars "\newcommand{\FirstStageCoef}{ `fs_coef_fmt' }" _n
-file write scalars "\newcommand{\FirstStageSe}{ `fs_se_fmt' }" _n
-file write scalars "\newcommand{\Fstat}{ `k_stat_fmt' }" _n
-file write scalars "\newcommand{\RespikeCoef}{ `respike_coef_fmt' }" _n
-file write scalars "\newcommand{\HighCoef}{ `high_coef_fmt' }" _n
-file write scalars "\newcommand{\MaleCoef}{ `male_coef_fmt' }" _n
-file write scalars "\newcommand{\MunicipalHRSD}{ `hr_sd_fmt' }" _n
-file write scalars "\newcommand{\sdEffectRespike}{ `sd_effect_respike_fmt' }" _n
-file write scalars "\newcommand{\sdEffectRespikeHigh}{ `sd_effect_respike_high_fmt' }" _n
-file write scalars "\newcommand{\sdEffectRespikeMale}{ `sd_effect_respike_male_fmt' }" _n
-file write scalars "\newcommand{\DistanceFirstStageEffect}{ `dist_first_stage_fmt' }" _n
-file write scalars "\newcommand{\DistanceSd}{ `sd_distance_fmt' }" _n
-
-file close scalars
 
 
 

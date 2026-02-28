@@ -142,3 +142,99 @@ hom_rate <- pop %>%
 # Save the final data set 
 write_dta(hom_rate, "/Users/wernerd/Desktop/Daniel Werner/homicides.dta")
 
+# =============================================================================
+# (3) Create QUARTERLY version
+# =============================================================================
+
+# Start fresh with raw population data
+pop_quarterly <- readxl::read_xlsx(file.path(base_path, "Population/pop.xlsx"))
+
+pop_quarterly <- pop_quarterly %>%
+  filter(AÑO %in% 2007:2024) %>%
+  group_by(CLAVE, AÑO) %>%
+  summarise(
+    pop_tot = sum(POB_TOTAL),
+    pop_hom = sum(POB_TOTAL[SEXO == "HOMBRES"]),
+    pop_fem = sum(POB_TOTAL[SEXO == "MUJERES"]),
+    pop_students = sum(POB_05_09 + POB_10_14 + POB_15_19),
+    .groups = "drop"
+  ) %>%
+  rename(municipality = CLAVE, year = AÑO) %>%
+  select(municipality, year, pop_tot, pop_hom, pop_fem, pop_students) %>%
+  arrange(municipality, year) %>%
+  group_by(municipality) %>%
+  mutate(
+    pop_tot_next = lead(pop_tot),
+    pop_hom_next = lead(pop_hom),
+    pop_fem_next = lead(pop_fem),
+    pop_students_next = lead(pop_students),
+    year_next = lead(year),
+    # Quarterly growth: (P_t+1/P_t)^(1/4) - 1
+    tot_quarterly_growth = (pop_tot_next / pop_tot)^(1/4) - 1,
+    hom_quarterly_growth = (pop_hom_next / pop_hom)^(1/4) - 1,
+    fem_quarterly_growth = (pop_fem_next / pop_fem)^(1/4) - 1,
+    students_quarterly_growth = (pop_students_next / pop_students)^(1/4) - 1
+  ) %>%
+  filter(!is.na(tot_quarterly_growth),
+         !is.na(hom_quarterly_growth),
+         !is.na(fem_quarterly_growth),
+         !is.na(students_quarterly_growth)) %>%
+  ungroup() %>%
+  # Expand each row into 4 quarters
+  rowwise() %>%
+  mutate(quarter_data = list(tibble(
+    trim = c("T1", "T2", "T3", "T4"),
+    pop_total = pop_tot * (1 + tot_quarterly_growth)^(0:3),
+    pop_hombre = pop_hom * (1 + hom_quarterly_growth)^(0:3),
+    pop_mujer = pop_fem * (1 + fem_quarterly_growth)^(0:3),
+    pop_student = pop_students * (1 + students_quarterly_growth)^(0:3)
+  ))) %>%
+  unnest(quarter_data) %>%
+  ungroup()
+
+pop_quarterly <- pop_quarterly %>% 
+  select(municipality, year, trim, pop_total, pop_hombre, pop_mujer, pop_student) %>%
+  rename(pop_male = pop_hombre, pop_fem = pop_mujer, pop_tot = pop_total) %>%
+  mutate(
+    year = as.character(year),
+    municipality = as.character(municipality),
+    pct_pop_student = pop_student/pop_tot,
+    pct_pop_male = pop_male/pop_tot,
+    pct_pop_fem = pop_fem/pop_tot
+  )
+
+# Aggregate homicides to quarterly
+homicide_deaths_quarterly <- deaths %>%
+  filter(year %in% as.character(years)) %>%
+  filter(month != "99") %>%
+  filter(!(ent %in% c("33", "34", "35", "99"))) %>%
+  filter(mun != "999") %>%
+  filter(causa_def %in% homicide_codes$causa_def) %>%
+  mutate(
+    month = as.numeric(month),
+    trim = case_when(
+      month %in% 1:3 ~ "T1",
+      month %in% 4:6 ~ "T2",
+      month %in% 7:9 ~ "T3",
+      month %in% 10:12 ~ "T4"
+    )
+  ) %>%
+  group_by(municipality, year, trim) %>%
+  summarize(homicides = n(), .groups = "drop")
+
+# Join and calculate quarterly homicide rates
+hom_rate_quarterly <- pop_quarterly %>%
+  left_join(homicide_deaths_quarterly, by = c("municipality", "year", "trim")) %>%
+  mutate(
+    homicides = if_else(is.na(homicides), 0, homicides),
+    hr = (homicides / pop_tot) * 10000
+  ) %>%
+  arrange(municipality, year, trim) %>%
+  group_by(municipality) %>%
+  mutate(
+    hr_lag1 = lag(hr, 1)
+  ) %>%
+  ungroup()
+
+# Save quarterly data
+write_dta(hom_rate_quarterly, "/Users/wernerd/Desktop/Daniel Werner/homicides_quarterly.dta")

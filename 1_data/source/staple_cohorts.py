@@ -60,11 +60,12 @@ print(f"Total observations: {len(all_data)}")
 print(f"Max observations per ID: {all_data.groupby('id').size().max()}")
 
 print("\nSaving to disk...")
-for col in all_data.select_dtypes(include=['object']).columns:
-    try:
-        all_data[col] = pd.to_numeric(all_data[col], errors='coerce')
-    except:
-        all_data[col] = all_data[col].astype(str)
 
-all_data.to_stata(os.path.expanduser("../output/ENOE_panel.dta"), write_index=False)
+all_data["trim"] = all_data["trim"].astype("category")
+
+for col in all_data.select_dtypes(include=["object"]).columns:
+    if col != "trim":
+        all_data[col] = pd.to_numeric(all_data[col], errors="coerce")
+
+all_data.to_stata(os.path.expanduser("/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta"), write_index=False)
 print("Done!")

@@ -184,3 +184,129 @@ full <- full %>%
 
 # Save full dataset
 write_dta(full, file.path(base_path, "final_indiv.dta"))
+
+# =============================================================================
+# III. QUARTERLY VERSION - Municipal Panel
+# =============================================================================
+# Remove old workspace to free up memory
+rm(full, individual_data, total_seizures, geo_data, homicide_data)
+rm(common_muns, common_dates, years)
+gc()
+
+# =============================================================================
+# (III.1) Load quarterly data
+# =============================================================================
+municipal_data_q <- read_dta(file.path(base_path, "Municipal_data_quarterly.dta"))
+municipal_data_q$trim <- as_factor(municipal_data_q$trim)
+homicide_data_q <- read_dta(file.path(base_path, "homicides_quarterly.dta"))
+geo_data_q <- read_dta(file.path(base_path, "final_geo.dta"))
+total_seizures_q <- read_dta(file.path(base_path, "seizure_data_quarterly.dta"))
+
+# =============================================================================
+# (III.3) Merge quarterly datasets together
+# =============================================================================
+# Identify municipalities shared across all datasets
+common_muns_q <- intersect(intersect(municipal_data_q$municipality, 
+                                     homicide_data_q$municipality), 
+                           geo_data_q$municipality)
+
+# Subset datasets to keep only valid municipalities
+municipal_data_q <- municipal_data_q %>% filter(municipality %in% common_muns_q)
+homicide_data_q <- homicide_data_q %>% filter(municipality %in% common_muns_q)
+geo_data_q <- geo_data_q %>% filter(municipality %in% common_muns_q)
+
+# Reformat data for merge
+trims_q <- as.character(unique(municipal_data_q$trim))
+
+homicide_data_q <- homicide_data_q %>% 
+  mutate(trim = paste0(year, "_", trim)) %>%
+  filter(trim %in% trims_q)
+
+total_seizures_q <- total_seizures_q %>%
+  mutate(trim = paste0(year, "_", trim)) %>%
+  filter(trim %in% trims_q) %>%
+  select(-year)
+
+
+# Subset datasets to keep only valid dates
+municipal_data_q <- municipal_data_q %>% 
+  mutate(municipality = as.character(municipality))
+
+
+homicide_data_q <- homicide_data_q %>% 
+  mutate(municipality = as.character(municipality)) %>%
+  select(-year)
+
+# Merge datasets together
+full_q <- homicide_data_q %>%
+  left_join(total_seizures_q, by = c("trim")) %>%
+  left_join(geo_data_q, by = "municipality") %>%
+  inner_join(municipal_data_q, by = c("municipality", "trim"))
+
+# Save quarterly municipal dataset
+write_dta(full_q, file.path(base_path, "final_mun_quarterly.dta"))
+
+# =============================================================================
+# IV. QUARTERLY VERSION - Individual Panel
+# =============================================================================
+# Remove old workspace to free up memory
+rm(full_q, municipal_data_q, total_seizures_q, geo_data_q, homicide_data_q)
+rm(common_muns_q, common_dates_q, years_q)
+gc()
+
+# =============================================================================
+# (IV.1) Load  data
+# =============================================================================
+individual_data_q <- read_dta(file.path(base_path, "Individual_data_quarterly.dta"))
+individual_data_q$trim <- as_factor(individual_data_q$trim)
+homicide_data_q <- read_dta(file.path(base_path, "homicides_quarterly.dta"))
+geo_data_q <- read_dta(file.path(base_path, "final_geo.dta"))
+total_seizures_q <- read_dta(file.path(base_path, "seizure_data_quarterly.dta"))
+
+# =============================================================================
+# (IV.2) Merge quarterly datasets together
+# =============================================================================
+# Identify municipalities shared across all datasets
+common_muns_q <- intersect(intersect(individual_data_q$municipality, 
+                                     homicide_data_q$municipality), 
+                           geo_data_q$municipality)
+
+# Subset datasets to keep only valid municipalities
+individual_data_q <- individual_data_q %>% filter(municipality %in% common_muns_q)
+homicide_data_q <- homicide_data_q %>% filter(municipality %in% common_muns_q)
+geo_data_q <- geo_data_q %>% filter(municipality %in% common_muns_q)
+
+# Reformat data for merge
+trims_q <- as.character(unique(individual_data_q$trim))
+
+# Individual data already has trim from ENOE
+homicide_data_q <- homicide_data_q %>% 
+  mutate(trim = paste0(year, "_", trim)) %>%
+  filter(trim %in% trims_q) %>%
+  select(-year)
+
+total_seizures_q <- total_seizures_q %>%
+  mutate(trim = paste0(year, "_", trim)) %>%
+  filter(trim %in% trims_q) %>%
+  select(-year)  
+
+# Subset datasets to keep only valid dates
+individual_data_q <- individual_data_q %>% 
+  mutate(municipality = as.character(municipality))
+
+homicide_data_q <- homicide_data_q %>% 
+  mutate(municipality = as.character(municipality))
+
+
+# Merge datasets together
+full_q <- homicide_data_q %>%
+  left_join(total_seizures_q, by = c("trim")) %>%
+  left_join(geo_data_q, by = "municipality") %>% 
+  left_join(individual_data_q, by = c("municipality", "trim"))
+
+# Remove quarter x municipality observations with no people in ENOE
+full_q <- full_q %>%
+  filter(!is.na(id))
+
+# Save quarterly individual dataset
+write_dta(full_q, file.path(base_path, "final_indiv_quarterly.dta"))
