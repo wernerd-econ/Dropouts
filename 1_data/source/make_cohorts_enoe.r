@@ -108,10 +108,23 @@ main <- function(){
     "2018_T2.dta", "2018_T3.dta", "2018_T4.dta", "2019_T1.dta", "2019_T2.dta",
     "2018_T3.dta", "2018_T4.dta", "2019_T1.dta", "2019_T2.dta", "2019_T3.dta",
     "2018_T4.dta", "2019_T1.dta", "2019_T2.dta", "2019_T3.dta", "2019_T4.dta",
-    "2019_T1.dta", "2019_T2.dta", "2019_T3.dta", "2019_T4.dta", "2020_T1.dta"
+    "2019_T1.dta", "2019_T2.dta", "2019_T3.dta", "2019_T4.dta", "2020_T1.dta",
+    "2020_T3.dta", "2020_T4.dta", "2021_T1.dta", "2021_T2.dta", "2021_T3.dta",
+    "2020_T4.dta", "2021_T1.dta", "2021_T2.dta", "2021_T3.dta", "2021_T4.dta",
+    "2021_T1.dta", "2021_T2.dta", "2021_T3.dta", "2021_T4.dta", "2022_T1.dta",
+    "2021_T2.dta", "2021_T3.dta", "2021_T4.dta", "2022_T1.dta", "2022_T2.dta",
+    "2021_T3.dta", "2021_T4.dta", "2022_T1.dta", "2022_T2.dta", "2022_T3.dta",
+    "2021_T4.dta", "2022_T1.dta", "2022_T2.dta", "2022_T3.dta", "2022_T4.dta",
+    "2022_T1.dta", "2022_T2.dta", "2022_T3.dta", "2022_T4.dta", "2023_T1.dta",
+    "2022_T2.dta", "2022_T3.dta", "2022_T4.dta", "2023_T1.dta", "2023_T2.dta",
+    "2022_T3.dta", "2022_T4.dta", "2023_T1.dta", "2023_T2.dta", "2023_T3.dta",
+    "2022_T4.dta", "2023_T1.dta", "2023_T2.dta", "2023_T3.dta", "2023_T4.dta",
+    "2023_T1.dta", "2023_T2.dta", "2023_T3.dta", "2023_T4.dta", "2024_T1.dta",
+    "2023_T2.dta", "2023_T3.dta", "2023_T4.dta", "2024_T1.dta", "2024_T2.dta",
+    "2023_T3.dta", "2023_T4.dta", "2024_T1.dta", "2024_T2.dta", "2024_T3.dta",
+    "2023_T4.dta", "2024_T1.dta", "2024_T2.dta", "2024_T3.dta", "2024_T4.dta"
   )
-  download_path <- "/Users/wernerd/Desktop/Daniel Werner/Quarterly"
-  #real download path is "../output/" but storing locally for testing
+  download_path <- "../output/"
   args <- commandArgs(trailingOnly = TRUE)
   i <- as.integer(args[1])
   first <- read_dta(file.path(download_path, cohorts[i]))
@@ -143,9 +156,7 @@ main <- function(){
     group_by(cd_a, ent, con, v_sel, n_hog, h_mud, n_ren, sex) %>%
     add_tally() %>%
     rename(total_n = n) %>%
-    ungroup() %>%
-    #selecting only individuals who are viewed in all 5 quarters
-    filter(total_n == 5)
+    ungroup() 
 
   #make IDs -- Individual, Household, and Dwelling
   #Individual ID
@@ -171,4 +182,36 @@ main <- function(){
 }
 
 # ---- Execute ----
-main()
+result <- tryCatch({
+  main()
+  "success"
+}, error = function(e) {
+  args <- commandArgs(trailingOnly = TRUE)
+  i <- as.integer(args[1])
+  cohort_number <- (i-1) / 5 + 1
+  
+  # Check if it's a memory error
+  if (grepl("vector memory|cannot allocate|reached.*limit", e$message, ignore.case = TRUE)) {
+    cat(sprintf("\nMemory error for cohort %d (starting at quarter %d). Flagging for manual processing.\n", 
+                cohort_number, i))
+    
+    # Define file path locally (not as global variable)
+    failed_file <- "../output/failed_cohorts.txt"
+    
+    # Save cohort info to failed file (append mode creates if doesn't exist)
+    write(sprintf("%d,%d", cohort_number, i), 
+          file = failed_file, 
+          append = TRUE)
+    
+    cat(sprintf("Written to %s\n", failed_file))
+    
+    return("memory_error")
+  } else {
+    # Re-throw non-memory errors
+    stop(e)
+  }
+})
+
+if (result == "success") {
+  cat("NEXT -------->.\n")
+}

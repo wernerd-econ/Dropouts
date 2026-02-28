@@ -72,15 +72,20 @@ process_quarter <- function(year, quarter) {
   dropbox_path <- "/Users/wernerd/Desktop/Daniel Werner"
   download_path <- file.path(dropbox_path, "ENOE", as.character(year), quarter)
   sdem <- read_dta(file.path(download_path, "sdem.dta")) %>%
-    rename_with(tolower)
+    rename_with(tolower) %>%
+    filter(n_ent %in% c(1, 2, 3, 4, 5))
   coe1 <- read_dta(file.path(download_path, "coe1.dta")) %>%
-    rename_with(tolower)
+    rename_with(tolower) %>%
+    filter(n_ent %in% c(1, 2, 3, 4, 5))
   coe2 <- read_dta(file.path(download_path, "coe2.dta")) %>%
-    rename_with(tolower)
+    rename_with(tolower) %>%
+    filter(n_ent %in% c(1, 2, 3, 4, 5))
   hog  <- read_dta(file.path(download_path, "hog.dta")) %>%
-    rename_with(tolower)
+    rename_with(tolower) %>%
+    filter(n_ent %in% c(1, 2, 3, 4, 5))
   viv  <- read_dta(file.path(download_path, "viv.dta")) %>%
-    rename_with(tolower)
+    rename_with(tolower) %>%
+    filter(n_ent %in% c(1, 2, 3, 4, 5))
   
   # Fuse datasets
   year_quarter <- fuse_quarter(sdem, coe1, coe2, hog, viv)

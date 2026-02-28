@@ -1,97 +1,22 @@
 """
-Process cohorts that failed due to memory errors
+Convert .dta quarters to .parquet for failed cohorts
 """
 import pandas as pd
+import sys
 import os
-from functools import reduce
-
-def make_labels(filename):
-    """Extract year_quarter label from filename"""
-    year = filename[:4]
-    quarter = filename[5:7]
-    return f"{year}_{quarter}"
-
-def load_and_label(file_path, filename, ent_value):
-    """Load parquet file and add trim label"""
-    df = pd.read_parquet(file_path)
-    df = df[df['n_ent'] == ent_value]
-    df['trim'] = make_labels(filename)
-    return df
-
-def process_cohort(cohort_files, cohort_number, base_path):
-    """Process a single cohort"""
-    print(f"\n  Loading 5 quarters for cohort {cohort_number}...")
-    
-    # Load all 5 quarters
-    dfs = []
-    for i, filename in enumerate(cohort_files, start=1):
-        parquet_file = filename.replace('.dta', '.parquet')
-        file_path = f"{base_path}/{parquet_file}"
-        
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"Missing parquet file: {file_path}")
-        
-        df = load_and_label(file_path, parquet_file, i)
-        dfs.append(df)
-        print(f"    Loaded quarter {i}: {filename}")
-    
-    # Find common columns
-    common_cols = list(reduce(lambda x, y: set(x) & set(y), [df.columns for df in dfs]))
-    dfs = [df[common_cols] for df in dfs]
-    
-    # Concatenate
-    panel = pd.concat(dfs, ignore_index=True)
-    print(f"  ✓ Merged {len(panel):,} rows")
-    
-    # Data quality checks
-    panel['age'] = pd.to_numeric(panel['eda'], errors='coerce')
-    
-    individual_keys = ['cd_a', 'ent', 'con', 'v_sel', 'n_hog', 'h_mud', 'n_ren']
-    
-    # Age consistency check
-    panel['min_age'] = panel.groupby(individual_keys)['age'].transform('min')
-    panel['max_age'] = panel.groupby(individual_keys)['age'].transform('max')
-    panel['age_diff'] = abs(panel['max_age'] - panel['min_age'])
-    panel = panel[panel['age_diff'] < 2]
-    
-    # Sex consistency and 5-quarter requirement
-    individual_keys_with_sex = individual_keys + ['sex']
-    panel['total_n'] = panel.groupby(individual_keys_with_sex)['sex'].transform('count')
-
-    
-    print(f"  ✓ After quality filters: {len(panel):,} rows")
-    
-    # Create IDs
-    panel['id'] = panel.groupby(individual_keys).ngroup() + 1
-    
-    hh_keys = ['cd_a', 'ent', 'con', 'v_sel', 'n_hog', 'h_mud']
-    panel['id_hog'] = panel.groupby(hh_keys).ngroup() + 1
-    
-    viv_keys = ['cd_a', 'ent', 'con', 'v_sel']
-    panel['id_viv'] = panel.groupby(viv_keys).ngroup() + 1
-    
-    # Create municipality code
-    panel = panel.dropna(subset=['ent', 'mun'])
-    panel['municipality'] = (panel['ent'].astype(int).astype(str) + "0" + 
-                            panel['mun'].astype(int).apply(lambda x: f"{x:02d}"))
-    
-    # Save
-    output_path = f"../output/Cohort_{cohort_number}.dta"
-    panel.to_stata(output_path, write_index=False)
-    print(f"  ✓ Saved Cohort_{cohort_number}.dta")
 
 def main():
-    # Read failed cohorts
+    # Read failed cohorts file
     failed_file = "../output/failed_cohorts.txt"
     
     if not os.path.exists(failed_file):
-        print("No failed cohorts to process.")
+        print("No failed cohorts found. Skipping conversion.")
         return
     
     with open(failed_file, 'r') as f:
         failed_cohorts = [line.strip().split(',') for line in f]
     
-    # Full cohort mapping (same as make_cohorts_enoe.r)
+    # Map of cohorts: each line is [cohort_number, starting_i]
     cohort_list = [
         "2007_T1.dta", "2007_T2.dta", "2007_T3.dta", "2007_T4.dta", "2008_T1.dta",
     "2007_T2.dta", "2007_T3.dta", "2007_T4.dta", "2008_T1.dta", "2008_T2.dta",
@@ -158,30 +83,35 @@ def main():
     "2023_T4.dta", "2024_T1.dta", "2024_T2.dta", "2024_T3.dta", "2024_T4.dta"
     ]
     
-    base_path = "../output"
+    download_path = "../output"
     
-    print(f"\n{'='*60}")
-    print(f"Processing {len(failed_cohorts)} failed cohorts by hand")
-    print(f"{'='*60}")
+    print(f"\nConverting quarters to parquet for {len(failed_cohorts)} failed cohorts...")
     
     for cohort_num, start_i in failed_cohorts:
         i = int(start_i)
         cohort_number = int(cohort_num)
         
-        print(f"\n[{cohort_number}/{len(failed_cohorts)}] Processing cohort {cohort_number}...")
+        print(f"\nConverting files for cohort {cohort_number} (quarters {i} to {i+4})...")
         
-        # Get the 5 quarters for this cohort
-        cohort_files = cohort_list[i-1:i+4]
-        
-        try:
-            process_cohort(cohort_files, cohort_number, base_path)
-        except Exception as e:
-            print(f"  ✗ ERROR processing cohort {cohort_number}: {e}")
-            continue
+        # Convert the 5 quarters for this cohort
+        for offset in range(5):
+            quarter_file = cohort_list[i - 1 + offset]  # -1 for 0-indexing
+            quarter_name = quarter_file.replace('.dta', '')
+            
+            input_path = f"{download_path}/{quarter_file}"
+            output_path = f"{download_path}/{quarter_name}.parquet"
+            
+            # Skip if already converted
+            if os.path.exists(output_path):
+                print(f"  {quarter_name}.parquet already exists, skipping...")
+                continue
+            
+            print(f"  Converting {quarter_name}...")
+            df = pd.read_stata(input_path, convert_categoricals=False)
+            df.to_parquet(output_path, engine="pyarrow")
+            print(f"  ✓ Saved {quarter_name}.parquet")
     
-    print(f"\n{'='*60}")
-    print("Manual cohort processing complete!")
-    print(f"{'='*60}\n")
+    print("\nConversion complete!")
 
 if __name__ == "__main__":
     main()
