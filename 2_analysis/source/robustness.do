@@ -430,7 +430,7 @@ file write myfile " & `coef1_1' & `coef1_2' & `coef1_3' & `coef1_4' \\" _n
 file write myfile " & `seout1_1' & `seout1_2' & `seout1_3' & `seout1_4' \\" _n
 
 * Row 2: No 5-quarter restriction
-///file write myfile "No 5 quarter restriction" _n
+file write myfile "No 5 quarter restriction" _n
 file write myfile " & `coef2_1' & `coef2_2' & `coef2_3' & `coef2_4' \\" _n
 file write myfile " & `seout2_1' & `seout2_2' & `seout2_3' & `seout2_4' \\" _n
 
