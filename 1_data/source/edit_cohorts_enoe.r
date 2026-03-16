@@ -85,8 +85,7 @@ create_new_variables <- function(df, cohort_number) {
 }
 
 main <- function(){
-  download_path <- "/Users/wernerd/Desktop/Daniel Werner/Cohorts/"
-  #real download path is "../output/" but storing locally for testing
+  download_path <- "../output/"
   args <- commandArgs(trailingOnly = TRUE)
   cohort_number <- as.integer(args[1])
   cohort_file <- sprintf("Cohort_%d.dta", cohort_number)
@@ -94,7 +93,7 @@ main <- function(){
   columns_to_keep <- c("municipality", "id_viv", "id_hog", "id", "age", "ing_x_hrs",
                        "ingocup", "hrsocup", "anios_esc", "cs_p17", "clase1",
                        "clase2", "h_mud", "sex", "d_mes", "d_anio",
-                       "cs_p13_1", "n_ent", "trim")
+                       "cs_p13_1", "n_ent", "trim", "total_n")
   cohort <- delete_unnecessary_columns(cohort, columns_to_keep)
   cohort <- create_new_variables(cohort, cohort_number)
   write_dta(cohort, paste0("../output/",

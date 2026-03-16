@@ -47,37 +47,56 @@ mkdir -p "${MAKE_SCRIPT_DIR}/output"
 (
 cd "${MAKE_SCRIPT_DIR}/source"
 
-# YEARS=({2007..2020})
-# QUARTERS=(T1 T2 T3 T4)
+YEARS=({2007..2024})
+QUARTERS=(T1 T2 T3 T4)
 
-# for year in "${YEARS[@]}"; do
-#   for quarter in "${QUARTERS[@]}"; do
-#     echo -e "\nProcessing ${year} ${quarter}..."
-#     run_R make_quarterly_enoe.r "${LOGFILE}" "$year" "$quarter" || exit 1
-#     echo -e "\nFinished Processing ${year} ${quarter}..."
-#   done
-# done
+for year in "${YEARS[@]}"; do
+  for quarter in "${QUARTERS[@]}"; do
+    echo -e "\nProcessing ${year} ${quarter}..."
+    run_R make_quarterly_enoe.r "${LOGFILE}" "$year" "$quarter" || exit 1
+    echo -e "\nFinished Processing ${year} ${quarter}..."
+  done
+done
 
-# for ((i=1; i<=245; i+=5)); do
-#   cohort_number=$(( (i-1) / 5 + 1))
-#   percent=$(( 100 * $cohort_number / 49 ))
-#   echo -e "\nProcessing cohort $cohort_number of 49 ... ($percent% done)"
-#   run_R make_cohorts_enoe.r "${LOGFILE}" "$i" || exit 1
-#   echo -e "\nFinished processing cohort $cohort_number of 49."
-#   echo -e "\nSaved cohort data as Cohort_$cohort_number to Output folder."
-# done
+# Process cohorts with error handling
+for ((i=1; i<=315; i+=5)); do
+  cohort_number=$(( (i-1) / 5 + 1))
+  percent=$(( 100 * $cohort_number / 63 ))
+  echo -e "\nProcessing cohort $cohort_number of 63 ... ($percent% done)"
+  run_R make_cohorts_enoe.r "${LOGFILE}" "$i" || {
+    # R script handles memory errors gracefully, continue to next cohort
+    echo -e "Note: Cohort $cohort_number may have been flagged for manual processing"
+  }
+done
 
-# for ((i=1; i<=59; i+=1)); do
-#    percent_2=$(( 100 * $i / 59 ))
-#    echo -e "\nEditing cohort $i of 59 ... ($percent_2% done)"
-#    run_R edit_cohorts_enoe.r "${LOGFILE}" "$i" || exit 1
-#    echo -e "\nFinished Editing cohort $i of 59. Saved as CleanCohort_$i in Output folder."
-# done
-#run_python staple_cohorts.py "${LOGFILE}" || exit 1
-# run_R mun_and_individual_panels.r "${LOGFILE}" || exit 1
-# run_R municipal_geo.r "${LOGFILE}" || exit 1
-# run_R seizure_data.r "${LOGFILE}" || exit 1
-# run_R crime_and_pop.r "${LOGFILE}" || exit 1
+# Check if any cohorts failed and need manual processing
+if [ -f "${MAKE_SCRIPT_DIR}/output/failed_cohorts.txt" ]; then
+  echo -e "\n${MAKE_SCRIPT_DIR}/output/failed_cohorts.txt detected. Processing failed cohorts manually..."
+  
+  # Convert quarters to parquet
+  echo -e "\nStep 1: Converting .dta to .parquet..."
+  run_python convert_quarters_to_parquet.py "${LOGFILE}" || exit 1
+  
+  # Process cohorts by hand
+  echo -e "\nStep 2: Processing cohorts with Python..."
+  run_python cohort_by_hand.py "${LOGFILE}" || exit 1
+  
+  echo -e "\n✓ All cohorts completed (including manual processing)"
+else
+  echo -e "\n✓ All 63 cohorts completed successfully without manual intervention"
+fi
+for ((i=1; i<=63; i+=1)); do
+   percent_2=$(( 100 * $i / 63 ))
+   echo -e "\nEditing cohort $i of 63 ... ($percent_2% done)"
+   run_R edit_cohorts_enoe.r "${LOGFILE}" "$i" || exit 1
+   echo -e "\nFinished Editing cohort $i of 63. Saved as CleanCohort_$i in Output folder."
+done
+run_python staple_cohorts.py "${LOGFILE}" || exit 1
+run_R mun_and_individual_panels_m.r "${LOGFILE}" || exit 1
+run_R mun_and_individual_panels_q.r "${LOGFILE}" || exit 1
+run_R municipal_geo.r "${LOGFILE}" || exit 1
+run_R seizure_data.r "${LOGFILE}" || exit 1
+run_R crime_and_pop.r "${LOGFILE}" || exit 1
 run_R make_final_data.r "${LOGFILE}" || exit 1
 ) || false
 

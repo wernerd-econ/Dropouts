@@ -3,9 +3,7 @@ import pandas as pd
 import gc
 import psutil
 
-#directory = "../output"
-directory = "/Users/wernerd/Desktop/Daniel Werner/CleanCohorts"
-
+directory = "../output"
 dfs = []
 i = 0
 id_offset = 0 
@@ -13,7 +11,7 @@ hh_offset = 0
 viv_offset = 0
 
 for filename in os.listdir(directory):
-    if filename.endswith('.dta'):
+    if filename.startswith('Clean'):
         i += 1
         file_path = os.path.join(directory, filename)
         print(f"Reading file {i}: {filename}")

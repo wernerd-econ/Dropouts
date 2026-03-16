@@ -19,9 +19,10 @@ capture mkdir "${FIGURES}"
 * =============================================================================
 use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
 
-keep id year month primary secondary high sex dropout school
+keep id year month primary secondary high sex dropout school total_n
 
-destring year month, replace
+destring year month total_n, replace
+drop if total_n != 5
 
 gsort id year month
 
@@ -379,7 +380,30 @@ file close mytable
 * =============================================================================
 * III. Create sample construction
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+use "/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta", clear
+
+replace year = 2000 + year
+
+tempfile indiv_temp
+save `indiv_temp', replace
+
+* Load the municipal-level dataset
+use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+ 
+* Keep only the variables you need from municipal data
+keep municipality year month pop_tot
+
+destring municipality year month, replace
+
+* Save as temporary file
+tempfile muni_temp
+save `muni_temp', replace
+
+* Reload individual data
+use `indiv_temp', clear
+
+* Merge with municipal data
+merge m:1 municipality year month using `muni_temp'
 
 * Starting 
 cap drop tag 
@@ -391,6 +415,18 @@ cap drop tag
 egen tag = tag(municipality)
 count if tag == 1
 local N_mun_start = r(N)
+
+* Drop adults
+keep if age < 19
+cap drop tag 
+egen tag = tag(id)
+count if tag == 1
+local N_indiv_kids = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_kids = r(N)
 
 * Dropping primary school children 
 drop if age >= 6 & age <= 11
@@ -416,9 +452,27 @@ egen tag = tag(municipality)
 count if tag == 1
 local N_mun_nosmall = r(N)
 
+* Drop attriters
+drop if total_n != 5
+cap drop tag 
+egen tag = tag(id)
+count if tag == 1
+local N_indiv_attriter = r(N)
+
+cap drop tag 
+egen tag = tag(municipality)
+count if tag == 1
+local N_mun_attriter = r(N)
+
 * Format numbers with commas
 local N_indiv_start_fmt : display %12.0fc `N_indiv_start'
 local N_mun_start_fmt : display %12.0fc `N_mun_start'
+
+local N_indiv_kids_fmt : display %12.0fc `N_indiv_kids'
+local N_mun_kids_fmt : display %12.0fc `N_mun_kids'
+
+local N_indiv_attriter_fmt : display %12.0fc `N_indiv_attriter'
+local N_mun_attriter_fmt : display %12.0fc `N_mun_attriter'
 
 local N_indiv_noprim_fmt : display %12.0fc `N_indiv_noprim'
 local N_mun_noprim_fmt : display %12.0fc `N_mun_noprim'
@@ -437,11 +491,17 @@ file write mytable "\hline" _n
 * Starting sample
 file write mytable "Starting sample & `N_indiv_start_fmt' & `N_mun_start_fmt' \\" _n
 
+* Drop adults
+file write mytable "Drop adults & `N_indiv_kids_fmt' & `N_mun_kids_fmt' \\" _n
+
 * After dropping primary
 file write mytable "Drop primary school children (ages 6-11) & `N_indiv_noprim_fmt' & `N_mun_noprim_fmt' \\" _n
 
 * After dropping small municipalities
 file write mytable "Drop municipalities with population $<$ 15,000 & `N_indiv_nosmall_fmt' & `N_mun_nosmall_fmt' \\" _n
+
+* Drop attriters
+file write mytable "Drop attriters & `N_indiv_attriter_fmt' & `N_mun_attriter_fmt' \\" _n
 
 file write mytable "\hline\hline" _n
 file write mytable "\end{tabular}" _n
@@ -453,7 +513,8 @@ file close mytable
 * =============================================================================
 use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
 
-destring year, replace 
+destring year total_n, replace 
+drop if total_n != 5
 
 * Whole Sample
 cap drop tag 
@@ -617,6 +678,9 @@ graph export "${FIGURES}enrollment_TS.pdf", replace
 * Demographic Table by Time Period with F-tests
 * =============================================================================
 use "/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta", clear
+destring total_n, replace
+drop if total_n != 5
+
 replace year = 2000 + year
 duplicates drop id year, force
 
