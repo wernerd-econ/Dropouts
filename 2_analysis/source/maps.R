@@ -18,7 +18,7 @@ library(mxmaps)
 library(tidyverse)
 library(haven)
 
-homicides <- read_dta("/Users/wernerd/Desktop/Daniel Werner/homicides.dta")
+homicides <- read_dta("../input/homicides.dta")
 
 fig_path <- "../output/Figures/"
 

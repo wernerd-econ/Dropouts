@@ -22,14 +22,14 @@ capture mkdir "${FIGURES}"
 * PART 1: Robustness Table
 ********************************************************************************
 
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear 
+use "../input/final_indiv.dta", clear 
 destring total_n, replace
 
 * Bring in municipal controls
 tempfile indiv_temp
 save `indiv_temp', replace
 
-use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+use "../input/final_mun.dta", clear
 keep municipality year month avg_* employment_rate
 tempfile muni_temp
 save `muni_temp', replace

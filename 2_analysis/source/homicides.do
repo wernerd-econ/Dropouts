@@ -17,7 +17,7 @@ capture mkdir "${FIGURES}"
 * =============================================================================
 * I. Create Summary Statistics By Period 
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/homicides.dta", clear
+use "../input/homicides.dta", clear
 
 * Collapse to month-year level
 collapse (sum) hom_ntl=homicides pop_ntl=pop_tot, by(year month)
@@ -106,7 +106,7 @@ file close myfile
 * =============================================================================
 * II. Create Time Seires Plots Of Ntl HR and Average Municipal HR 
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/homicides.dta", clear
+use "../input/homicides.dta", clear
 
 keep homicides pop_tot hr year month
 

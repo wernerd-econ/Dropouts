@@ -20,7 +20,8 @@ library(ggplot2)
 library(units)
 library(haven)
 
-base_path <- "/Users/wernerd/Desktop/Daniel Werner/GeoData/"
+gdrive_path <- "/Users/wernerd/Library/CloudStorage/GoogleDrive-wernerd@stanford.edu/My Drive/Dropouts"
+base_path <- "../input/GeoData/"
 municipal <- st_read(file.path(base_path, "Marco Geoestadistico/conjunto_de_datos/areas_geoestadisticas_municipales.shp"))
 
 # Line path of entire N border
@@ -82,7 +83,7 @@ p <- ggplot() +
   )
 
 # Save the plot
-ggsave(filename = "/Users/wernerd/Desktop/Daniel Werner/Figures/Map_w_Borders.pdf",
+ggsave(filename = "../output/Map_w_Borders.pdf",
        plot = p, width = 8, height = 6, units = "in", dpi = 300, bg = "white")
 
 
@@ -102,6 +103,4 @@ municipal <- municipal %>%
   select(municipality, d_to_pc, d_to_ep)
 
 # Save the data
-write_dta(municipal, "/Users/wernerd/Desktop/Daniel Werner/final_geo.dta")
-
-
+write_dta(municipal, file.path("../external/raw_data","final_geo.dta"))

@@ -19,7 +19,7 @@ capture mkdir "${FIGURES}"
 
 
 
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv_quarterly.dta", clear 
+use "../input/final_indiv_quarterly.dta", clear 
 destring total_n, replace 
 drop if total_n != 5
 
@@ -31,7 +31,7 @@ tempfile indiv_temp
 save `indiv_temp', replace
 
 * Load the municipal-level dataset
-use "/Users/wernerd/Desktop/Daniel Werner/final_mun_quarterly.dta", clear
+use "../input/final_mun_quarterly.dta", clear
  
 * Keep only the variables you need from municipal data
 keep municipality trim avg_* employment_rate

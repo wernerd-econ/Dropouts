@@ -19,7 +19,7 @@ capture mkdir "${FIGURES}"
 
 
 
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear 
+use "../input/final_indiv.dta", clear 
 destring total_n, replace
 drop if total_n != 5
 
@@ -31,7 +31,7 @@ tempfile indiv_temp
 save `indiv_temp', replace
 
 * Load the municipal-level dataset
-use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+use "../input/final_mun.dta", clear
  
 * Keep only the variables you need from municipal data
 keep municipality year month avg_* employment_rate
@@ -1001,7 +1001,7 @@ file close myfile
 
 * Calculate a few more scalars
 
-use "/Users/wernerd/Desktop/Daniel Werner/homicides.dta", clear 
+use "../input/homicides.dta", clear 
 
 * Calculate SD across all municipality-month observations
 summarize hr
@@ -1017,11 +1017,11 @@ local effect_1sd_resurge = `coef_respike' * `delta_log'
 local effect_1sd_resurge_high = `coef_high' * `delta_log'
 local effect_1sd_resurge_male = `coef_male' * `delta_log'
 
-use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear 
+use "../input/seizure_data.dta", clear 
 summarize cs_big
 local cs_mean = r(mean)
 
-use "/Users/wernerd/Desktop/Daniel Werner/final_geo.dta", clear 
+use "../input/final_geo.dta", clear 
 summarize d_to_pc
 local sd_d_to_pc = r(sd)
 

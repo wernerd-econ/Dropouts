@@ -37,13 +37,14 @@ read_death_reports <- function(death_reports) {
   return(deaths)
 }
 years <- 2007:2024
-death_reports <- glue("/Users/wernerd/Desktop/Daniel Werner/Deaths/DEFUN{years}.dbf")
+gdrive_path <- "/Users/wernerd/Library/CloudStorage/GoogleDrive-wernerd@stanford.edu/My Drive/Dropouts"
+death_reports <- glue("../input/Deaths/DEFUN{years}.dbf")
 
 # Read in and concatenate records from all files
 deaths <- map_dfr(death_reports, read_death_reports)
 
-base_path <- "/Users/wernerd/Desktop/Daniel Werner"
-homicide_codes <- read_delim(file.path(base_path, "Deaths/cod-mapping.csv"), 
+base_path <- "../input"
+homicide_codes <- read_delim(file.path(base_path, "Deaths/cod-mapping.csv"),
                              delim = "|", guess_max = 5000)
 
 pop <- readxl::read_xlsx(file.path(base_path, "Population/pop.xlsx"))
@@ -140,7 +141,7 @@ hom_rate <- pop %>%
 
 
 # Save the final data set 
-write_dta(hom_rate, "/Users/wernerd/Desktop/Daniel Werner/homicides.dta")
+write_dta(hom_rate, file.path("../external/raw_data","homicides.dta"))
 
 # =============================================================================
 # (3) Create QUARTERLY version
@@ -237,4 +238,4 @@ hom_rate_quarterly <- pop_quarterly %>%
   ungroup()
 
 # Save quarterly data
-write_dta(hom_rate_quarterly, "/Users/wernerd/Desktop/Daniel Werner/homicides_quarterly.dta")
+write_dta(hom_rate_quarterly, file.path("../output","homicides_quarterly.dta"))

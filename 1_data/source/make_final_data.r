@@ -20,11 +20,13 @@ library(lubridate)
 # =============================================================================
 # (I.1) Load  data
 # =============================================================================
-base_path <-  "/Users/wernerd/Desktop/Daniel Werner/"
-municipal_data <- read_dta(file.path(base_path, "Municipal_data.dta"))
-homicide_data <- read_dta(file.path(base_path, "homicides.dta"))
-geo_data <- read_dta(file.path(base_path, "final_geo.dta"))
-total_seizures <- read_dta(file.path(base_path, "seizure_data.dta"))
+gdrive_path <- "/Users/wernerd/Library/CloudStorage/GoogleDrive-wernerd@stanford.edu/My Drive/Dropouts"
+input_path    <- "../output"           # internal 1_data intermediates
+external_path <- "../external/raw_data" # files shared with 2_analysis (on Google Drive)
+municipal_data <- read_dta(file.path(input_path, "Municipal_data.dta"))
+homicide_data <- read_dta(file.path(external_path, "homicides.dta"))
+geo_data <- read_dta(file.path(external_path, "final_geo.dta"))
+total_seizures <- read_dta(file.path(external_path, "seizure_data.dta"))
 
 # =============================================================================
 # (I.2) Merge datasets together
@@ -93,7 +95,7 @@ full <- homicide_data %>%
   left_join(municipal_data, by = c("municipality", "year_month"))
 
 # Save full dataset
-write_dta(full, file.path(base_path, "final_mun.dta"))
+write_dta(full, file.path(external_path,"final_mun.dta"))
 
 # =============================================================================
 # II. Continue with Individual Panel
@@ -106,10 +108,10 @@ gc()
 # =============================================================================
 # (II.1) Load  data
 # =============================================================================
-individual_data <- read_dta(file.path(base_path, "Individual_data.dta"))
-homicide_data <- read_dta(file.path(base_path, "homicides.dta"))
-geo_data <- read_dta(file.path(base_path, "final_geo.dta"))
-total_seizures <- read_dta(file.path(base_path, "seizure_data.dta"))
+individual_data <- read_dta(file.path(input_path, "Individual_data.dta"))
+homicide_data <- read_dta(file.path(external_path, "homicides.dta"))
+geo_data <- read_dta(file.path(external_path, "final_geo.dta"))
+total_seizures <- read_dta(file.path(external_path, "seizure_data.dta"))
 
 # =============================================================================
 # (II.2) Merge datasets together
@@ -183,7 +185,7 @@ full <- full %>%
   filter(!is.na(id))
 
 # Save full dataset
-write_dta(full, file.path(base_path, "final_indiv.dta"))
+write_dta(full, file.path(external_path,"final_indiv.dta"))
 
 # =============================================================================
 # III. QUARTERLY VERSION - Municipal Panel
@@ -196,11 +198,11 @@ gc()
 # =============================================================================
 # (III.1) Load quarterly data
 # =============================================================================
-municipal_data_q <- read_dta(file.path(base_path, "Municipal_data_quarterly.dta"))
+municipal_data_q <- read_dta(file.path(input_path, "Municipal_data_quarterly.dta"))
 municipal_data_q$trim <- as_factor(municipal_data_q$trim)
-homicide_data_q <- read_dta(file.path(base_path, "homicides_quarterly.dta"))
-geo_data_q <- read_dta(file.path(base_path, "final_geo.dta"))
-total_seizures_q <- read_dta(file.path(base_path, "seizure_data_quarterly.dta"))
+homicide_data_q <- read_dta(file.path(input_path, "homicides_quarterly.dta"))
+geo_data_q <- read_dta(file.path(external_path, "final_geo.dta"))
+total_seizures_q <- read_dta(file.path(input_path, "seizure_data_quarterly.dta"))
 
 # =============================================================================
 # (III.3) Merge quarterly datasets together
@@ -244,24 +246,24 @@ full_q <- homicide_data_q %>%
   inner_join(municipal_data_q, by = c("municipality", "trim"))
 
 # Save quarterly municipal dataset
-write_dta(full_q, file.path(base_path, "final_mun_quarterly.dta"))
+write_dta(full_q, file.path(external_path,"final_mun_quarterly.dta"))
 
 # =============================================================================
 # IV. QUARTERLY VERSION - Individual Panel
 # =============================================================================
 # Remove old workspace to free up memory
 rm(full_q, municipal_data_q, total_seizures_q, geo_data_q, homicide_data_q)
-rm(common_muns_q, common_dates_q, years_q)
+rm(common_muns_q)
 gc()
 
 # =============================================================================
 # (IV.1) Load  data
 # =============================================================================
-individual_data_q <- read_dta(file.path(base_path, "Individual_data_quarterly.dta"))
+individual_data_q <- read_dta(file.path(input_path, "Individual_data_quarterly.dta"))
 individual_data_q$trim <- as_factor(individual_data_q$trim)
-homicide_data_q <- read_dta(file.path(base_path, "homicides_quarterly.dta"))
-geo_data_q <- read_dta(file.path(base_path, "final_geo.dta"))
-total_seizures_q <- read_dta(file.path(base_path, "seizure_data_quarterly.dta"))
+homicide_data_q <- read_dta(file.path(input_path, "homicides_quarterly.dta"))
+geo_data_q <- read_dta(file.path(external_path, "final_geo.dta"))
+total_seizures_q <- read_dta(file.path(input_path, "seizure_data_quarterly.dta"))
 
 # =============================================================================
 # (IV.2) Merge quarterly datasets together
@@ -309,4 +311,4 @@ full_q <- full_q %>%
   filter(!is.na(id))
 
 # Save quarterly individual dataset
-write_dta(full_q, file.path(base_path, "final_indiv_quarterly.dta"))
+write_dta(full_q, file.path(external_path,"final_indiv_quarterly.dta"))

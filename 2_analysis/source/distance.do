@@ -12,7 +12,7 @@
 global FIGURES "../output/Figures/"
 capture mkdir "${FIGURES}"
 
-use "/Users/wernerd/Desktop/Daniel Werner/final_geo.dta", clear
+use "../input/final_geo.dta", clear
 
 * Drop duplicates (keep only unique municipality observations)
 duplicates drop municipality, force

@@ -14,7 +14,8 @@ library(haven)
 library(tidyverse)
 library(readxl)
 
-base_path <- "/Users/wernerd/Desktop/Daniel Werner/Cocaine"
+gdrive_path <- "/Users/wernerd/Library/CloudStorage/GoogleDrive-wernerd@stanford.edu/My Drive/Dropouts"
+base_path <- "../input/Cocaine"
 coca <- read_excel(file.path(base_path,"Cocaina.xlsx"))
 base_coca <- read_excel(file.path(base_path, "base.cocaina.xlsx"))
 
@@ -107,7 +108,7 @@ total_seizures <- total_seizures %>% select(Year, Month, ts, ts_n, ts_big,
 
 seizure_data <- bind_rows(inc, total_seizures)
 
-write_dta(seizure_data, "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta")
+write_dta(seizure_data, file.path("../external/raw_data","seizure_data.dta"))
 
 # =============================================================================
 # (5) Create QUARTERLY version
@@ -138,4 +139,4 @@ seizure_data_quarterly <- seizure_data %>%
   ) %>%
   rename(year = Year, trim = quarter)
 
-write_dta(seizure_data_quarterly, "/Users/wernerd/Desktop/Daniel Werner/seizure_data_quarterly.dta")
+write_dta(seizure_data_quarterly, file.path("../output","seizure_data_quarterly.dta"))

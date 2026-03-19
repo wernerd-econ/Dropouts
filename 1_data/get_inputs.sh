@@ -7,8 +7,13 @@
 # You can also use paths to folders:
 # ../examples/inputs_for_examples/
 INPUT_FILES=(
-    # /path/to/your/input/file.csv (replace with your actual input paths)
-    # Add more input paths as needed
+    # Raw input folders from Google Drive
+    "../external/raw_data/ENOE"
+    "../external/raw_data/Deaths"
+    "../external/raw_data/Population"
+    "../external/raw_data/Cocaine"
+    "../external/raw_data/GeoData"
+    "../external/raw_data/FX, CPI"
 )
 
 # Path to current module

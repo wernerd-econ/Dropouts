@@ -17,7 +17,7 @@ capture mkdir "${FIGURES}"
 * =============================================================================
 * I. Create Summary Statistics By Period 
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear
+use "../input/seizure_data.dta", clear
 
 * Create date variable
 destring Year Month, replace
@@ -143,7 +143,7 @@ file close myfile
 * =============================================================================
 * II. Create Time Seires Plots Of Ntl HR and Average Municipal HR 
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear
+use "../input/seizure_data.dta", clear
 
 * Keep big coastal seizure in tons and events
 keep Year Month cs_big
