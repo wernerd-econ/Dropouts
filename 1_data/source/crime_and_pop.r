@@ -141,7 +141,9 @@ hom_rate <- pop %>%
 
 
 # Save the final data set 
-write_dta(hom_rate, file.path("../external/raw_data","homicides.dta"))
+write_dta(hom_rate, file.path("../../external/raw_data","homicides.dta"))
+write_dta(hom_rate, file.path("../output","homicides.dta"))
+
 
 # =============================================================================
 # (3) Create QUARTERLY version
@@ -239,3 +241,4 @@ hom_rate_quarterly <- pop_quarterly %>%
 
 # Save quarterly data
 write_dta(hom_rate_quarterly, file.path("../output","homicides_quarterly.dta"))
+write_dta(hom_rate_quarterly, file.path("../../external/raw_data","homicides_quarterly.dta"))

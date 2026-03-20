@@ -15,8 +15,7 @@ library(tidyverse)
 library(ggplot2)
 
 ## load in panel dataset
-gdrive_path <- "/Users/wernerd/Library/CloudStorage/GoogleDrive-wernerd@stanford.edu/My Drive/Dropouts"
-panel <- read_dta("../external/raw_data/ENOE_panel.dta")
+panel <- read_dta("../output/ENOE_panel.dta")
 
 panel <- panel %>%
   mutate(across(

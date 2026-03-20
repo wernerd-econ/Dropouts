@@ -22,7 +22,7 @@ library(lubridate)
 # =============================================================================
 gdrive_path <- "/Users/wernerd/Library/CloudStorage/GoogleDrive-wernerd@stanford.edu/My Drive/Dropouts"
 input_path    <- "../output"           # internal 1_data intermediates
-external_path <- "../external/raw_data" # files shared with 2_analysis (on Google Drive)
+external_path <- "../../external/raw_data" # files shared with 2_analysis (on Google Drive)
 municipal_data <- read_dta(file.path(input_path, "Municipal_data.dta"))
 homicide_data <- read_dta(file.path(external_path, "homicides.dta"))
 geo_data <- read_dta(file.path(external_path, "final_geo.dta"))

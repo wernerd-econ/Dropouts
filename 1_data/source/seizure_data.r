@@ -108,7 +108,9 @@ total_seizures <- total_seizures %>% select(Year, Month, ts, ts_n, ts_big,
 
 seizure_data <- bind_rows(inc, total_seizures)
 
-write_dta(seizure_data, file.path("../external/raw_data","seizure_data.dta"))
+write_dta(seizure_data, file.path("../../external/raw_data","seizure_data.dta"))
+write_dta(seizure_data, file.path("../output","seizure_data.dta"))
+
 
 # =============================================================================
 # (5) Create QUARTERLY version
@@ -140,3 +142,4 @@ seizure_data_quarterly <- seizure_data %>%
   rename(year = Year, trim = quarter)
 
 write_dta(seizure_data_quarterly, file.path("../output","seizure_data_quarterly.dta"))
+write_dta(seizure_data_quarterly, file.path("../../external/raw_data","seizure_data_quarterly.dta"))

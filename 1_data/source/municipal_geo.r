@@ -103,4 +103,5 @@ municipal <- municipal %>%
   select(municipality, d_to_pc, d_to_ep)
 
 # Save the data
-write_dta(municipal, file.path("../external/raw_data","final_geo.dta"))
+write_dta(municipal, file.path("../../external/raw_data","final_geo.dta"))
+write_dta(municipal, file.path("../output","final_geo.dta"))
