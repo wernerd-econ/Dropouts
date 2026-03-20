@@ -32,7 +32,11 @@ run_latex() {
               "${programname}.synctex.gz" \
               "${programname}.nav" \
               "${programname}.snm" \
-              "${programname}.toc"
+              "${programname}.toc" \
+              "${programname}.maf" \
+              "${programname}.mtc" \
+              "${programname}.mtc0" \
+              "${programname}.thm"
     }
 
     # Ensure cleanup is called on exit
