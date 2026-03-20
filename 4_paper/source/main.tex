@@ -1,0 +1,790 @@
+\documentclass[12pt,letter,english,intoc,bibliography=totoc,index=totoc,BCOR10mm,captions=tableheading,nottitlepage,fleqn]{article}
+
+\usepackage{setspace, geometry}
+\onehalfspacing
+\geometry{left=1in,right=1in,top=1in,bottom=1in}
+
+\usepackage{etex}
+\usepackage{babel,newcent,textcomp}
+\usepackage{float}
+\usepackage{scrextend}
+\usepackage{etoc}
+\usepackage{minitoc}
+\renewcommand \thepart{}
+\renewcommand \partname{}
+\usepackage{xfp}
+\usepackage{booktabs, threeparttable}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[autostyle]{csquotes}
+%\usepackage[style=aer, citestyle=authoryear, backend=biber, useprefix, maxbibnames=99]{biblatex}
+%\addbibresource{references.bib}
+\usepackage{natbib}
+\bibliographystyle{aea}
+\usepackage{lmodern}
+\renewcommand{\sfdefault}{lmss}
+\renewcommand{\ttdefault}{lmtt}
+\usepackage{sgame}
+\usepackage{fancyhdr}
+\pagestyle{plain}
+\setcounter{secnumdepth}{3}
+%\setlength{\parskip}{\medskipamount}
+\usepackage{amsmath,amssymb,bbm}
+\usepackage[amsthm]{ntheorem}
+\usepackage{dsfont}
+\usepackage{tablefootnote}
+\usepackage[labelfont=bf]{caption}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{lscape}
+ \usepackage{xurl} % to properly format urls
+\usepackage{ragged2e} % for justifying notes in tables
+\usepackage{subcaption}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\special{papersize=\the\paperwidth,\the\paperheight}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{tikz}
+
+\usetikzlibrary{shapes.geometric, arrows, positioning, matrix, calc, fit}
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    %Define style for boxes
+    box/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           text width=6.5em,
+           minimum height=1.5em,
+           text centered},
+    boxsmall/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           text width=6em,
+           minimum height=1.5em,
+           text centered},
+     simple/.style={
+           text centered},
+    % Define arrow style
+    arrow/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt,}
+}
+\usepackage{graphicx}
+\graphicspath{{````}}
+
+\usepackage[multiple]{footmisc}
+\usepackage[unicode=true,bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=1,
+ breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=true,linkcolor=black,citecolor=black,anchorcolor=black,urlcolor=blue]
+ {hyperref}
+\hypersetup{pdftitle={Your title},
+ pdfauthor={Your name},
+ pdfpagelayout=OneColumn, pdfnewwindow=true, pdfstartview=XYZ, plainpages=false}
+
+\usepackage{cleveref}
+% that links to image floats jumps to the beginning
+% of the float and not to its caption
+\usepackage[figure]{hypcap}
+% enables calculations
+\usepackage{calc}
+% fancy page header/footer settings
+%\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+% increases the bottom float placement fraction
+\renewcommand{\bottomfraction}{0.5}
+% avoids that floats are placed above its sections
+\let\mySection\section\renewcommand{\section}{\suppressfloats[t]\mySection}
+
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{hypothesis}{Hypothesis}
+\newtheorem{fact}[theorem]{Fact}
+
+\input{../input/Tables/enoe_scalars}
+\input{../input/Tables/homicide_scalars}
+\input{../input/Tables/cocaine_scalars}
+\input{../input/Tables/main_analysis_scalars}
+
+
+\newcommand{\mc}[1]{\multicolumn{1}{c}{#1}}
+
+\makeatother
+
+\begin{document}
+
+
+\lhead[]{}
+\rhead[]{}
+\lfoot[\thepage]{}
+\cfoot{}
+\rfoot[]{\thepage}
+
+\newpage
+
+\begin{titlepage}
+\title{Crime and the Classroom:\\
+How Local Violence Affects School Dropout Decisions in Mexico%
+\thanks{
+I would like to thank Jason Baron, Oeindrilla Dube, Matthew Gentzkow, Eduardo Guerrero, Daniel Mej\'{i}a, Ernesto Schargrodsky, Miguel Szekely, and Alexander Torgovitsky for their excellent comments and guidance on this paper. Stanford University. Email: \href{mailto:wernerd@stanford.edu}{wernerd@stanford.edu}
+}}
+\author{%
+  Daniel Werner%
+}
+
+\maketitle
+\begin{abstract}
+In this paper, I examine the effects of drug-trafficking violence on school dropout in Mexico between 2007 and 2024. Using an instrumental variables strategy that exploits plausibly exogenous variation from Colombian cocaine seizures, I estimate a small, positive effect in the pooled sample that is notably larger than prior two-way fixed effects estimates in the literature. I find suggestive evidence of meaningful heterogeneity over different eras of violence and security policy. The 2017--2024 period---coinciding with a shift toward more permissive enforcement under the AMLO administration---appears to mark a structural break in which violence has a substantially larger positive effect on dropout decisions, especially among high school--aged males. This is consistent with auxiliary evidence on disappearances, rising incarceration of young adult males, and changes in enforcement policy. Taken together, the results point to a recruitment mechanism whereby drug trafficking organizations draw older male adolescents out of school when the perceived risks of cartel participation decline.  
+\end{abstract}
+
+\setcounter{page}{0}
+\thispagestyle{empty}
+\end{titlepage}
+
+\pagebreak \newpage
+
+\section{Introduction}
+A few weeks ago, Mexican armed forces killed Nemesio "El Mencho" Oseguera, the leader of one of the largest, most powerful, and most violent drug trafficking organizations (DTOs) in the world---the Cartel Jalisco Nueva Generaci\'{o}n. His death created turmoil across the country, with his organizations embarking on a wave of retaliatory violence in over 20 Mexican states. As a consequence schools throughout Jalisco and other states were closed, urging children to stay at home. 
+
+The events in Mexico this February resurfaced an old question in the development economics literature: what are the effects of violence exposure and armed conflict on the human capital accumulation of children and young adults? A large body of work documents that hostile environments adversely affect academic outcomes such as standardized test scores and grade repetition rates. 
+
+Among the most important outcomes is short-term, reactive, and temporary dropouts. In addition to capturing permanent school desertions, high frequency measures of temporary attendance disruptions allow for the detection of accumulated educational losses that may not appear in official enrollment or dropout statistics. A student who misses school intermittently due to violence--induced disruptions may remain nominally enrolled while effectively losing months or years of instruction over time. It is estimated that each additional year of schooling is associated with approximately a 9--10 percent increase in earnings, making years of education one of the most robust predictors of lifetime earnings across developing countries \citep{psacharopoulos2018}.\footnote{Temporary absences and permanent cessation of education have been shown to reduce wages later in life, complicate formal sector employment, and restrict access to social security benefits---critical determinants of economic mobility in Mexico's segmented labor market \citep{cattan2022, drager2024, dehoyos2014, harberger2012}.} It is in this sense, then, that studying these effects is critical in understanding the full cost of drug--trade related violence in Mexico. 
+
+Yet, high-frequency dropout rates remain among the least studied outcomes in the literature. Ex ante, the effect of drug--trafficking--related violence on these outcomes is ambiguous. On the one hand, violence may increase dropout rates due to concerns about physical safety or because households withdraw children from school to substitute for lost income. Dropouts could also rise if DTOs increase the recruitment of children during periods of heightened violence. On the other hand, violence may decrease the probability of dropping out if schools are perceived as relatively safe spaces, or if heightened enforcement and social stigma reduce the incentives for youth to join criminal organizations. Ultimately, the effect of drug--trafficking--related violence on school dropout behavior is an empirical question.
+
+In this paper, I therefore estimate the effect that drug--trafficking related violence has on the probability that children and young adults drop out of school between 2007 and 2024 in Mexico. In the pooled sample, the estimated effect is small and positive, but statistically indistinguishable from zero. This point estimate is an order of magnitude larger than the two-way fixed effects estimate that has been historically provided in the literature. I also find suggestive evidence of interesting dynamics in this relationship. 
+
+When estimating the relationship separately across three distinct periods of violence and enforcement, the data reveal markedly different patterns.\footnote{These periods roughly coincide with three distinct presidential terms: the War on Drugs (Felipe Calder\'{o}n), an Interim Period of lower homicide rates (Enrique Pe\~{n}a Nieto), and the Resurgence---an era of persistent and historically high homicide rates (Andr\'{e}s Manuel L\'{o}pez Obrador).} During Calder\'{o}n's War on Drugs (2007-2012), the estimate is imprecise, likely reflecting a weak first-stage relationship in this period. During the Interim Period under Pe\~{n}a Nieto (2013-2016), the point estimate is negative and the confidence interval relatively tight around zero, suggesting no meaningful relationship. In contrast, during the Resurgence Period under L\'{o}pez Obrador (2017-2024), the estimate is large, positive, and statistically significant at the 5\% level. A back of the envelope calculation suggests that a one--standard deviation increase in the monthly municipal homicide rate (\MunicipalHRSD\ homicides per 10,000 inhabitants) from its mean increases the probability of dropping out among middle and high school students by approximately {\fpeval{round(\sdEffectRespike * 100,2)}} percentage points. Further heterogeneity results indicate these effects are concentrated among male high school students. The pattern of point estimates (across the distinct eras of violence, gender, and educational groups) is indicative of a structural break coinciding with the stark change in security enforcement regimes. This finding is robust to several alternative specifications. The pattern is further corroborated by auxiliary evidence: official data show sharp increases in disappearances of teenage and young adult males during the Resurgence Period, consistent with a mechanism of elevated recruitment and subsequent involvement in cartel violence. Several sources also attest to a sharp increase in teenage and young adult male incarcerations for participation in the drug trade. Moreover, the three periods are defined by fundamentally different security policies---Calder\'{o}n's militarized offensive, Pe\~{n}a Nieto's strategic withdrawal, and L\'{o}pez Obrador's explicitly non--confrontational "abrazos, no balazos" (hugs, not bullets) approach---providing a plausible mechanism through which the relationship between violence and dropout could evolve. 
+
+Taken together, the evidence is highly suggestive of a recruitment mechanism whereby drug trafficking organizations draw older male students out of school during periods when permissive security policies reduce both the physical risks and social costs of cartel membership. These results could provide clarity when designing public policy aimed at reducing child recruitment into DTOs or preventing the cessation of education in times of high violence. In particular, interventions in high-violence periods may be most effective by specifically targeting older males---seeking to reduce the recruitment incentives. For instance, an expansive scholarship program for high school males might reduce the financial benefit of cartel membership, thereby decreasing the dropout response.
+
+The analysis has several important limitations. First, the time heterogeneity results remain statistically imprecise: while the point estimates differ substantially across periods, I cannot reject equality at conventional significance levels. This imprecision may reflect genuinely small effects in early periods, weak instrument strength in certain time windows, or simply limited statistical power. Second, I cannot directly identify the mechanism, requiring extrapolation from my results to rule out other potential alternatives as well as reliance on indirect evidence from dropout patterns, disappearance data, and auxiliary sources. Third, I only observe children for five consecutive quarters which may not be enough time to exploit within-person variation to identify the causal relationship I am after. 
+
+Despite these limitations, this paper advances the literature in three key ways. First, it addresses endogeneity concerns by employing an instrumental variables strategy analogous to the price-times-exposure approach of \citet{dubevargas}. Specifically, I instrument municipal homicide rates with the interaction of Colombian cocaine seizures---serving as a proxy for cocaine price shocks---and a municipality's importance within Mexican drug trafficking networks. This strategy exploits variation in violence arising from supply-side shocks that differentially impact municipalities based on their location along the cocaine trade route. Second, it covers a substantially longer time period than previous papers in this space---spanning three distinct eras of organized crime activity and public security policy---enabling an examination of time--varying dynamics. Virtually every Mexican study focuses on the 2007--2012 period. Yet, homicide rates were higher every year from 2017 to 2024 than during the War on Drugs period \citep{igarape}.\footnote{In fact, in 2016, Mexico ranked as the world's second most violent deadly conflict zone, with the number of violent deaths surpassed only by Syria which was engaged in six--year--long civil war at the time \citep{iiss2017}.} Third, the analysis uses individual--level panel data to construct the only available high frequency dropout indicator in Mexico and to control for all time--invariant individual factors which may affect individuals' schooling decisions.\footnote{Most existing studies use coarsely aggregated outcome variables---attendance measures or yearly dropout rates from official statistics. This approach has limitations. Government funding mechanisms may create reporting incentives: if funding depends on maintaining low dropout rates, schools may under-report; if funding targets high-dropout schools, over-reporting becomes attractive. Additionally, official dropout statistics are only collected at the state level, aggregated annually, and reported every five years.}
+
+This work builds on several areas of existing literature. First, it is related to the large body of work documenting negative effects of exposure to civil conflict on educational attainment \citep{leon2012, justino2013, ichino2004, shemayinka2011, akresh2008}. Second, this work is also related to studies examining violence in Brazil's favelas, where several papers have found that violence significantly increases dropout rates, reduces attendance, and hurts standardized test performance \citep{montes2021,koppensteiner2021,monteiro2017}. Finally, this paper is closest to the strand of literature examining the educational consequences of Mexico's drug--trafficking violence. Among the papers written on this, most find pervasive negative effects---including reduced educational attainment and compulsory graduation rates; increased student absenteeism, tardiness, and early departures; elevated grade failure and repetition rates among primary students; and negative impacts on standardized test scores across the board \citep{brown2017, jarillo2016, caudillo2014, michaelsen2020, orraca2018}. These works propose several mechanisms through which these effects are materialized: reductions in perceived safety leading parents to keep children at home, economic hardships forcing young adults to supplement household income, and drug trafficking organizations recruiting children as lookouts (\textit{halcones}), drug runners, or hit men (\textit{sicarios})---a hypothesis also proposed by \citet{jarillo2016} and consistent with \citet{swee2015}, who finds that war affects secondary but not primary enrollment, likely reflecting recruitment of older children.\footnote{It is well documented that households in conflict zones often choose to replace dead, injured, or disabled adult workers with children, if they have not already become participants in the violence themselves. The use of children as a form of economic security as well as the resort to child labor as a form of compensating for low income is well documented in the development economics literature (see, e.g. \citet{justino2012}; \citet{rodriguez2009}).} Additionally, \citet{michaelsen2020} attribute the negative effects on standardized test scores to acute psychological stress from violence occurring immediately before exams. Interestingly, research on enrollment presents mixed findings. \citet{padilla2015} find that violence has no impact on aggregate annual enrollment rates, though they detect a small reduction among high school males. 
+
+The remainder of the paper is organized as follows. Section~2 provides institutional background on the Mexican drug trade. Section~3 describes the data. Section~4 outlines the empirical strategy. Section~5 presents the main results and Section~6 concludes.
+
+\section{Background}
+Mexican drug trafficking organizations dominate the wholesale illicit drug market in the United States. These organizations are estimated to make between 19 and 29 billion USD annually \citep{guerrero2011}. To generate such vast revenues, Mexican DTOs rely on both domestic drug production and the smuggling of domestically and foreign-produced drugs into the United States. Domestic production is widespread: marijuana, opium poppy, and other illicit crops are cultivated in a third of all Mexican municipalities, with 14 percent of municipalities regularly producing opium or cannabis \citep{dube2016, dell2015}. An estimated 40 to 67 percent of marijuana consumed in the United States is imported from Mexico, generating gross revenues of 1.1 to 2 billion USD annually \citep{kilmer2010}. In addition to domestic production, Mexican DTOs also serve as the primary transit route for Colombian cocaine destined for U.S. markets. In fact, 90 percent of all cocaine consumed in the United States transits through Mexico, with Mexican DTOs earning approximately 2.9 billion USD in net profits annually from cocaine trafficking alone \citep{unodc2010}.
+
+Since at least 1994, Mexico has been the most important point of entry for illegal drugs into the United States. Throughout the 1990s and early 2000s, Mexico was home to an illegal empire which operated under a functional, non--violent equilibrium. Then, in 2006 drug--related violence in Mexico spun out of control. From 2001 to 2006 there were 60,162 intentional homicides recorded in Mexico. From 2007 to 2012 there were 121,613 killings: a 102 percent increase. In total, between 2006 and 2016, there were more than 60,000 specifically drug--related homicides in Mexico: more than twice the death toll in Afghanistan between 2001 and 2011 \citep{Castillo2020}. Several hypotheses have been offered to explain this sudden and tremendously violent period in Mexican history. 
+
+\citet{Castillo2020} develop a model in which exogenous temporal supply reductions in Colombian cocaine induce surges in violence in Mexico by raising retail prices and revenue. In the early 2000s, Colombian trafficking routes were profoundly altered. Cocaine produced in the Andean countries used to enter the United States through the Caribbean. However, following intense enforcement by the DEA, Colombian traffickers began smuggling cocaine more frequently through Mexico, across the American South-West border. The expansion of the cocaine trade in Mexico coincided with a dramatic surge in violence in 2006. At this point, the Colombian government redefined its anti--drug strategy, shifting its efforts from aerial coca crop eradication to the seizure of cocaine.\footnote{This policy decision is largely independent from the situation in Mexico. For more details see \citet{Castillo2020}.} In the period between 2006 and 2009, the supply of Colombian cocaine fell from 522 to 200 metric tons. At the same time, the homicide rate in Mexico tripled. The authors posit that exogenous supply reductions in upstream markets, e.g. Colombia, raised the retail price of cocaine in the United States, thereby increasing the revenues to be made from cocaine distribution.\footnote{This rests upon the short run demand for cocaine being inelastic, a fact that is shown by \citet{becker2006}.} Consequently, Mexican DTOs intensified violent competition for territorial control of the drug trade. \citet{Castillo2020} find that during months marked by large cocaine seizures in Colombia, drug--related homicides in Mexico increased dramatically.
+
+In addition to this hypothesis, much of the literature has attributed the exorbitant homicide rate in Mexico from 2006 to 2012 to President Felipe Calder\'{o}n's "War on Drugs."\footnote{Felipe Calder\'{o}n was part of the National Action Party (PAN).} Felipe Calder\'{o}n's presidency marked an inflection point in the Mexican government's approach to the drug trade. Following years of passive cohabitation between the Mexican government and the various drug trafficking organizations, he declared a war on drugs upon taking office in December 2006.\footnote{For the majority of the twentieth century, a single party---the Institutionalized Revolutionary Party (PRI)---dominated Mexican politics. The PRI historically took a passive stance toward the drug trade, and widespread drug--related corruption is well documented. In 2000, the first opposition president was elected: Vicente Fox of the PAN party. While Vicente Fox did implement some security reforms, none were as aggressive as Calder\'{o}n's. Additionally, Calder\'{o}n's crackdowns were largely unanticipated, as the election was decided by a narrow margin and security issues played a small role in his campaign \citep{dell2015}.} In his second week in office, he deployed 6,500 troops to Michoac\'{a}n, marking the start of his war on drugs. His aggressive approach led to increased confrontations between Mexican authorities and drug traffickers. Additionally, the so--called Kingpin strategy implemented by the Calder\'{o}n administration sought to kill or capture the leaders and prominent members of these organized criminal groups, whereas illicit crop eradication efforts were diminished. Throughout his presidency, more than 45,000 troops, along with state and federal police forces, were deployed in the war against drug trafficking. Hand in hand with his proactive anti--drug policies, however, came dramatic increases in violence which are often attributed to the war on drugs itself. 
+
+In fact, \citet{dell2015} shows that drug--related violence increased substantially following close elections of PAN mayors. The empirical evidence suggests that the violence was a result of rival drug trafficking organizations trying to usurp territories after crackdowns weakened incumbent rivals. Another study suggests that Mexico was locked in a self-reinforcing violent equilibrium during the Calder\'{o}n presidency. In the first half of the cycle, drug traffickers battle for turf to control regions with the most value to the drug-trade. Via its effects on the electorate which generate pressure within the political system to prosecute those who are elevating the homicide rates, these turf wars increase the incentives for the government to enforce the law. As the government captures or kills traffickers, organizations are fractured and battle over the selection of a new leader, while rival criminal groups take advantage of weakened competitors to wrest control of more territory and control over the drug--trade \citep{rios2013}. Further studies attribute the rising violence in the 2000s and 2010s to trade--induced manufacturing job loss \citep{dell2019}, the expiration of the United State's 2004 Federal Assault Weapons Ban \citep{dube2013}, shocks to the global price of maize \citep{dube2016}, and a slew of other factors.\footnote{The first implementation of the North American Free Trade Agreement (NAFTA) and the resulting increased flow of trade to the U.S. has also been shown to contribute to drug--related violence. By making the northern border areas more lucrative in both legal and illegal trade, drugs could move more freely into American territory over land, air, and sea side by side with the newly increased flow of legitimate goods \citep{Calderon2013}.} 
+
+Far from ridding Mexico of DTOs, the war on drugs simply rearranged Mexico's organized crime landscape. First, it displaced---but did not eradicate---existing drug trafficking networks \citep{dell2015}. In response to the increased militarization and the intensification of interdiction policies in Mexico, DTOs sought out new drug smuggling routes. Additionally, the criminal landscape itself was permanently altered. For example, the war on drugs left Mexico with various fragmented organized crime groups. There was a notable proliferation of DTOs as a result of the killing or capturing of important leaders. In fact, during Calder\'{o}n's presidency, over half of Mexico's drug capos were killed or captured \citep{Calderon2013}. In 2006, there were six major DTOs operating in Mexico; by mid 2011, that number had increased to 16 \citep{guerrero2011}. The inability of weakened criminal groups to dominate the drug trade forced them to diversify the criminal activities in which they participated \citep{rios2018}. While continuing to participate in the drug trade, fragmented cells engaged increasingly in petty crimes, kidnapping, extortion, auto theft, human trafficking, and fuel theft \citep{rios2018, jones2013youth}.\footnote{It is worth mentioning that there is an important distinction here. Unified, powerful cartels can be categorized as national cartels. These groups exercise violence mainly through the execution of rivals and via aggressions or confrontations with other DTOs and authorities. They very rarely do so towards civil society. For these groups, violence is a mechanism by which to maintain or gain control of drug trafficking routes, entry points into the United States, and distribution markets. On the other hand, smaller groups can be categorized as local organizations or gangs. These groups primarily exercise what is called mafia ridden violence. This includes kidnapping, extortion, executions, and vehicle and fuel theft. These groups also compete for territorial control and have a marginal role in drug trafficking. Of course, these lines can be blurred, and National cartels often engage in mafia--type violence to finance its army while engaged in conflict with authorities or other cartels \citep{guerrero2011}.} In 2017, the Mexican government identified 9,509 clandestine fuel extraction points--- marking a 38 percent increase over 2016 which was already 30 percent higher than the figure for 2015 \citep{rios2018}. Previous research has also shown that Mexico is experiencing increasing violence in territories surrounding oil and gas pipelines \citep{rios2018, francovivanco2023}. 
+
+This new criminal landscape following the Calder\'{o}n presidency can be broken down into two distinct time periods, each characterized by a unique pattern of violence and coinciding with the distinct approaches adopted by subsequent presidential administrations to combat organized crime in the nation. Throughout this paper, I will refer to the years of initially declining and then resurging homicide rates under President Enrique Pe\~{n}a Nieto as the "Interim Period" (2013-2016), and the period of persistent, historically high homicide rates under Andr\'{e}s Manuel L\'{o}pez Obrador as the "Resurgence Period" (2017-2024).
+
+Enrique Pe\~{n}a Nieto's presidency marked a strategic shift away from Calder\'{o}n's militarized approach. The new administration withdrew federal troops from key conflict zones, including Michoac\'{a}n in 2014, and de-emphasized direct confrontation with DTOs in favor of reducing visible violence. While continuing the broader kingpin strategy, his administration placed a larger emphasis on the reduction of violence than the dismantling of existing cartels \citep{mccormik2019}. During the first two years of his presidency, the national monthly homicide rate roughly halved. However, this relative calm proved fragile and short-lived. The reduced enforcement and militarization created an environment in which fractured criminal organizations could reorganize and consolidate power. The Jalisco Cartel Nueva Generaci\'{o}n (JCNG), formed from the remnants of groups splintered during Calder\'{o}n's crackdowns, emerged during this period and rapidly expanded its territorial control, challenging the weakened Sinaloa Cartel for dominance \citep{rios2018}. New trafficking routes that had emerged during the Calder\'{o}n era---initially disrupted and contested---became entrenched as enforcement ceased along these corridors. By late 2015, the homicide rate began climbing again, signaling the end of the brief interregnum and the beginning of a new surge in violence.
+
+When Andr\'{e}s Manuel L\'{o}pez Obrador assumed office in December 2018, Mexico was already experiencing a resurgence in drug-related violence. In fact, the first six months of 2019 were the most violent in Mexico's recent history, with 17,608 people killed between January and June \citep{mccormik2019}. Unlike his predecessors, AMLO adopted an explicitly non-confrontational stance toward organized crime, encapsulated in his policy slogan "abrazos, no balazos" (hugs, not bullets). His administration deprioritized interdiction and enforcement efforts, focusing instead on addressing what he characterized as the root causes of crime through social programs \citep{mccormik2019}. Shortly after taking office, AMLO publicly declared that "there is officially no more war," signaling a fundamental reorientation away from anti--cartel military operations \citep{quackenbush2019}. Somewhat contradictorily, however, he simultaneously advocated for the creation of a national guard to fight cartels. In 2022, Mexico's Congress passed a reform that allowed the military to continue carrying out domestic law enforcement until 2028 \citep{CriminalViolenceInMexico2025}. Thus, AMLO's administration simultaneously softened the symbolic and normative framing of state--cartel relations through its "abrazos, no balazos" campaign, while preserving---and in some cases entrenching---the militarized institutions responsible for direct confrontation with organized crime. The combination of his non--confrontational discourse and continued military engagement created a hybrid security environment in which cartels faced neither full deterrence nor complete accommodation. Rather than declining, homicide rates remained elevated throughout his presidency, sitting rather constantly near their historic peaks from 2018 through 2024. During this period, Mexican DTOs continued to dominate the U.S. illicit drug market, maintaining their position as the primary suppliers of cocaine, marijuana, and methamphetamine \citep{unodc2017}. Moreover, the Sinaloa Cartel and JCNG dramatically expanded their role in fentanyl production and distribution, with both organizations estimated to earn billions of dollars annually from the fentanyl trade alone \citep{dea2024}.
+
+The adverse effects of this chronic drug--related violence epidemic in Mexico are well documented. Crime and violence committed by DTOs is costly and engenders distortions for all economic stakeholders \citep{jaitman2017}. Elevated homicide rates have been shown to have negative effects on labor market participation, unemployment rates, earned income, and the proportion of local business owners. Additionally, inter-cartel battles have significant negative effects on local economic activity \citep{Calderon2013}. Drug--related violence has also been shown to have dramatic consequences on socioeconomic development. It diminishes trust in institutions; reduces opportunities to fulfill economic, social, and individual potential; and results in loss of assets and loss of life \citep{imf2024violent}. Overall, Mexico's government estimates that drug violence costs the country approximately 1.12 percent of total GDP annually \citep{jones2013kingpin}.\footnote{\citet{rios2013} estimates that drug trafficking related violence in Mexico results in economic losses in the area of 4.3 million USD annually since 2006.} Lastly, there is a more subtle effect of drug--related violence. The fear of being a victim of crime can induce behavioral changes, causing people to stop leaving their homes at night, using public transportation, or driving on highways \citep{diazcayeros2017}.
+\section{Data}
+\subsection{National Survey of Occupation and Employment}
+The \textit{Encuesta Nacional de Ocupaci\'{o}n y Empleo} (ENOE), published by the Mexican National Institute of Statistics and Geography (INEGI), is a rotating panel that surveys households for five consecutive quarters. Using the date in which the interview was conducted, I construct an unbalanced monthly panel where each individual is observed roughly every three months. I keep all individuals living in urban municipalities between 2007 and 2024. Only individuals who completed all five quarterly surveys are kept.
+
+At the individual level, the survey asks respondents whether they are currently enrolled in school at the time the survey is administered. The enrollment question is the foundation upon which the main outcome variable in this paper is constructed: a school dropout indicator. The survey also provides information on the monthly labor income of each member in the household, the number of people in the household, and several other employment statistics of each person in the household. These variables are then aggregated to construct municipal and household level controls.\footnote{For details on the construction of the dropout indicator and other ENOE controls, refer to the Data Appendix.} 
+
+Table ~\ref{tab: DropoutStats} displays aggregated descriptive statistics for raw dropout rates across the whole sample and by schooling cohorts. Evidently, older children consistently exhibit higher dropout rates. Additionally, there is a large discontinuity in the dropout rates of children in high school, with the total rate increasing from \dRateSecondary\ \% in Secondary School to \dRateHigh\ \% in High School. It is worth noting that the minimum legal working age in Mexico is 15 years old.\footnote{As laid out in Article 22 in the \textit{Ley Federal del Trabajo} (Federal Labor Law).} Thus, this substantial jump is at least partially explained by children leaving school to enter the workforce (even though compulsory education in the country is still the completion of twelve years of schooling).\footnote{As laid out in Article 6 of the \textit{Ley General de Educaci\'{o}n} (General Law of Education).} Furthermore, the dropout rate among men is higher than that of women across the board. Lastly, the panel is large, containing\totalKids\ children between the ages of six and eighteen. This makes the ENOE the most accurate data source for measuring high frequency school dropout statistics in Mexico.
+
+\begin{table}[H]
+\caption{Summary Statistics: Dropout Rate}
+\label{tab: DropoutStats}
+\centering
+\footnotesize
+\input{../input/Tables/dropout_stats}
+\vspace{2mm}
+\begin{minipage}{0.95\linewidth}
+\scriptsize \singlespacing
+\textit{Notes:} This table reports aggregate dropout rate statistics in the ENOE panel in from 2007-2024. It shows both overall statistics as well as dropout rates by schooling age, where groups correspond to official Mexican schooling levels. Dropout rates are calculated as the share of individuals who reported being enrolled in school during their first interview but are no longer enrolled in a subsequent month. Each individual can only count as one dropout for the purposes of these statistics.  
+\end{minipage}
+\end{table}
+
+Given the estimates in Table~\ref{tab: DropoutStats}, it is evident that there is very little dropout activity among primary school children (ages 6-11). Despite comprising \pctPrimKids \% of the sample---vastly over-represented relative to secondary and high school students---primary school children account for only \pctPrimDropouts \% of total dropouts, a rate much lower than older cohorts. Additionally, virtually none of the hypothesized channels linking violence to school dropout apply to primary-aged students. First, labor market opportunities---a key pull factor for older youth---are essentially nonexistent for children under 12, both in formal employment and in illicit activities. Criminal organizations primarily recruit adolescents and young adults, not elementary school children.\footnote{It is well documented that organized crime groups in Mexico recruit large numbers of children. While official statistics are not available, it is estimated that some 30,000 children are employed by criminal groups in Mexico. As measured by military detention statistics, the majority of these are adolescents and young adults aged 13-17 \citep{redim2011}.} Second, the income effects of violence primarily operate through disruption to adult employment and household earnings, but primary school attendance decisions are less responsive to these economic shocks than secondary or tertiary education. Third, insecurity along routes to school, while potentially affecting all age groups, appears less binding for younger children who are more likely to be accompanied by adults or attend neighborhood schools within walking distance. For these reasons, I exclude primary school children from the main analysis and focus on secondary and high school students (ages 12--18), for whom the theoretical mechanisms are more plausible and the empirical effects more pronounced. 
+
+Looking over time, official INEGI dropout rate statistics indicate that secondary and high school dropout rates have been on a downward trend. Similarly, Figure~\ref{figure:enrollment} displays the average monthly enrollment rate from the ENOE data over time. Consistent with annual government statistics, the enrollment rates in Mexican schools increased consistently between 2007 and 2015. Since then, they have been roughly flat around 91\%, except for a large decrease during COVID. 
+
+Table~\ref{tab:EnoeStats} reports summary statistics for the sample of all individuals in the ENOE panel. The average monthly labor income among employed adults is \$\Avgincome\  (\$\AvgincomeUSD\ USD), slightly lower than the national average but consistent with certain estimates.\footnote{The ENOE, being a survey of occupation and employment, only reports labor income, not total income. Thus, these figures may systematically under-report income figures for households that rely on non-labor income streams.} Additionally, average individual and household incomes are notably higher during the Interim period than in either of the two surrounding periods. This pattern likely reflects the macroeconomic context of each period: the War on Drugs period coincides with the Global Financial Crisis, which severely contracted economic activity in Mexico, while the Resurgence period encompasses the COVID--19 pandemic and its associated economic disruptions. The Interim Period, by contrast, was a period of relative macroeconomic stability, which is reflected in the higher average incomes observed during these years.
+\begin{table}[H]
+\caption{Summary Statistics: ENOE}
+\label{tab:EnoeStats}
+\centering
+\footnotesize
+\input{../input/Tables/mun_summary_stats}
+\vspace{2mm}
+\begin{minipage}{0.95\linewidth}
+\scriptsize \singlespacing
+\textit{Notes:} This table displays summary statistics of several variables in the ENOE data. Averages are computed at the municipality--month--year level using ENOE microdata, then averaged to the municipality level, and once again across all municipalities. Household income is the sum of monthly income among all members of the household and household employment rate is calculated for adult members of the household only. Weekly hours worked is calculated by taking the average among working persons. Income figures similarly take an average for all persons with non-zero income. All income figures are reported in real Mexican pesos. Using the base year of December 2023=100, all figures are in inflation-adjusted Mexican Pesos. The numbers in parentheses present the figures in inflation adjusted USD and using the same reference year. The conversion was done using the monthly Mexican Pesos to U.S. Dollar Spot Exchange Rate from 2007 to 2024. The normalizations and exchange rate conversions were calculated using data from FRED.
+\end{minipage}
+\end{table}
+
+The construction of these municipal controls from micro, survey data is also of great value. Instead of relying on yearly municipal aggregates from official government data, the ENOE allows for the creation of monthly municipal level controls from the bottom up. That is, using the same individuals and households that are used to study schooling decisions in the analysis sample. This is arguably a more consistent approach to creating municipal level controls as it captures the financial and demographic conditions of the households and students which comprise the outcome variable of interest.\footnote{Refer to Table~\ref{tab:sample_construction} for details of the sample sizes at each stage of the data construction process and Table1~\ref{tab:sample_time_period} for samples by time period.}  
+
+\subsection{Homicides}
+To calculate homicide rates I use all national official registered death statistics, published by INEGI. Combining deaths reported as homicides with annual municipal population data from CONAPO, I construct a monthly homicide rate per 10,000 inhabitants in each municipality.\footnote{Assuming a constant monthly growth rate within each municipality, I interpolate monthly population figures between annual observations, producing a smoother and more continuous population measure at the monthly level.} 
+
+Figure ~\ref{figure:HomTS} shows the monthly national and average municipal homicide rates across time. At the national level, the monthly homicide rate per 10,000 people increased dramatically between 2007 and 2012---coinciding with Calder\'{o}n's war on the cartels. From a low of \CalderonMinHR\ in \CalderonMinMonthName\ \CalderonMinYear\ to a high of \CalderonMaxHR\ in \CalderonMaxMonthName\ \CalderonMaxYear\ , the homicide rate increased by a staggering {\fpeval{round((\CalderonMaxHR - \CalderonMinHR) / \CalderonMinHR ,2)*100}\% in roughly three and a half years.  Following a rather sharp decline between 2013 and 2016, it rose again in 2016 and was roughly constant at historically high rates at the end of the Pe\~{n}a Nieto presidency and throughout the entirety of Lopez Obrador's term.\footnote{It is worth noting that the rise of the homicide rate around 2015 to historical highs throughout 2018--2024 roughly coincides with the period in which school enrollment rates stopped increasing, displayed in Figure~\ref{figure:enrollment}.} Concretely, it doubled over the span of about five years---from its low of \InterimMinHR\ in \InterimMinMonthName\ \InterimMinYear\ to its high of \RespikeMaxHR\ in \RespikeMaxMonthName\ \RespikeMaxYear. To put these numbers in context, the population of Mexico in \RespikeMaxYear\ was roughly 126 million people. A monthly homicide rate of \RespikeMaxHR\ per 10,000 inhabitants suggests that around \fpeval{\RespikeMaxHR * 126000000/10000} people were murdered in Mexico in the month of \RespikeMaxMonthName\ \RespikeMaxYear\ alone.
+
+\begin{figure}[H]
+    \centering
+     \caption{Homicide Rates In Mexico Over Time}\includegraphics[scale=0.7]{../input/Figures/Homicide_TS.pdf}
+    \label{figure:HomTS}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This figure uses official death records published by INEGI to calculate national and average municipal monthly homicide rates per 10,000 inhabitants. The national measure takes the sum of all homicides across the country in a given month and divides it by the total population in that month, calculated as the sum of all municipal populations. The average municipal homicide rate takes a simple average of all the individual municipal homicide rates. 
+    \end{minipage}
+\end{figure}
+
+Also, although there are long term trends in the national homicide rate, there is clearly substantial variation from month to month and across presidential terms. The temporal variation can be seen in Figure ~\ref{figure:HomTS} and in Appendix Table ~\ref{tab:homicide_summary}. Additionally, there is a significant concentration of violence in specific municipalities. This is made evident by the average municipal homicide rate almost always lying below the national rate. The geographic concentration of violence is even more apparent in Figure ~\ref{figure:totalHeatMap}. Over time, violence has become increasingly localized, as evidenced by the separation of the national and the average municipal rates in Figure ~\ref{figure:HomTS} and in the time period specific maps: Appendix Figures ~\ref{figure:warHeatMap}, ~\ref{figure:interimHeatMap}, and ~\ref{figure:respikeHeatMap}. 
+\begin{figure}[H]
+    \centering
+     \caption{Geographic Concentration of Homicide Rates: 2007-2024}\includegraphics[scale=0.8]{../input/Figures/total_hom_map.pdf}
+    \label{figure:totalHeatMap}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This map displays average homicide rates per 10,000 population across Mexican municipalities for the full sample period (2007-2024). Municipal-level homicide rates are calculated by summing total homicides within each municipality-year and dividing by end-of-year population (December). These annual rates are then averaged within each municipality over 2007-2024. Color bins are based on quintiles of the full-sample distribution of average municipal homicide rates, with darker red shading indicating higher homicide rates.
+    \end{minipage}
+\end{figure}
+These geographic patterns of violence coincide with the regions that are controlled by the most powerful drug trafficking organizations in Mexico: The Sinaloa Cartel, JCNG, La Nueva Familia Michoacana, and Los Zetas Vieja Escuela. It is also worth noting the striking proximity of the dark red municipalities in Figure ~\ref{figure:totalHeatMap} to the Pacific coast of Mexico; a fact that will be explained later in the paper and exploited in the analysis.  
+
+\subsection{Cocaine Seizures In Colombia}
+As part of the construction of my instrument, data from the Colombian Ministry of Defense on monthly cocaine seizures is used. This paper exploits exogenous variation in the supply of cocaine to instrument homicide rates in Mexico. Table~\ref{tab:Seizure Summary} displays summary statistics for the average monthly quantity seized over all years and in each of the three time periods.\footnote{I restrict my attention to large seizures only, as defined by a seizure event capturing more than 500 kg. I also restrict the sample to seizure events occurring only in the coastal regions of the country. Both of these restrictions were suggested by Professor Daniel Mej\'{i}a, who kindly shared this data with me.}  A sizable amount of cocaine is seized in large captures by the Colombian government each month. In the whole sample, there is an average of \nSeizeWholeSamp\ large seizure events per month, amounting to a monthly average of \kgSeizeWholeSamp\ metric tons. Consistent with Figure~\ref{figure:SeizuresTS}, there is a large increase in both the mean quantity seized and the average number of seizure events in the resurgence period. Note that the periods marked by abnormally high violence, 2007-2012 and 2017-2024, are also those with higher average quantities of cocaine interdiction in Colombia. 
+\begin{table}[H]
+\centering
+\caption{Monthly Cocaine Seizures}
+\label{tab:Seizure Summary}
+\input{../input/Tables/seizure_stats}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table uses official statistics from the Colombian ministry of defense on monthly cocaine seizures. It restricts attention to large seizure events, defined as an interdiction capturing more than 500kg of cocaine. Panel A reports  quantities in Metric Tonnes and Panel B reports statistics for monthly seizure events. 
+    \end{minipage}
+\end{table}
+Notably, the variation in quantity seized is considerable, with a standard deviation of \sdSeizeWholeSamp\ metric tons. Additionally,  variation in monthly cocaine seizures is mostly idiosyncratic---e.g. driven by whether interdiction operations are successful and by factors exogenous to Mexico like politics or funding in Colombia.\footnote{For more details, see \citet{Castillo2020}.} 
+
+Considering the relationship between Colombian seizures and violent crime in Mexico, they co--vary significantly with each other---a fact which I will present quantitatively in the first stage results, below.
+
+Taken together, these facts imply that there is a large and plausibly exogenous variation in Colombian cocaine seizures which appears to be highly correlated with the monthly variation in homicide rates in Mexico.  
+
+\subsection{Geographic Data}
+Finally, to construct the full instrument, I interact monthly cocaine seizures with the distance from a municipality to the nearest point on Mexico's Pacific coast.\footnote{This interaction-based identification strategy follows a large literature that exploits plausibly exogenous aggregate shocks interacted with cross-sectional exposure measures, including \citet{dubevargas}; \citet{morenolouzada2025}; and, \citet{bartik1991}} Geographic data are taken from INEGI's \textit{Marco Geoestad\'{i}stico} and the Stanford University Earthworks Library.} This geographic component scales upstream supply shocks to cocaine production in Colombia by a municipality's predicted exposure to trafficking activity, as proximity to the Pacific coast proxies for a municipality's relative importance along Mexico's cocaine trafficking routes. This fact is discussed at length in Section 4. Importantly, distance to the Pacific is time-invariant, and identification comes from differential exposure to common upstream shocks rather than from cross-sectional variation alone. Refer to Appendix Figure~\ref{figure:borderMap} for a visualization of these data. Appendix Figure~\ref{figure:geoDist} displays the distribution of distances to the Pacific across Mexican municipalities, highlighting substantial geographic heterogeneity in exposure to upstream supply shocks in the narcotrafficking industry. See the Data Appendix for additional details on the construction of geographic variables and data sources.
+
+
+\section{Empirical Strategy}
+The probability that student $s$ residing in municipality $i$ drops out of school in year $j$ and month $t$ is modeled as a linear function of the local homicide rate ($h_{i,j,t}$), observable municipal--level characteristics ($\mathbf{X}_{i,j,t}$), observable individual-- and household--level characteristics ($\mathbf{W}_{s,i,j,t}$), year--month fixed effects ($\delta_{j,t}$), individual fixed effects ($m_s$), and unobservable student--, municipal--, and time--specific factors ($\varepsilon_{s,i,j,t}$). The primary outcome variable, $y_{s,i,j,t}$, is an indicator equal to one if student $s$ drops out of school in municipality $i$ in year $j$ and month $t$, and zero otherwise. The unit of analysis is thus an individual--year--month observation.
+
+Formally, this relationship can be written as a fixed-effects linear probability model (LPM):
+\begin{equation}
+\label{eq:FE}
+\begin{aligned}
+y_{s,i,j,t} = \alpha_1 + \alpha_2 h_{i,j,t} + \mathbf{X}_{i,j,t}'\alpha_3 + \mathbf{W}_{s,i,j,t}'\alpha_4 + \delta_{j,t} + m_s + \varepsilon_{s,i,j,t},
+\end{aligned}
+\end{equation}
+where, as in the rest of the paper, $h_{i,j,t}$ is measured as the homicides rate per 10,000 inhabitants in municipality $i$ in year $j$ and month $t$. The challenge in interpreting $\alpha_2$ as a causal effect arises from both reverse causality and omitted variable bias. Changes in school attendance behavior may affect local violence, and unobserved factors may jointly influence educational decisions and homicide rates. Moreover, because violence is rarely random and many of its determinants are unobserved, the assumption of conditional unconfoundedness in fixed-effects models is generally weak \citep{bauer2016}. It is therefore highly plausible that time-varying unobserved shocks simultaneously affect exposure to violence and human capital investment decisions. As a result, the specification in Equation~\eqref{eq:FE} should be interpreted as descriptive and does not, on its own, identify a causal effect of high-violence drug-trade equilibria on school dropout decisions.
+
+To address this concern, I instrument the homicide rate with the interaction between the quantity of cocaine seized by Colombian authorities in year $j$ and month $t$, $c_{j,t}$, and the distance from municipality $i$ to the nearest point along Mexico's Pacific coast, $d_i$. In the following section, I describe the model I estimate and the rationale for this choice of instrument (as well as argue for its validity).
+\subsection{The Model}
+My instrument is thus the interaction between distance to Pacific coast and the quantity of cocaine seized by Colombian authorities in any given month. As discussed above, the identification assumption is that the interaction between the distance and the quantity of cocaine seized in Colombia only affects the human capital investment decisions of children in Mexico through changes in the homicide rate. 
+
+The first stage of the instrumental variables strategy is given by:
+\begin{equation}
+\label{eq:Stage1}
+\begin{aligned}
+\ln \left(1 + h_{i,j,t} \right)
+=& \gamma_1
++ \gamma_2 \left[ d_i \times c_{j,t} \right]
++ \mathbf{X}_{i,j,t}' \Gamma
++ \mathbf{W}_{s,i,j,t}' \Theta
++ \delta{j,t}
++ m_s
++ \nu_{i,j,t},
+\end{aligned}
+\end{equation}
+The second stage is then given by:
+\begin{equation}
+\label{eq:Stage2}
+\begin{aligned}
+y_{s,i,j,t}
+=& \beta_1
++ \beta_2 \widehat{\ln \left(1 + h_{i,j,t} \right)}
++ \mathbf{X}_{i,j,t}' \Gamma
++ \mathbf{W}_{s,i,j,t}' \Theta
++ \delta_{j,t}
++ m_s
++ \varepsilon_{s,i,j,t}.
+\end{aligned}
+\end{equation}
+ The term $\widehat{\ln \left(1 + h_{i,j,t} \right)}$ denotes the fitted values from the first-stage regression. The vector $\mathbf{X}_{i,j,t}$ contains observable municipal--level characteristics; $\mathbf{W}_{s,i,j,t}$ contains observable individual-- and household--level characteristics. In all specifications, the homicide rate is measured per 10,000 inhabitants and transformed using $\ln(1 + h_{i,j,t})$ to accommodate observations with zero reported homicides. I include individual fixed effects to account for all time--invariant observed or unobserved differences across individuals. Lastly, I include time fixed effects at the month--year level to account for any time specific shocks that may have affected all individuals in the sample.
+\subsection{Instrument}
+Before showing the primary results, I will first discuss the validity of the instrumental variable used. In this section, I thus briefly discuss the intuition behind the instrument, provide some brief tests supporting its validity, and present the first stage results from the specification in Eq. \eqref{eq:Stage1}. 
+
+\subsubsection*{Instrument Choice}
+I begin by describing the instrumental variable used in this analysis. The identifying variation relies on the interaction between exogenous shocks to the upstream supply of cocaine and a municipality's exposure to drug trafficking routes within Mexico. Monthly cocaine seizures capture plausibly exogenous disruptions to cocaine supply originating in producing countries, such as Colombia, and are orthogonal to contemporaneous local conditions in Mexican municipalities (as shown in the following section).\footnote{While the mechanism through which the instrument operates is the rising retail price of cocaine in the United States, I do not directly use price data for two reasons. First, high-frequency price data at the monthly level are not available for the sample period. Second, retail street prices for cocaine remain relatively stable over time, suggesting that supply disruptions primarily affect profit margins at intermediate stages of the distribution chain rather than final consumer prices. The instrument therefore captures variation in the profitability of cocaine trafficking, which drives the intensity of territorial conflict among Mexican DTOs.}
+
+These upstream supply shocks do not affect all locations equally. Instead, their local impact depends on a municipality's importance within the drug trafficking network. This can also be interpreted as their sensitivity, or exposure, to the shock. I proxy this exposure using the distance from a municipality to the Pacific coast of Mexico. The Pacific corridor has long served as a primary entry and transit route for cocaine shipments arriving by boat or aircraft from South America before being transported northward toward the United States.\footnote{Approximately 70 percent of Colombian cocaine is transported to Mexico via Pacific routes, 20 percent via the Atlantic, and 10 percent via aerial routes originating from Colombia, Venezuela, or the Caribbean \citet{unodc2010}.} Municipalities located closer to the Pacific coast are therefore more likely to lie along key trafficking routes and to experience heightened competition among criminal organizations following changes in the profitability of the cocaine trade. When upstream supply shocks increase the expected revenues from trafficking, competition for control over these routes intensifies, leading to a disproportionate rise in violence in more exposed municipalities.
+
+This argument is consistent with the geographic distribution of violence shown in Figure~\ref{figure:totalHeatMap}. Municipalities with the highest homicide rates (darkest red) are disproportionately concentrated along Mexico's Pacific coast, a pattern that aligns with the proposed mechanism above. In what remains of this section, I present several tests in support of the instrument's validity and discuss the associated first--stage results. 
+
+
+\subsubsection*{Instrument Validity}
+In addition to the discussion above, I provide several tests of the assumption that cocaine seizures by the Colombian authorities capture variation in the supply of drugs being supplied to and transported through Mexico, but are uncorrelated with any other factors that may influence human capital investment decisions. 
+
+First, I estimate the relationship between Colombian cocaine seizures and seizures of marijuana, cocaine, heroin, methamphetamine, and opium (as well as total drug interdiction) by Mexican authorities, using data obtained from the Mexican Defense Ministry (SEDENA).\footnote{Unfortunately, the data is only publicly available at a yearly frequency and from 2007-2018. So, I am only able to estimate these relationships using 12 observations.} The results of this analysis are shown in Table~\ref{tab:mex_drugs}. There is no significant correlation between Colombian cocaine seizures and seizures of any drugs by the Mexican army or police from 2007 to 2018. This suggests that Colombian seizure efforts are not related to Mexican anti-narcotrafficking policies, which may have a direct influence on human capital investment decisions through enforcement intensity or by altering drug-trade dynamics.
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Correlation Between Colombian Seizures and Mexican Drug Interdiction Efforts}
+\label{tab:mex_drugs}
+\centering
+\input{../input/Tables/drug_correlations}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table reports year-level correlations between Colombian cocaine seizures and drug interdictions in Mexico. The unit of observation is the calendar year. The key regressor is the total quantity of cocaine seized in large seizure events in the coastal districts of Colombia in a given year, measured in metric tonnes. Dependent variables are annual Mexican drug seizures, also measured in metric tonnes, reported separately for marijuana (Column 1), cocaine (Column 2), heroin (Column 3), methamphetamine (Column 4), opium (Column 5), and the total across all substances (Column 6). Each column reports a separate OLS regression of the indicated Mexican seizure outcome on Colombian cocaine seizures. No additional controls are included. Mexican seizure data are compiled from administrative records from SEDENA. Colombian seizure data are aggregated from Colombian Ministry of Defense administrative records. All seizure quantities are converted to metric tonnes for comparability. Standard errors are heteroskedasticity-robust in all specifications. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+Additionally, I show in Table~\ref{tab:econ_validation} that Colombian interdiction efforts are uncorrelated from various factors that may have a direct effect on households' human capital investment decisions. Evidently, cocaine seizures in Colombia exhibit no relationship with municipal employment rates (Column 1), average income (Column 2), or average weekly hours worked (Column 3). At the household level, it also has no significant correlation with the adult household employment rate (Column 4), total household income (Column 5), or the average weekly hours worked among employed people in the household (Column 6). Finally, it also uncorrelated with national real GDP. Taken together, the findings in Table~\ref{tab:econ_validation} suggest that cocaine seizures from Colombia do not affect human capital investment decisions through their impacts on labor market activity, legal economic activity, or broader national economic conditions.  
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Correlation Between Colombian Seizures and Economic Indicators}
+\label{tab:econ_validation}
+\centering
+\input{../input/Tables/placebo_seizures}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table reports placebo regressions testing whether Colombian cocaine seizures are systematically correlated with Mexican economic outcomes at the municipal, individual, or national level. The key regressor in all specifications is Colombian cocaine seizures, measured in metric tonnes. Columns (1)--(3) report municipal--level regressions of employment rates, average income, and average weekly hours worked on Colombian seizures. These regressions include municipality fixed effects and month--by--year fixed effects and are estimated on municipalities with population exceeding 15,000. Standard errors are clustered at the municipality level. Columns (4)--(6) report individual--level regressions of household adult employment rates, total household income, and household adult hours worked. These specifications include individual fixed effects and month--by--year fixed effects. Standard errors are clustered at the individual level. The sample excludes children aged 6--11 and observations from municipalities with population below 15,000. Column (7) reports a national--level regression of Mexican real GDP every three months on Colombian seizures, controlling for year fixed effects. GDP is measured in millions of real pesos and is seasonally adjusted. Standard error in this column is heteroskedasticity-robust. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\subsubsection*{First Stage Results}
+The first-stage relationship is strong and precisely estimated. The Kleibergen--Paap rk Wald F--statistic, which accounts for clustering at the individual level, is \Fstat, comfortably above conventional weak-instrument thresholds. The coefficient on the interaction between cocaine seizures and distance to the Pacific coast is {\fpeval{\FirstStageCoef *10000000}$\times 10^{-7}$ (SE = {\fpeval{\FirstStageSe *100000000}$\times 10^{-8}$)}, indicating that municipalities closer to the Pacific coast experience a significantly larger increase in homicides following upstream supply shocks.
+
+To put this coefficient in context, the estimate implies that moving one standard deviation---{\fpeval{round(\DistanceSd,2)}} km ($\approx$ 119 miles)---closer to the Pacific coast (while holding cocaine seizures at their mean over the entire sample) is associated with an approximately {\fpeval{round(\DistanceFirstStageEffect * 100,2)}} percent increase in the homicide rate.\footnote{Referencing the specification in Eq.~\eqref{eq:Stage1}, where the outcome is defined as $\ln(1+h)$, I recover the percentage effect by exponentiating the estimated coefficient. Specifically, moving {\fpeval{round(\DistanceSd,2)}}~km closer to the Pacific coast corresponds to a change of $\Delta d = -{\fpeval{round(\DistanceSd,2)}}$ in distance, implying an approximate percentage change in the homicide rate of $\exp(\hat{\gamma_2}\,\Delta d\times\Bar{c})-1$.} While small in percentage terms, this effect is not trivial. Consider \RespikeMaxMonthName, \RespikeMaxYear\ as a benchmark. The national homicide rate in that month was \RespikeMaxHR\ and the country's population was approximately 126.8 million. A back of the envelope calculation implies that a  {\fpeval{round(\DistanceFirstStageEffect * 100,2)}} percent increase in the homicide rate corresponds to roughly {\fpeval{round(\DistanceFirstStageEffect * \RespikeMaxHR *126800000 / 10000,0)}} additional homicides nationwide in that month alone. This pattern is consistent with the interpretation that proximity to major Pacific trafficking routes amplifies local exposure to exogenous shocks in cocaine supply.
+\section{Results}
+\subsection*{Baseline Estimates}
+Having established that the instrument in question satisfies the necessary conditions, I next examine the effects of drug trafficking violence, proxied by the monthly municipal homicide rate, on the human capital investment decisions of children in Mexico. In the following analysis, all standard errors are shown in parentheses and clustered at the individual level to account for autocorrelation in the schooling decisions of individuals across time. 
+
+Table~\ref{tab:baseline_specs} reports the baseline estimates. Column (1) presents a simple OLS correlation between dropout and violence. The correlation is small and negative. This likely reflects selection bias: municipalities with systematically higher violence may have unobserved characteristics---such as lower baseline educational attainment, weaker institutions, or different demographic compositions---that independently affect dropout decisions. Column (2) estimates a TWFE model with a full set of municipal and household controls along with individual and month--by--year fixed effects, as laid out in Eq.~\eqref{eq:FE}. The introduction of individual fixed effects substantially attenuates the coefficient toward zero, suggesting that much of the negative correlation stems from time invariant individual or municipal characteristics that drive both violence and human capital investment decisions. Thus, to the extent that it can, the TWFE specification mitigates omitted variable bias. However, the TWFE estimate still fails to address potential reverse causality: increased dropouts might themselves cause higher levels of violence. 
+
+To get at the causal effect this analysis is attempting to isolate, the subsequent two columns report IV estimates on the entire pooled sample. Column (3) presents IV estimates with a minimalist set of controls: lagged violence and population only. Column (4) shows the results from the primary specification as laid out in Eq.~\eqref{eq:Stage2}. Both IV specifications yield positive point estimates, in contrast to the small negative OLS and tight-zero TWFE results.\footnote{One potential concern is that the analysis is conducted on a balanced panel of individuals observed in all five quarters, raising the possibility that the estimated effects reflect selective attrition rather than a causal impact on schooling. To address this concern, Table~\ref{tab:violence_attrition} examines whether violence predicts attrition in the full sample and across time periods. The estimated effects on attrition are small and statistically indistinguishable from zero in nearly all specifications. The only exception occurs during the interim period, where the coefficient is negative, indicating slightly lower attrition in more violent areas. These results suggest that differential attrition is unlikely to drive the main findings.} This reversal indicates that endogeneity biases were potentially masking a positive causal effect in the non-instrumented specifications. The IV estimates suggest that exogenous increases in violence do raise dropout rates, though the pooled effect across the entire sample period is modest in magnitude and statistically imprecise.
+
+The imprecision of the pooled estimates is partly a product of the length of the panel. The sample spans seventeen years, encompassing three distinct presidential administrations with sharply different security policies and three distinct eras of violence.\footnote{The decision to start the panel in 2007 was largely because that is where most of the literature focuses on.} Violence dynamics, cartel organizational structures, and the social and economic context of criminal activity evolved markedly across these periods. Therefore, the estimates in columns (3) and (4) may be attenuated by aggregating heterogeneous effects across these distinct violence regimes.
+
+Naturally then, the remaining three columns present estimates restricting the sample to each period of violence. Column (5) presents results for the 2007--2012 War on Drugs. Even though the point estimate is negative, the first stage is weak and the standard errors are large. This estimate lacks the statistical precision to draw any meaningful conclusions.\footnote{However, we can rule out this being solely due to a weak instrument given that the Quarterly results in Table~\ref{tab:main_iv_quarterly} display similar levels of imprecision despite having a much stronger first stage.} By contrast, first-stage diagnostics in the subsequent periods indicate strong relevance of the instrument. Column (6) displays estimates for the Interim Period (2013--2016). The negative point estimate of \InterimCoef\ is statistically indistinguishable from zero. Lastly, column (7) presents results for the Resurgence Period (2017--2024). With much more precision, this period's point estimate is large, positive, and statistically significant. The point estimate implies that a one--standard deviation increase in the monthly municipal homicide rate (\MunicipalHRSD per 10,000) from its mean in that time period increases the probability of dropping out among middle and high school students by approximately {\fpeval{round(\sdEffectRespike * 100,2)}} percentage points.\footnote{Similarly, we can back this out from the specification in Eq.~\eqref{eq:Stage2} as $\Delta \Pr(\text{dropout}) = \hat{\beta}_2 \times \bigl[ \ln(1 + h_{\text{mean}} + h_{\text{SD}}) - \ln(1 + h_{\text{mean}}) \bigr]$, where $\hat{\beta}_2$ is the estimated coefficient in Eq.~\eqref{eq:Stage2}.} For context, the mean dropout rate among middle and high school students in this time period is around 7.4 percent. The results are remarkably similar when aggregating at the quarterly level (see Appendix Table~\ref{tab:main_iv_quarterly}). 
+\begin{table}[H]
+\caption{Baseline Estimates}
+\label{tab:baseline_specs}
+\centering
+\scriptsize
+\input{../input/Tables/main_iv}
+\vspace{2mm}
+\begin{minipage}{0.95\linewidth}
+\scriptsize \singlespacing
+\textit{Notes:} This table reports estimates of the effect of homicide rates on school dropout decisions in the entire smaple period (2007--2024). The dependent variable is an indicator equal to one if the individual dropped out of school in the given month. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. Column (1) reports the estimates from a simple OLS regression. Column (2) reports the TWFE estimate with month--by--year and individual fixed effects. Columns (3) and (4) report instrumental variables estimates, where the homicide rate is instrumented using the interaction between Colombian cocaine seizures and a municipality's distance to the Pacific coast. Column (3) includes only minimal controls for total population and three lagged homicide rates. Column (4) reports the main instrumental variables specification with the full suite of municipal and household level controls. The remaining columns present the main specification restricted to the three different time periods. All specifications except for OLS include individual and month--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for the IV specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+\end{minipage}
+\end{table}
+Because the analysis relies on an instrumental variables strategy applied to outcomes constructed from survey data, the heterogeneity estimates are inherently imprecise. Indeed, a formal test of equality across the three period-specific coefficients fails to reject the null that the effects are the same across periods. Accordingly, the estimates presented above should be interpreted with caution. While they are consistent with a structural shift over time, the data do not provide sufficient statistical power to detect such a shift conclusively. That said, the point estimates differ meaningfully in magnitude, suggesting the possibility of an underlying structural change that cannot be precisely identified in this setting.
+
+With these caveats in mind, I proceed to estimate an additional set of heterogeneity specifications primarily for descriptive purposes. To shed further light on the mechanisms behind the main results, Table~\ref{tab:subgroup_specs} examines treatment effects across demographic and educational subgroups. The estimates in this table are highly suggestive that the effects during the Resurgence period are concentrated among high school students (Column 2) and are substantially larger for males (Column 3).\footnote{These estimates, while descriptive, are robust to the quarterly aggregation specifications as well. See Appendix Table~\ref{tab:subgroup_respike_quarterly}.} The estimates are indicative of meaningful effects: a one--standard deviation increase in the municipal homicide rate raises the probability of dropping out among high school students by approximately {\fpeval{round(\sdEffectRespikeHigh * 100,2)}} percentage points (from a mean dropout probability of roughly 9.5 percent), and the effect for males in this group is even larger, at roughly {\fpeval{round(\sdEffectRespikeMale * 100,2)}} percentage points (from a mean of 8 percent). These magnitudes suggest that the Resurgence period's surge in violence had a particularly strong impact on schooling decisions for older male students.\footnote{Table~\ref{tab:demographics by period} shows the demographic composition of the sample by time period. The results are likely not driven by significant demographic changes across time periods.} While remaining descriptive in spirit only, subgroup effects are imprecise throughout and in the full sample and in the earlier periods (see Appendix Tables~\ref{tab:subgroup_whole_samp}, \ref{tab:subgroup_war}, and \ref{tab:subgroup_interim}), suggesting that this pattern of heterogeneity is likely to be specific to the post--2017 resurgence in violence.\footnote{Once again, the estimates are consistent with the quarterly aggregation estimates in Appendix Tables~\ref{tab:subgroup_whole_quarterly}, \ref{tab:subgroup_war_quarterly}, and \ref{tab:subgroup_interim_quarterly}}} 
+
+\begin{table}[H]
+\caption{Subgroup Estimates: Resurgence (2017--2024)}
+\label{tab:subgroup_specs}
+\centering
+\scriptsize 
+\input{../input/Tables/subgroup_iv_respike}
+\vspace{2mm}
+\begin{minipage}{0.95\linewidth}
+\scriptsize
+\textit{Notes:} This table reports IV estimates of the primary IV specification in the resurgence (2017--2024), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given month. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and month--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+\end{minipage}
+\end{table}
+
+\subsection*{Robustness}
+Table~\ref{tab:robustness} reports a set of robustness checks. These include keeping attriters in the sample, changing the population threshold used to define rural municipalities that are removed from the analysis, using all cocaine seizures in the construction of the instrument (instead of only large seizure events in Colombian coastal departments), dropping months during which enrollment dropped significantly due to the pandemic, and using an indicator for the child being in school as the outcome variable instead of enrollment. The point estimates remain
+positive in the resurgence period and negative in the War on Drugs and Interim Periods, with similar magnitudes under a wide range of alternative specifications. 
+
+Additionally, Appendix~\ref{sec:quarterly_appendix}, reports a series of additional robustness checks where the results are shown again with the time period of analysis being the quarter-year, instead of the month, given that the ENOE is fielded quarterly. Keeping in mind the caveats laid out above, the results are remarkably similar to the month--year aggregation. 
+
+\subsection*{Discussion and Potential Mechanisms}
+The pattern of results across time periods and subgroups is highly suggestive of a specific mechanism: recruitment of adolescent males into drug trafficking organizations. Several alternative explanations may reasonably be ruled out based on the empirical findings. Most notably, concerns about physical safety are not likely to explain the observed effects. If violence--induced dropouts were driven by fear for personal safety---whether from exposure to violence en route to school or within school premises---one would expect to see effects concentrated among more vulnerable populations: younger students and female students. Instead, the results are indicative of precisely the opposite pattern: the largest effects seem to be among older students and among males rather than females. This inversion of the expected pattern likely rules out physical safety concerns as the primary mechanism.
+
+Instead, the observed subgroup heterogeneity is consistent with DTO recruitment practices. High school--aged males (15--18) show the largest and most significant dropout responses to violence, while effects for secondary school students (12--15) are smaller and less precisely estimated. This age gradient aligns with the organizational structure of criminal groups: older adolescents are recruited at higher rates and into full--time roles as enforcers, distributors, or armed operatives, while younger teenagers are recruited at lower rates and typically serve in more peripheral capacities as lookouts or errand runners that can be balanced with continued school attendance. Additionally, as children age and become more deeply involved in cartel activities, they gain a certain ``criminal capital" specific to the illegal industry that fosters full--time criminal careers \citep{Sviatschi2022}. When DTO activity intensifies, they are therefore likelier to dropout of school. Furthermore, the stark gender difference, with large positive effects for males and null effects for females, provides additional support for this interpretation, as DTO recruitment overwhelmingly targets young men.
+
+While income effects could theoretically produce similar demographic patterns---households facing violence--induced income shocks might withdraw older sons from school to compensate for lost earnings---this explanation is inconsistent with the time-period heterogeneity. Despite the aforementioned imprecision caveats, if the primary mechanism were income substitution, one would expect similar effects across all three periods whenever violence increased household economic insecurity. 
+
+The era--specific nature of the effects instead points to changes in the calculus of considering DTO membership over Mexico's evolving security landscape. During Calder\'{o}n's militarized offensive against cartels, intense armed confrontations between security forces and traffickers drastically increased the mortality risk of cartel membership. Additionally, the increased police and military enforcement, increased the perceived probability of getting caught and going to prison. Lastly, the nationwide campaign against cartels in this period worsened the social perception of narcotrafficking, potentially dis--incentivizing children from participating in the drug trade to protect their social capital. Together, these factors may have decreased the opportunity cost of recruitment into DTOs vis--\`{a}--vis the continuation of human capital accumulation, dampening recruitment effects even as violence surged (potentially making them negative, as the point estimates indicate). The Interim Period under President Pe\~{n}a Nieto saw lower homicide rates and a shift in enforcement strategy away from direct confrontation. Cartels during this period were fragmented and reorganizing following the arrests of major kingpins, potentially reducing their recruitment capacity. Moreover, the intense social stigma attached to cartel membership likely persisted, further deterring youth from entering the drug trade.
+
+The Resurgence Period (2017-2024) under President Andr\'{e}s Manuel L\'{o}pez Obrador marked a fundamental shift in both violence dynamics and government policy. Homicide rates reached historic highs and remained elevated throughout AMLO's administration. Crucially, the government adopted a non-confrontational \textit{``abrazos, no balazos"} (hugs, not bullets) approach. This implicitly accepting discourse regarding organized crime likely reduced the social stigma of participation. Additionally, it signaled federal tolerance of DTO operations. Furthermore, despite his national guard and military action strategies, his rather public and explicit declarations that the drug war in Mexico was over may have reduced the perceived risk of imprisonment or death associated with cartel membership. Under these conditions, the opportunity cost of leaving school to join DTOs may have fallen sharply and recruitment effects seem to have become strongly apparent in the data. The concentration of dropout effects among older males during this period is thus plausibly explained by the interaction of violence with a permissive enforcement environment that made cartel recruitment both safer and more socially acceptable.
+
+Auxiliary evidence supports this hypothesis.  Data from Mexico's National Registry of Missing Persons show that disappearances closely match the trends seen in the homicide data. They began rising dramatically in 2007 and have not returned to prior levels since. In 2007, a total of 3,000 people were recorded as missing in Mexico. In 2012, that number had risen to 11,000---an almost fourfold increase in only 5 years. They remained somewhat constant between 2013 and 2016, before accelerating dramatically during the Resurgence Period (2017--2024). In this time period, the number of missing persons nearly doubled again, with 35,600 reported missing in 2024 alone. Critically, the age and gender distribution of disappearances exhibits a pronounced peak for females aged 15-19 before dropping off quickly. By contrast, the disappearance rates for males rises quickly between ages 10--14 and 15--19, where it reaches its peak and remains roughly constant until it steadily declines at age 40. This pattern is consistent with two distinct mechanisms operating along gender lines: adolescent males building up criminal capital in their early teens before starting a life of crime in high school and continuing until middle age (many of which are subsequently killed in cartel-related violence) and young females being victims of kidnapping and sexual violence. The concentration of male disappearances in precisely the age range where dropout effects are strongest provides corroborating evidence that DTO recruitment of adolescent males intensified during the period when the empirical estimates show large positive effects of violence on dropout. Additionally, the number of adolescent males detained in military and police operations against cartels has grown drastically in the last five to seven years \citep{redim2011}. 
+
+It must be noted that this particular interpretation is post hoc and not directly supported by the data. The imprecision of the estimates and the inability to reject statistical equality of the effect in all three periods also adds to the speculative nature of this discussion. Other alternative interpretations may be plausible as well. That said, the data---combined with external auxiliary evidence---seems to reject several of the alternative hypotheses offered in the existing literature. 
+
+\section{Conclusion}
+The prevalence of organized crime in Latin America is an ongoing concern. In Mexico, it is estimated that all drug trafficking cartels combined are the fifth largest employer in the nation. They are estimated to recruit between 350 and 370 members per week, many of them children \citep{prieto2023}. This paper sheds light on this issue by examining the effects of organized crime on the human capital investment decisions of Mexican youth. Using exogenous variation in violence induced by Colombian cocaine seizures, the findings in this paper suggest that increases in municipal homicide rates increased the probability that adolescent males dropped out of school during the resurgent wave of violence from 2017 to 2024. The concentration of effects among older males in this particular period of permissive enforcement point toward recruitment into drug trafficking organizations as the primary mechanism, rather than fear-based responses or income shocks. 
+
+The results highlight the salience of this issue in the present context. While DTO activity has long been a concern in Mexico, these findings are indicative of the fact that only recently has it had meaningful effects on school dropouts. The findings suggest that weak enforcement regimes can inadvertently facilitate cartel recruitment by reducing both the physical risks and social costs of membership, turning periods of high violence into opportunities for DTO expansion rather than deterrents to youth participation.
+\clearpage
+\newpage
+
+\bibliography{refs.bib}
+
+\newpage
+\appendix
+\part*{Appendix} % Start the appendix part
+\addcontentsline{toc}{part}{Appendix} % Add the appendix text to the document TOC
+\etocsettocstyle{\subsection*{Table of Contents}}{}
+\localtableofcontents
+\setcounter{table}{0}
+\renewcommand{\thetable}{A\arabic{table}}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}
+\makeatletter
+  \renewcommand{\theHtable}{A\arabic{table}}
+  \renewcommand{\theHfigure}{A\arabic{figure}}
+\makeatother
+
+
+\newpage 
+\section{Additional Figures}
+\label{sec:appendix_figures}
+\begin{figure}[H]
+    \centering
+     \caption{Enrollment Rates}\includegraphics[scale=0.8]{../input/Figures/enrollment_TS.pdf}
+    \label{figure:enrollment}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This figure uses data from the ENOE to calculate the average monthly enrollment rate among all secondary and high school students. To do so, it takes an average of the attendance dummy from survey responses across all such individuals in Mexico. 
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+     \caption{Geographic Concentration of Homicide Rates: War On Drugs (2007--2012)}\includegraphics[scale=0.8]{../input/Figures/war_hom_map.pdf}
+    \label{figure:warHeatMap}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This map displays average homicide rates per 10,000 population across Mexican municipalities during Calder\'{o}n's War on Drugs (2007-2012). Municipal-level homicide rates are calculated by summing total homicides within each municipality-year and dividing by end-of-year population (December). These annual rates are then averaged within each municipality over 2007-2012. Color bins are based on quintiles of the full-sample distribution (2007-2024) to ensure comparability across time periods, with darker red shading indicating higher homicide rates.
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+     \caption{Geographic Concentration of Homicide Rates: Interim (2013--2016)}\includegraphics[scale=0.8]{../input/Figures/interim_hom_map.pdf}
+    \label{figure:interimHeatMap}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This map displays average homicide rates per 10,000 population across Mexican municipalities during the intermediate period (2013-2016). Municipal-level homicide rates are calculated by summing total homicides within each municipality-year and dividing by end-of-year population (December). These annual rates are then averaged within each municipality over 2013-2016. Color bins are based on quintiles of the full-sample distribution (2007-2024) to ensure comparability across time periods, with darker red shading indicating higher homicide rates. 
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+     \caption{Geographic Concentration of Homicide Rates: Resurgence (2017--2024)}\includegraphics[scale=0.8]{../input/Figures/respike_hom_map.pdf}
+    \label{figure:respikeHeatMap}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This map displays average homicide rates per 10,000 population across Mexican municipalities during the resurgence period (2017-2024). Municipal-level homicide rates are calculated by summing total homicides within each municipality-year and dividing by end-of-year population (December). These annual rates are then averaged within each municipality over 2017-2024. Color bins are based on quintiles of the full-sample distribution (2007-2024) to ensure comparability across time periods, with darker red shading indicating higher homicide rates. 
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+     \caption{Cocaine}\includegraphics[scale=0.8]{../input/Figures/Seizure_TS.pdf}
+    \label{figure:SeizuresTS}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This figure displays the quantity of cocaine seized in large seizure events in Colombian coastal districts over time. Large seizure events are defined as those with interdictions exceeding 500kg. The solid (navy) line shows monthly seizure totals in metric tonnes, while the dashed (red) line shows annual totals (plotted at mid-year). Vertical dashed lines mark the beginning of the intermediate period (2013) and the resurgence period (2017).
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Visualization of Geographic Data}\includegraphics[scale=0.8]{../input/Figures/Map_w_Borders.pdf}
+    \label{figure:borderMap}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This figure displays the municipal boundaries of Mexico using shapefiles from INEGI's \emph{Marco Geoestad\'{i}stico}. Grey dots denote municipal centroids. Blue diamonds indicate official points of entry along the U.S.--Mexico land border, sourced from the United States Bureau of Transportation Statistics and the United States Bureau of Customs and Border Protection (accessed via Stanford University Library's EarthWorks). The blue line traces the Pacific coastline of Mexico, obtained from  \emph{Comisi\'{o}n Nactional Para El Conocimiento y Uso De La Biodiversidad} (CONABIO). All geographic layers are projected to a common coordinate reference system.
+    \end{minipage}
+\end{figure}
+
+
+
+\begin{figure}[H]
+    \centering
+     \caption{Distribution}\includegraphics[scale=0.8]{../input/Figures/d_to_pc_distribution.pdf}
+    \label{figure:geoDist}
+    \begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This histogram displays the distribution of municipal distances to Mexico's Pacific coast. Distance is calculated as the minimum distance from each municipality's centroid to any point on the Pacific coastline. Municipal centroids are computed from polygon shapefiles in INEGI's \textit{Marco Geoestad\'{i}stico}. All distances are great-circle (geodesic) distances in kilometers.
+    \end{minipage}
+\end{figure}
+
+\newpage 
+\section{Additional Tables}
+\label{sec:appendix_tables}
+
+\begin{table}[H]
+\centering
+\caption{Summary Statistics: National Monthly Homicide Rate per 10,000 Inhabitants}
+\label{tab:homicide_summary}
+\centering
+\input{../input/Tables/hom_stats}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table reports summary statistics of the national monthly homicide rate per 10,000 inhabitants in Mexico. Homicides and population are aggregated to the national level at the year--month frequency. The homicide rate is calculated as the ratio of total homicides to total population in each month, multiplied by 10,000. The full sample covers January 2007 through December 2024. The ``War on Drugs" period corresponds to January 2007--December 2012, the ``Interim" period to January 2013--December 2016, and the ``Resurgence" period to January 2017--December 2024. Mean, median, and standard deviation are computed over monthly observations within each period.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Sample Construction}
+\label{tab:sample_construction}
+\centering
+\footnotesize
+\input{../input/Tables/sample_construction}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table shows the construction of the final estimation sample. The starting sample includes all individuals aged 6-18 observed in the ENOE survey from 2007--2024. First, primary school children (ages 6--11) are excluded. Municipalities with populations below 15,000 are excluded due to limited variation in violence exposure and concerns about measurement error in small--population homicide rates. The number of individuals represents unique respondents appearing at any point in the panel. The number of municipalities represents unique municipalities with at least one observation in the sample.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Time Period Sample}
+\label{tab:sample_time_period}
+\centering
+\footnotesize
+\input{../input/Tables/sample_time_period}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table presents the distribution of the estimation sample across the three analytical periods corresponding to distinct phases of Mexico's chronic violence epidemic. The whole sample includes all observations from 2007--2024 after applying the sample restrictions described in Table \ref{tab:sample_construction}. War on Drugs (2007--2012) corresponds to President Calder\'{o}n's militarized enforcement period. Interim (2013--2016) covers most of President Pe\~{n}a Nieto's presidency and the temporary period of reduced homicide rates. Resurgence (2017--2024) encompasses the period of sustained high violence under President L\'{o}pez Obrador. The number of individuals represents unique respondents observed during each period. Individuals may appear in multiple periods if they remain in the panel across period boundaries.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Demographics By Period}
+\label{tab:demographics by period}
+\centering
+\footnotesize
+\input{../input/Tables/demographics_by_period}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table presents demographic facts about the total ENOE sample between the ages of 6 and 18. Individuals are counted only once, in the period in which they first appear in the survey. 
+    \end{minipage}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Subgroup Estimates: Whole Sample Period (2007--2024)}
+\label{tab:subgroup_whole_samp}
+\centering
+\scriptsize
+\input{../input/Tables/subgroup_iv_whole_samp}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table reports IV estimates of the primary IV specification in the entire sample period (2007--2024), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given month. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and month--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Subgroup Estimates: War On Drugs (2007--2012)}
+\label{tab:subgroup_war}
+\centering
+\scriptsize 
+\input{../input/Tables/subgroup_iv_war}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table reports IV estimates of the primary IV specification in the war on drugs period (2007--2012), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given month. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and month--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Subgroup Estimates: Interim Period (2013--2016)}
+\label{tab:subgroup_interim}
+\centering
+\scriptsize 
+\input{../input/Tables/subgroup_iv_interim}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table reports IV estimates of the primary IV specification in the interim period (2013--2016), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given month. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and month--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Does Violence Predict Attrition?}
+\label{tab:violence_attrition}
+\centering
+\scriptsize 
+\input{../input/Tables/attrition_robustness}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table presents robustness checks testing whether violence predicts survey attrition. The outcome variable is an indicator equal to one if the individual's current interview is their last observation and they did not complete all five interviews, and zero otherwise. Column (1) presents estimates on the whole sample. Column (2) displays estimates for the war on drugs period, Column (3) for the interim period, and Column (4) for the resurgence period. All specifications instrument municipal homicide rates (log of one plus homicides per 10,000 inhabitants) with the interaction of large coastal Colombian cocaine seizures and distance to the Pacific coast. All regressions include individual fixed effects, month-year fixed effects, and the full set of individual and municipal controls. Standard errors clustered at the individual level are in parentheses. The sample excludes primary school children (ages 6-11) and municipalities with populations below 15,000. The mean attrition rate is the proportion of observations where individuals exit the survey before completing all five interviews. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Additional Robustness Checks}
+\label{tab:robustness}
+\centering
+\scriptsize 
+\input{../input/Tables/robustness_iv}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table presents robustness checks for the instrumental variables estimates of the effect of homicide rates on school dropout. Column (1) presents estimates for the full sample (2007-2024). Column (2) restricts the sample to the War on Drugs period (2007-2012). Column (3) restricts to the Interim period (2013-2016). Column (4) restricts to the Resurgence period (2017-2024). All specifications instrument municipal homicide rates (log of one plus homicides per 10,000 inhabitants) with the interaction of Colombian cocaine seizures and distance to the Pacific coast, and include individual fixed effects, time fixed effects, and the full set of individual and municipal controls. Standard errors clustered at the individual level are in parentheses. The main specification is presented in the first row. Row 2 removes the five-quarter restriction, including all individuals regardless of panel completion. Row 3 lowers the population threshold to 10,000 instead of 15,000. Row 4 uses all Colombian cocaine seizures rather than only large coastal seizures. Row 5 drops all observations from 2020 to exclude the COVID-19 pandemic period. Row 6 uses school enrollment as the outcome variable instead of dropout (coefficients should be interpreted with the opposite sign).
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\section{Quarterly Aggregation}
+\label{sec:quarterly_appendix}
+
+\begin{table}[H]
+\centering
+\caption{Quarterly Baseline Estimates}
+\label{tab:main_iv_quarterly}
+\centering
+\scriptsize 
+\input{../input/Tables/main_iv_quarterly}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table replicates Table \ref{tab:baseline_specs} using data at the quarter-year level instead of the month-year level. The dependent variable is an indicator equal to one if the individual dropped out of school in the given quarter. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. Column (1) reports the estimates from a simple OLS regression. Column (2) reports the TWFE estimate with quarter--by--year and individual fixed effects. Columns (3) and (4) report instrumental variables estimates, where the homicide rate is instrumented using the interaction between Colombian cocaine seizures and a municipality's distance to the Pacific coast. Column (3) includes only minimal controls for total population and three lagged homicide rates. Column (4) reports the main instrumental variables specification with the full suite of municipal and household level controls. The remaining columns present the main specification restricted to the three different time periods. All specifications except for OLS include individual and quarter--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for the IV specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children. Quarterly aggregation aligns with the natural structure of the ENOE survey, which tracks individuals across five consecutive quarters. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Quarterly Subgroup Estimates: Whole Sample (2007--2024)}
+\label{tab:subgroup_whole_quarterly}
+\centering
+\scriptsize 
+\input{../input/Tables/subgroup_iv_whole_samp_quarterly}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table replicates Table \ref{tab:subgroup_whole_samp} using data aggregated at the quarter-year level instead of the month-year level. The table reports IV estimates of the primary IV specification in the entire sample period (2007--2024), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given quarter. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and quarter--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Quarterly Subgroup Estimates: War on Drugs (2007--2012)}
+\label{tab:subgroup_war_quarterly}
+\centering
+\scriptsize 
+\input{../input/Tables/subgroup_iv_war_quarterly}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    This table replicates Table \ref{tab:subgroup_war} using data aggregated at the quarter-year level instead of the month-year level. The table reports IV estimates of the primary IV specification in the war on drugs period (2007--2012), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given quarter. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and quarter--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Quarterly Subgroup Estimates: Interim Period (2013--2016)}
+\label{tab:subgroup_interim_quarterly}
+\centering
+\scriptsize 
+\input{../input/Tables/subgroup_iv_interim_quarterly}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    This table replicates Table \ref{tab:subgroup_interim} using data aggregated at the quarter-year level instead of the month-year level. The table reports IV estimates of the primary IV specification in the interim period (2013--2016), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given quarter. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and quarter--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Quarterly Subgroup Estimates: Resurgence Period (2017--2024)}
+\label{tab:subgroup_respike_quarterly}
+\centering
+\scriptsize 
+\input{../input/Tables/subgroup_iv_respike_quarterly}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    This table replicates Table \ref{tab:subgroup_specs} using data aggregated at the quarter-year level instead of the month-year level. The table reports IV estimates of the primary IV specification in the resurgence period (2017--2024), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given quarter. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and quarter--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
+ $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\section{Data Appendix}
+\label{sec:data_appendix}
+
+\subsection{Encuesta Nacional de Ocupaci\'{o}n y Empleo (ENOE)}
+
+This appendix describes the construction of the individual- and municipal-level panel datasets derived from Mexico's National Occupation and Employment Survey (ENOE). The ENOE is a nationally representative, rotating panel survey administered by Mexico’s National Institute of Statistics and Geography (INEGI), which follows households and their members for five consecutive quarters. The analysis uses ENOE microdata spanning the period from 2007 through 2024.
+
+For each quarter, the ENOE is distributed across five separate survey components capturing demographic characteristics, labor market outcomes, household attributes, and dwelling characteristics. These components are merged at the individual level using INEGI's hierarchical identifiers. Following each merge, incomplete interviews and individuals without confirmed residence status are dropped to ensure consistency and data quality. One quarter of data, corresponding to the second quarter of 2020, is unavailable due to survey disruptions caused by the COVID-19 pandemic.
+
+\subsubsection*{Panel Construction}
+The rotating structure of the ENOE allows individuals to be followed for five consecutive quarters. I exploit this design by constructing overlapping five-quarter cohorts, where each cohort is defined by its initial survey quarter and includes observations from that quarter, $t$, through the following four quarters, $t+4$. For example, the cohort beginning in the first quarter of 2007 includes observations through the first quarter of 2008. This procedure yields 63 distinct cohorts over the sample period.
+
+To preserve panel integrity, several restrictions are imposed. Individuals whose reported age changes by more than two years across the five quarters are dropped, allowing for minor reporting error and the fact that five quarters span approximately fifteen months. Individuals whose reported sex changes across survey waves are also excluded. In addition, the primary analysis retains only individuals who are observed in all five quarters of their cohort. Those who attrit, however, are small in number and kept for the purposes of robustness checks.  Attrition rates under these restrictions are also low, on the order of five to six percent. After constructing the panel, unique identifiers are created for individuals, households, and dwellings, and each individual is assigned a municipality of residence in each quarter. No individuals or households moved municipalities in the entire panel.
+
+\subsubsection*{Individual--Level Variables}
+Using the harmonized ENOE data, I construct a set of individual--level demographic, educational, and labor market outcomes. Educational outcomes include indicators for current school enrollment and school dropout, where dropout is defined as a transition from enrollment in the previous quarter $t-1$ to non-enrollment in the current quarter $t$. To avoid misclassifying graduation as dropout, individuals in the final months of the academic year and in their final year of high school are excluded from this definition. Individuals are further classified by educational stage based on age, distinguishing primary school, secondary school, and high school age groups.
+
+Labor market outcomes include labor force participation, employment and unemployment status, weekly hours worked, and labor income (both monthly and hourly). Measures of human capital are constructed using completed years of schooling and highest educational attainment.
+
+\subsubsection*{Income Adjustments}
+All income and wage variables are converted to real terms and expressed in both Mexican pesos and U.S. dollars. Nominal peso values are deflated using the Mexican consumer price index, with 2023 as the base year. Peso values are converted to U.S. dollars using monthly peso--dollar exchange rates, and dollar--denominated values are further deflated using the U.S. consumer price index, also normalized to 2023. As a result, each income measure is available in nominal pesos, real pesos, nominal dollars, and real dollars.\footnote{Both CPI's as well as the spot exchange rate are obtained from FRED St. Louis.}
+
+\subsubsection*{Household-Level Variables}
+Household--level characteristics are constructed by aggregating individual--level information within each household and survey month. These measures capture household composition, including household size and the number of children, as well as economic characteristics such as total household labor income, average adult education, average hours worked by employed adults, and adult employment rates. Household income aggregates include only labor income earned by adult household members.
+
+\subsubsection*{Municipal Panel Construction}
+Municipal--level outcomes are constructed by aggregating individual and household information within municipality--month cells. Educational outcomes include overall school dropout rates as well as dropout rates disaggregated by educational stage and by sex. Labor market outcomes include employment rates, unemployment rates, and average hours worked. Income and wage outcomes are computed both for the full population and conditional on positive earnings. Additional municipal characteristics include average age, educational attainment, household size, and household income. All monetary variables are available in both real pesos and real U.S. dollars.
+
+\subsubsection*{Individual Panel}
+The individual--level panel retains all variables generated during the cohort construction process and merges in the corresponding household-- and municipal--level characteristics.
+
+\subsubsection*{Final Sample}
+The final data construction yields two primary datasets. The municipal panel includes 2,456 municipalities observed monthly from 2007 through 2024, with observations pooled from overlapping five-quarter cohorts. The individual panel follows school-age children for up to five consecutive quarters and includes detailed household and municipal characteristics. The estimation sample applies additional restrictions described in the main text, including the exclusion of primary school--age children and municipalities with populations below 15,000.\footnote{The INEGI defines rural localities as those having fewer than 5,000 inhabitants. For the purposes of this study, respondents inhabiting rural localities are dropped. Unfortunately, the ENOE does not track the exact population of a locality. Instead, they give general ranges: less than 2,500, from 2,500 to 14,999, between 15,000 and 99,999, and, finally, greater than 100,000. In order to guarantee I am only keeping urban municipalities, I drop all respondents in the first two categories. That is, I keep only those respondents living in municipalities with at least 15,000 inhabitants.} 
+
+\subsection{Homicide and Population Data}
+Homicide data are constructed from individual death records obtained from Mexico's National Institute of Statistics and Geography (INEGI) for the period 2007-2024. Following the methodology of \citet{gargiulo2023}, I process raw mortality records to identify homicides based on ICD-10 cause-of-death codes corresponding to intentional homicides. Death records missing information on year, month, state, or municipality are excluded, as are deaths occurring outside of Mexico or with unknown location. Monthly homicide counts are constructed by aggregating individual deaths at the municipality-month level.
+
+Municipal population data are obtained from INEGI's population projections, which provide annual population estimates by municipality, disaggregated by age and sex. Since the analysis requires monthly population estimates but INEGI provides only annual figures, I interpolate monthly population using a compound growth rate assumption. Specifically, for each municipality and year, I calculate the implied monthly growth rate as $(P_{t+1}/P_t)^{1/12} - 1$, where $P_t$ denotes the population in year $t$. This monthly growth rate is then applied to generate population estimates for each of the 12 months within the year. This interpolation procedure is applied separately for total population, male population, female population, and school-age population (ages 5-19), yielding monthly demographic measures for each municipality throughout the sample period.
+
+Municipal homicide rates per 10,000 inhabitants are calculated by dividing monthly homicide counts by the interpolated monthly population and multiplying by 10,000. Three lags of the homicide rate are also constructed to serve as control variables in the regression specifications. The final dataset contains monthly observations for all Mexican municipalities from January 2007 through December 2024, with complete information on homicide counts, population by demographic group, and homicide rates.
+
+\subsection{Colombian Cocaine Seizure Data}
+Cocaine seizure data are obtained from the Colombian government's official drug interdiction records for the period 2007-2024. The raw data contain individual seizure events with information on the date, location (department), quantity seized (in kilograms), and type of substance (cocaine hydrochloride or coca base). I exclude seizure events with zero reported quantity and combine cocaine hydrochloride and coca base seizures into a single dataset. For years 2007-2009, seizure records are drawn from a separate government database with identical structure and variables, which are processed using the same methodology and appended to the 2010-2024 data.
+
+Coastal seizures are defined as seizures occurring in departments with coastlines on the Pacific Ocean or Caribbean Sea, specifically: La Guajira, Magdalena, Atl\'{a}ntico, Bol\'{i}var, Sucre, C\'{o}rdoba, Antioquia, Choc\'{o}, Valle del Cauca, Cauca, Nari\~{n}o, and San Andr\'{e}s Islas. For each measure, I calculate both the total quantity seized (in metric tonnes) and the count of seizure events. Additionally, I construct analogous measures restricted to "large" seizures, defined as individual events of 500 kilograms or more, which are more likely to represent major trafficking interdictions rather than street-level confiscations.
+
+The final dataset contains monthly observations from January 2007 through December 2024, with four seizure measures for each month: coastal seizures (quantity and count), and coastal large seizures (quantity and count). The primary instrumental variable used in the analysis is the quantity of large coastal seizures in metric tonnes, which captures major interdiction events at key drug trafficking entry and exit points along Colombia's coasts.
+
+\subsection{Geographic Data and Distance Measures}
+Geographic data are obtained from three primary sources. Municipal boundary shapefiles are taken from INEGI's Marco Geoestad\'{i}stico, which provides official polygon boundaries for all Mexican municipalities. Coastline data are obtained from \emph{Comisi\'{o}n Nacional Para El Conocimiento y Uso De La Biodiversidad} (CONABIO) coastal line shapefiles, filtered to include only Pacific coast states (Baja California, Baja California Sur, Sonora, Sinaloa, Nayarit, Jalisco, Colima, Michoac\'{a}n, Guerrero, Oaxaca, and Chiapas). For visualization purposes, and because several papers in the literature use it, I also downloaded the points of entry on the U.S.--Mexico land border. These were obtained from  Stanford University Library's EarthWorks. They are visualized in Appendix Figure~\ref{figure:borderMap}. 
+
+For each municipality, I calculate the geographic centroid by computing the center point of the municipal polygon. Distance measures are then constructed by calculating the minimum great-circle distance from each municipal centroid to the nearest point on the relevant geographic feature. Specifically, I compute the distance to the Pacific coast (minimum distance to any point along the Pacific coastline) and the distance to the nearest U.S. border entry point (minimum distance to any official land port of entry). All spatial calculations are performed using the INEGI 6372 coordinate reference system, which is optimized for Mexico, and all distances are converted from meters to kilometers for interpretation.
+\end{document}

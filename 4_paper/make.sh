@@ -23,8 +23,7 @@ echo -e "\n\nMaking module \033[35m${MODULE}\033[0m with shell ${SHELL}"
 
 # Load settings & tools
 source "${REPO_ROOT}/local_env.sh"
-source "${REPO_ROOT}/lib/shell/run_shell.sh"
-#source "${REPO_ROOT}/lib/shell/run_xxx.sh"
+source "${REPO_ROOT}/lib/shell/run_latex.sh"
 
 # Clear output directory
 # (Guarantees that all output is produced from a clean run of the code)
@@ -42,11 +41,19 @@ mkdir -p "${MAKE_SCRIPT_DIR}/output"
 # after scripts are run)
  echo -e "\nmake.sh started at $(date '+%Y-%m-%d %H:%M:%S')"
 
+# Assemble input/Figures/ as a real directory merging 2_analysis figures and 1_data map
+# (get_inputs.sh symlinks the Figures dir, but Map_w_Borders.pdf comes from a different module)
+rm -f "${MAKE_SCRIPT_DIR}/input/Figures"
+mkdir -p "${MAKE_SCRIPT_DIR}/input/Figures"
+for f in "${REPO_ROOT}/2_analysis/output/Figures/"*.pdf; do
+    [ -e "$f" ] && ln -sf "$f" "${MAKE_SCRIPT_DIR}/input/Figures/$(basename "$f")"
+done
+ln -sf "${REPO_ROOT}/1_data/output/Map_w_Borders.pdf" "${MAKE_SCRIPT_DIR}/input/Figures/Map_w_Borders.pdf"
+
 (
 cd "${MAKE_SCRIPT_DIR}/source"
 
-run_shell my_shell_script.sh "${LOGFILE}" || exit 1
-# run_xxx my_script.xx "${LOGFILE}" || exit 1
+run_latex main.tex "${LOGFILE}" || exit 1
 ) || false
 
 echo -e "\nmake.sh finished at $(date '+%Y-%m-%d %H:%M:%S')" | tee -a "${LOGFILE}"
