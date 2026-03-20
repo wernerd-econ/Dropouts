@@ -303,7 +303,7 @@ file write myfile " & \$`mean_1'\$ & \$`mean_2'\$ & \$`mean_3'\$ & \$`mean_4'\$ 
 
 * Kleibergen-Paap F-stat row
 file write myfile "Kleibergen-Paap F-stat" _n
-file write myfile " & –- & –- & `kpout3' & `kpout4' & `kpout5' & `kpout6' & `kpout7' \\" _n
+file write myfile " & -- & -- & `kpout3' & `kpout4' & `kpout5' & `kpout6' & `kpout7' \\" _n
 
 * Observations row
 file write myfile "\hline" _n
