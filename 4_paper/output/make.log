@@ -1,6 +1,6 @@
 
-Script main.tex in latexmk -pdf -bibtex started at 2026-03-19 22:13:52
-Error in main.tex at 2026-03-19 22:13:57: Rc files read:
+Script main.tex in latexmk -pdf -bibtex started at 2026-03-20 16:49:55
+Error in main.tex at 2026-03-20 16:50:02: Rc files read:
   NONE
 Latexmk: This is Latexmk, John Collins, 27 Dec. 2024. Version 4.86a.
 No existing .aux file, so I'll make a simple one, and require run of *latex.
@@ -1011,7 +1011,7 @@ f-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fon
 ts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfon
 ts/symbols/msbm10.pfb>
-Output written on main.pdf (47 pages, 9898819 bytes).
+Output written on main.pdf (47 pages, 9898810 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -1889,7 +1889,7 @@ mri8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><
 /usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/
 texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/202
 5/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9900697 bytes).
+Output written on main.pdf (52 pages, 9900696 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -2410,7 +2410,7 @@ e/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/tex
 mf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fon
 ts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9908536 bytes).
+Output written on main.pdf (52 pages, 9908521 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -2923,7 +2923,7 @@ e/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/tex
 mf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fon
 ts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9908536 bytes).
+Output written on main.pdf (52 pages, 9908521 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
