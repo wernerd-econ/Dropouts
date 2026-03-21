@@ -1,6 +1,7 @@
 
-Script main.tex in latexmk -pdf -bibtex started at 2026-03-20 16:49:55
-Error in main.tex at 2026-03-20 16:50:02: Rc files read:
+Script main.tex in latexmk -pdf -bibtex started at 2026-03-20 17:03:49
+Script main.tex finished successfully at 2026-03-20 17:03:55
+Output: Rc files read:
   NONE
 Latexmk: This is Latexmk, John Collins, 27 Dec. 2024. Version 4.86a.
 No existing .aux file, so I'll make a simple one, and require run of *latex.
@@ -925,28 +926,6 @@ LaTeX Warning: Reference `tab:subgroup_specs' on page 41 undefined on input lin
 e 733.
 
 
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.743 ...ing panel survey administered by Mexico‚Ä
-                                                  ôs National Institute of S...
-
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.743 ...ng panel survey administered by Mexico‚Äô
-                                                  s National Institute of St...
-
-
 Overfull \hbox (0.6387pt too wide) in paragraph at lines 743--744
 \T1/lmr/m/n/12 This ap-pendix de-scribes the con-struc-tion of the individual- 
 and municipal-level panel datasets
@@ -1011,7 +990,7 @@ f-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fon
 ts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfon
 ts/symbols/msbm10.pfb>
-Output written on main.pdf (47 pages, 9898810 bytes).
+Output written on main.pdf (47 pages, 9898709 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -1732,48 +1711,6 @@ Underfull \hbox (badness 1337) in paragraph at lines 225--229
 s Rodriguez-
 
 [30]
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...and educational performance during the ‚Ä
-                                                  úwar on drugs‚Äù in Mexico.''
-
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...nd educational performance during the ‚Äú
-                                                  war on drugs‚Äù in Mexico.''
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ... performance during the ‚Äúwar on drugs‚Ä
-                                                  ù in Mexico.''
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...performance during the ‚Äúwar on drugs‚Äù
-                                                   in Mexico.''
-
 [31])
 [32]
 [33]
@@ -1799,29 +1736,6 @@ Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--680
 [44] (../input/Tables/subgroup_iv_war_quarterly.tex)
 (../input/Tables/subgroup_iv_interim_quarterly.tex)
 [45] (../input/Tables/subgroup_iv_respike_quarterly.tex)
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.743 ...ing panel survey administered by Mexico‚Ä
-                                                  ôs National Institute of S...
-
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.743 ...ng panel survey administered by Mexico‚Äô
-                                                  s National Institute of St...
-
-
 Overfull \hbox (0.6387pt too wide) in paragraph at lines 743--744
 \T1/lmr/m/n/12 This ap-pendix de-scribes the con-struc-tion of the individual- 
 and municipal-level panel datasets
@@ -1889,7 +1803,7 @@ mri8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><
 /usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/
 texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/202
 5/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9900696 bytes).
+Output written on main.pdf (52 pages, 9900559 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -2278,48 +2192,6 @@ Underfull \hbox (badness 1337) in paragraph at lines 225--229
 s Rodriguez-
 
 [30]
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...and educational performance during the ‚Ä
-                                                  úwar on drugs‚Äù in Mexico.''
-
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...nd educational performance during the ‚Äú
-                                                  war on drugs‚Äù in Mexico.''
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ... performance during the ‚Äúwar on drugs‚Ä
-                                                  ù in Mexico.''
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...performance during the ‚Äúwar on drugs‚Äù
-                                                   in Mexico.''
-
 [31])
 [32]
 [33]
@@ -2345,29 +2217,6 @@ Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--680
 [44] (../input/Tables/subgroup_iv_war_quarterly.tex)
 (../input/Tables/subgroup_iv_interim_quarterly.tex)
 [45] (../input/Tables/subgroup_iv_respike_quarterly.tex)
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.743 ...ing panel survey administered by Mexico‚Ä
-                                                  ôs National Institute of S...
-
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.743 ...ng panel survey administered by Mexico‚Äô
-                                                  s National Institute of St...
-
-
 Overfull \hbox (0.6387pt too wide) in paragraph at lines 743--744
 \T1/lmr/m/n/12 This ap-pendix de-scribes the con-struc-tion of the individual- 
 and municipal-level panel datasets
@@ -2410,7 +2259,7 @@ e/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/tex
 mf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fon
 ts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9908521 bytes).
+Output written on main.pdf (52 pages, 9908389 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -2795,48 +2644,6 @@ Underfull \hbox (badness 1337) in paragraph at lines 225--229
 s Rodriguez-
 
 [30]
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...and educational performance during the ‚Ä
-                                                  úwar on drugs‚Äù in Mexico.''
-
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...nd educational performance during the ‚Äú
-                                                  war on drugs‚Äù in Mexico.''
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ... performance during the ‚Äúwar on drugs‚Ä
-                                                  ù in Mexico.''
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.239 ...performance during the ‚Äúwar on drugs‚Äù
-                                                   in Mexico.''
-
 [31])
 [32]
 [33]
@@ -2862,29 +2669,6 @@ Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--680
 [44] (../input/Tables/subgroup_iv_war_quarterly.tex)
 (../input/Tables/subgroup_iv_interim_quarterly.tex)
 [45] (../input/Tables/subgroup_iv_respike_quarterly.tex)
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.743 ...ing panel survey administered by Mexico‚Ä
-                                                  ôs National Institute of S...
-
-
-! Package inputenc Error: Keyboard character used is undefined
-(inputenc)                in inputencoding `latin9'.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.743 ...ng panel survey administered by Mexico‚Äô
-                                                  s National Institute of St...
-
-
 Overfull \hbox (0.6387pt too wide) in paragraph at lines 743--744
 \T1/lmr/m/n/12 This ap-pendix de-scribes the con-struc-tion of the individual- 
 and municipal-level panel datasets
@@ -2923,7 +2707,7 @@ e/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/tex
 mf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fon
 ts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9908521 bytes).
+Output written on main.pdf (52 pages, 9908389 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -2932,9 +2716,9 @@ Latexmk: Found input bbl file 'main.bbl'
 Latexmk: Log file says output to 'main.pdf'
 Latexmk: Found bibliography file(s):
   ./refs.bib
-Latexmk: Errors, in force_mode: so I tried finishing targets
-Collected error summary (may duplicate other messages):
-  pdflatex: Command for 'pdflatex' gave return code 1
-      Refer to 'main.log' and/or above output for details
+Latexmk: All targets (main.pdf) are up-to-date
 
-Warning: There was an error, but these files were created: main.pdf 
+The following files were created in main.tex:
+main.pdf 
+
+make.sh finished at 2026-03-20 17:03:55
