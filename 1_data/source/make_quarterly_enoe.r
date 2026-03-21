@@ -68,9 +68,8 @@ fuse_quarter <- function(sdem, coe1, coe2, hog, viv){
 
 # ---- Function to process a single year/quarter ----
 process_quarter <- function(year, quarter) {
-  #Set the download path to the local copy of dropbox folder
-  dropbox_path <- "/Users/wernerd/Desktop/Daniel Werner"
-  download_path <- file.path(dropbox_path, "ENOE", as.character(year), quarter)
+  #Set the download path to the ENOE input folder
+  download_path <- file.path("../input/ENOE", as.character(year), quarter)
   sdem <- read_dta(file.path(download_path, "sdem.dta")) %>%
     rename_with(tolower) %>%
     filter(n_ent %in% c(1, 2, 3, 4, 5))

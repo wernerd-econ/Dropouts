@@ -23,7 +23,7 @@ capture mkdir "${FIGURES}"
 * PART 1: Correlation with mexican drug seizures  
 ********************************************************************************
 * Load in Colombia data (2007-2024)
-use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear
+use "../input/seizure_data.dta", clear
 
 keep Year cs_big
 
@@ -36,7 +36,7 @@ tempfile colombia_temp
 save `colombia_temp', replace
 
 * Load in Mexico data (2012-2018)
-import excel "/Users/wernerd/Desktop/Daniel Werner/DRUGS_MEX.xlsx", firstrow clear
+import excel "../input/DRUGS_MEX.xlsx", firstrow clear
 drop if Años == .
 rename Años year
 rename MariguanaKg marijuana
@@ -58,7 +58,7 @@ tempfile mex_temp
 save `mex_temp', replace
 
 * Load in Mexico data (2000-2014)
-import delimited "/Users/wernerd/Desktop/Daniel Werner/SEDENA.csv", varnames(1) clear
+import delimited "../input/SEDENA.csv", varnames(1) clear
 
 drop state
 
@@ -179,7 +179,7 @@ file close mytable
 ********************************************************************************
 
 * 1) Municipal-level regressions
-use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+use "../input/final_mun.dta", clear
 
 destring municipality, replace
 gen month_year_date = date(year_month, "YM")
@@ -207,7 +207,7 @@ local N_3 = e(N)
 
 
 * 2) Individual-level regressions
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+use "../input/final_indiv.dta", clear
 
 gen month_year_date = date(year_month, "YM")
 format month_year_date %tm
@@ -234,7 +234,7 @@ local se_6 = _se[cs_big]
 local N_6 = e(N)
 
 * 3) Real GDP numbers (millions of real pesos, seasonally adjusted)
-import delimited "/Users/wernerd/Desktop/Daniel Werner/gdp.csv", varnames(1) clear
+import delimited "../input/gdp.csv", varnames(1) clear
 * Parse the date (assuming it's a string like "1/1/07")
 * Split by "/"
 split observation_date, parse("/") gen(date_part)
@@ -256,7 +256,7 @@ drop date_part2 observation_date
 tempfile gdp_temp
 save `gdp_temp', replace
 
-use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear
+use "../input/seizure_data.dta", clear
 
 keep Year Month cs_big
 rename Year year 

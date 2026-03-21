@@ -15,8 +15,7 @@ library(tidyverse)
 library(ggplot2)
 
 ## load in panel dataset
-base_path <- "/Users/wernerd/Desktop/Daniel Werner"
-panel <- read_dta(file.path(base_path,"ENOE_panel.dta"))
+panel <- read_dta("../output/ENOE_panel.dta")
 
 panel <- panel %>%
   mutate(across(
@@ -100,7 +99,7 @@ municipal_panel <- panel %>%
   mutate(across(everything(), ~ replace(.x, is.nan(.x) | is.infinite(.x), NA_real_)))
 
 # Save Municipal Dataset
-write_dta(municipal_panel, file.path(base_path,"Municipal_data.dta"))
+write_dta(municipal_panel, file.path("../output","Municipal_data.dta"))
 
 # =============================================================================
 # (4) Make individual-level panel
@@ -114,4 +113,4 @@ individual_panel <- panel %>%
   mutate(across(everything(), ~ replace(.x, is.nan(.x) | is.infinite(.x), NA_real_)))
 
 # Save Individual Dataset
-write_dta(individual_panel, file.path(base_path,"Individual_data.dta"))
+write_dta(individual_panel, file.path("../output","Individual_data.dta"))

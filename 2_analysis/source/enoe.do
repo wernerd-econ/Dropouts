@@ -17,7 +17,7 @@ capture mkdir "${FIGURES}"
 * =============================================================================
 * I. Create summary statistics of dropout rates in the sample
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+use "../input/final_indiv.dta", clear
 
 keep id year month primary secondary high sex dropout school total_n
 
@@ -199,7 +199,7 @@ file close mytable
 * =============================================================================
 * II. Create summary statistics at municipal level
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+use "../input/final_mun.dta", clear
 
 destring municipality year month, replace 
 
@@ -380,7 +380,7 @@ file close mytable
 * =============================================================================
 * III. Create sample construction
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta", clear
+use "../input/ENOE_panel.dta", clear
 
 replace year = 2000 + year
 
@@ -388,7 +388,7 @@ tempfile indiv_temp
 save `indiv_temp', replace
 
 * Load the municipal-level dataset
-use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+use "../input/final_mun.dta", clear
  
 * Keep only the variables you need from municipal data
 keep municipality year month pop_tot
@@ -511,7 +511,7 @@ file close mytable
 * =============================================================================
 * III. Create sample by year table
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+use "../input/final_indiv.dta", clear
 
 destring year total_n, replace 
 drop if total_n != 5
@@ -627,7 +627,7 @@ file close scalars
 * =============================================================================
 * IV. Create time series of enrollment rate
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+use "../input/final_indiv.dta", clear
 
 destring year month, replace
 
@@ -677,7 +677,7 @@ graph export "${FIGURES}enrollment_TS.pdf", replace
 * =============================================================================
 * Demographic Table by Time Period with F-tests
 * =============================================================================
-use "/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta", clear
+use "../input/ENOE_panel.dta", clear
 destring total_n, replace
 drop if total_n != 5
 

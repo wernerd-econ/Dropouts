@@ -1,6 +1,6 @@
 
-Script distance.do in StataMP started at 2026-03-04 20:47:58
-Script distance.do finished successfully at 2026-03-04 20:47:59
+Script distance.do in StataMP started at 2026-03-20 16:07:04
+Script distance.do finished successfully at 2026-03-20 16:07:05
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -43,7 +43,7 @@ Notes:
 . capture mkdir "${FIGURES}"
 
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/final_geo.dta", clear
+. use "../input/final_geo.dta", clear
 
 . 
 . * Drop duplicates (keep only unique municipality observations)
@@ -78,8 +78,8 @@ end of do-file
 The following files were created in distance.do:
 d_to_pc_distribution.pdf 
 
-Script cocaine_seiz.do in StataMP started at 2026-03-04 20:48:00
-Script cocaine_seiz.do finished successfully at 2026-03-04 20:48:00
+Script cocaine_seiz.do in StataMP started at 2026-03-20 16:07:05
+Script cocaine_seiz.do finished successfully at 2026-03-20 16:07:06
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -129,7 +129,7 @@ Notes:
 . * =============================================================================
 . * I. Create Summary Statistics By Period 
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear
+. use "../input/seizure_data.dta", clear
 
 . 
 . * Create date variable
@@ -174,7 +174,7 @@ variable Period was str1 now str24
 . tempfile period_stats
 
 . save `period_stats'
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68050.000002 saved as .dta format
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59437.000002 saved as .dta format
 
 . restore
 
@@ -391,7 +391,7 @@ Number of observations (_N) was 3, now 4.
 . * =============================================================================
 . * II. Create Time Seires Plots Of Ntl HR and Average Municipal HR 
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear
+. use "../input/seizure_data.dta", clear
 
 . 
 . * Keep big coastal seizure in tons and events
@@ -415,7 +415,7 @@ Month: all characters numeric; replaced as byte
 . tempfile monthly_data
 
 . save `monthly_data'
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68050.000004 saved as .dta format
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59437.000004 saved as .dta format
 
 . restore
 
@@ -512,8 +512,11 @@ file /Users/wernerd/Desktop/Dropouts/2_analysis/source/../output/Figures/Seizure
 . 
 end of do-file
 
-Script homicides.do in StataMP started at 2026-03-04 20:48:00
-Script homicides.do finished successfully at 2026-03-04 20:48:01
+The following files were created in cocaine_seiz.do:
+cocaine_scalars.tex seizure_stats.tex Seizure_TS.pdf 
+
+Script homicides.do in StataMP started at 2026-03-20 16:07:06
+Script homicides.do finished successfully at 2026-03-20 16:07:07
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -563,7 +566,7 @@ Notes:
 . * =============================================================================
 . * I. Create Summary Statistics By Period 
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/homicides.dta", clear
+. use "../input/homicides.dta", clear
 
 . 
 . * Collapse to month-year level
@@ -620,7 +623,7 @@ Statsby groups:
 . tempfile period_stats
 
 . save `period_stats'
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68071.000002 saved as .dta format
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59459.000002 saved as .dta format
 
 . restore
 
@@ -754,7 +757,7 @@ Number of observations (_N) was 3, now 4.
 . * =============================================================================
 . * II. Create Time Seires Plots Of Ntl HR and Average Municipal HR 
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/homicides.dta", clear
+. use "../input/homicides.dta", clear
 
 . 
 . keep homicides pop_tot hr year month
@@ -1061,8 +1064,8 @@ end of do-file
 The following files were created in homicides.do:
 homicide_scalars.tex hom_stats.tex Homicide_TS.pdf 
 
-Script enoe.do in StataMP started at 2026-03-04 20:48:01
-Script enoe.do finished successfully at 2026-03-04 20:52:15
+Script enoe.do in StataMP started at 2026-03-20 16:07:07
+Script enoe.do finished successfully at 2026-03-20 16:09:30
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -1112,7 +1115,7 @@ Notes:
 . * =============================================================================
 . * I. Create summary statistics of dropout rates in the sample
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+. use "../input/final_indiv.dta", clear
 
 . 
 . keep id year month primary secondary high sex dropout school total_n
@@ -1418,35 +1421,47 @@ total_n already numeric; no replace
 
 . 
 . * Primary School
-. file write mytable "Primary School (6-12) & Total & " %12.0fc (`prim_total') " & " %12.0fc (`prim_started') " & " %12.0fc (`prim_dropouts') " & " %5.1f (`prim_rate') "\%\\" _n
+. file write mytable "Primary School (6-12) & Total & " %12.0fc (`prim_total') " & " %12.0fc (`prim_started') " & " %12.0fc (`prim_dropouts') " & " %
+> 5.1f (`prim_rate') "\%\\" _n
 
-. file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`prim_men_total') " & " %12.0fc (`prim_men_started') " & " %12.0fc (`prim_men_dropouts') " & " %5.1f (`prim_men_rate') "\%\\" _n
+. file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`prim_men_total') " & " %12.0fc (`prim_men_started') " & " %12.0fc (`prim_men_dropouts
+> ') " & " %5.1f (`prim_men_rate') "\%\\" _n
 
-. file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`prim_women_total') " & " %12.0fc (`prim_women_started') " & " %12.0fc (`prim_women_dropouts') " & " %5.1f (`prim_women_rate') "\%\\" _n
+. file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`prim_women_total') " & " %12.0fc (`prim_women_started') " & " %12.0fc (`prim_women_
+> dropouts') " & " %5.1f (`prim_women_rate') "\%\\" _n
 
 . 
 . * Secondary School
-. file write mytable "Secondary School (12-15) & Total & " %12.0fc (`sec_total') " & " %12.0fc (`sec_started') " & " %12.0fc (`sec_dropouts') " & " %5.1f (`sec_rate') "\%\\" _n
+. file write mytable "Secondary School (12-15) & Total & " %12.0fc (`sec_total') " & " %12.0fc (`sec_started') " & " %12.0fc (`sec_dropouts') " & " %
+> 5.1f (`sec_rate') "\%\\" _n
 
-. file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`sec_men_total') " & " %12.0fc (`sec_men_started') " & " %12.0fc (`sec_men_dropouts') " & " %5.1f (`sec_men_rate') "\%\\" _n
+. file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`sec_men_total') " & " %12.0fc (`sec_men_started') " & " %12.0fc (`sec_men_dropouts') 
+> " & " %5.1f (`sec_men_rate') "\%\\" _n
 
-. file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`sec_women_total') " & " %12.0fc (`sec_women_started') " & " %12.0fc (`sec_women_dropouts') " & " %5.1f (`sec_women_rate') "\%\\" _n
+. file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`sec_women_total') " & " %12.0fc (`sec_women_started') " & " %12.0fc (`sec_women_dro
+> pouts') " & " %5.1f (`sec_women_rate') "\%\\" _n
 
 . 
 . * High School
-. file write mytable "High School (15-18) & Total & " %12.0fc (`high_total') " & " %12.0fc (`high_started') " & " %12.0fc (`high_dropouts') " & " %5.1f (`high_rate') "\%\\" _n
+. file write mytable "High School (15-18) & Total & " %12.0fc (`high_total') " & " %12.0fc (`high_started') " & " %12.0fc (`high_dropouts') " & " %5.
+> 1f (`high_rate') "\%\\" _n
 
-. file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`high_men_total') " & " %12.0fc (`high_men_started') " & " %12.0fc (`high_men_dropouts') " & " %5.1f (`high_men_rate') "\%\\" _n
+. file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`high_men_total') " & " %12.0fc (`high_men_started') " & " %12.0fc (`high_men_dropouts
+> ') " & " %5.1f (`high_men_rate') "\%\\" _n
 
-. file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`high_women_total') " & " %12.0fc (`high_women_started') " & " %12.0fc (`high_women_dropouts') " & " %5.1f (`high_women_rate') "\%\\" _n
+. file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`high_women_total') " & " %12.0fc (`high_women_started') " & " %12.0fc (`high_women_
+> dropouts') " & " %5.1f (`high_women_rate') "\%\\" _n
 
 . 
 . * Total
-. file write mytable "Total & Total & " %12.0fc (`total_total') " & " %12.0fc (`total_started') " & " %12.0fc (`total_dropouts') " & " %5.1f (`total_rate') "\%\\" _n
+. file write mytable "Total & Total & " %12.0fc (`total_total') " & " %12.0fc (`total_started') " & " %12.0fc (`total_dropouts') " & " %5.1f (`total_
+> rate') "\%\\" _n
 
-. file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`total_men_total') " & " %12.0fc (`total_men_started') " & " %12.0fc (`total_men_dropouts') " & " %5.1f (`total_men_rate') "\%\\" _n
+. file write mytable " & \hspace{1em}\textit{Men} & " %12.0fc (`total_men_total') " & " %12.0fc (`total_men_started') " & " %12.0fc (`total_men_dropo
+> uts') " & " %5.1f (`total_men_rate') "\%\\" _n
 
-. file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`total_women_total') " & " %12.0fc (`total_women_started') " & " %12.0fc (`total_women_dropouts') " & " %5.1f (`total_women_rate') "\%\\" _n
+. file write mytable " & \hspace{1em}\textit{Women} & " %12.0fc (`total_women_total') " & " %12.0fc (`total_women_started') " & " %12.0fc (`total_wom
+> en_dropouts') " & " %5.1f (`total_women_rate') "\%\\" _n
 
 . 
 . file write mytable "\bottomrule" _n
@@ -1461,7 +1476,7 @@ total_n already numeric; no replace
 . * =============================================================================
 . * II. Create summary statistics at municipal level
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+. use "../input/final_mun.dta", clear
 
 . 
 . destring municipality year month, replace 
@@ -1531,7 +1546,7 @@ variable Period was str1 now str24
 . tempfile period_stats
 
 . save `period_stats'
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000005 saved as .dta format
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59484.000005 saved as .dta format
 
 . restore
 
@@ -1732,7 +1747,8 @@ Number of observations (_N) was 3, now 4.
 
 . file write mytable "\hline" _n
 
-. file write mytable " & \shortstack{Full sample \\ (2007-2024)} & \shortstack{War on drugs \\ (2007-2012)} & \shortstack{Interim \\ (2013-2016)} & \shortstack{Resurgence \\ (2017-2024)} \\" _n
+. file write mytable " & \shortstack{Full sample \\ (2007-2024)} & \shortstack{War on drugs \\ (2007-2012)} & \shortstack{Interim \\ (2013-2016)} & \
+> shortstack{Resurgence \\ (2017-2024)} \\" _n
 
 . file write mytable "\hline" _n
 
@@ -1792,7 +1808,7 @@ Number of observations (_N) was 3, now 4.
 . * =============================================================================
 . * III. Create sample construction
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta", clear
+. use "../input/ENOE_panel.dta", clear
 
 . 
 . replace year = 2000 + year
@@ -1802,12 +1818,12 @@ Number of observations (_N) was 3, now 4.
 . tempfile indiv_temp
 
 . save `indiv_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000007 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000007 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59484.000007 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59484.000007 saved as .dta format
 
 . 
 . * Load the municipal-level dataset
-. use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+. use "../input/final_mun.dta", clear
 
 .  
 . * Keep only the variables you need from municipal data
@@ -1824,8 +1840,8 @@ month: all characters numeric; replaced as byte
 . tempfile muni_temp
 
 . save `muni_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000008 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000008 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59484.000008 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59484.000008 saved as .dta format
 
 . 
 . * Reload individual data
@@ -1866,13 +1882,16 @@ file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000008 saved as .
 . local N_mun_start = r(N)
 
 . 
-. * Drop adults 
+. * Drop adults
+. keep if age < 19
+(16,531,959 observations deleted)
+
 . cap drop tag 
 
 . egen tag = tag(id)
 
 . count if tag == 1
-  6,076,422
+  2,134,896
 
 . local N_indiv_kids = r(N)
 
@@ -1896,7 +1915,7 @@ file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000008 saved as .
 . egen tag = tag(id)
 
 . count if tag == 1
-  5,508,696
+  1,567,170
 
 . local N_indiv_noprim = r(N)
 
@@ -1913,14 +1932,14 @@ file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000008 saved as .
 . 
 . * Dropping municipalities with fewer than 15,000
 . drop if pop_tot < 15000
-(745,492 observations deleted)
+(193,848 observations deleted)
 
 . cap drop tag 
 
 . egen tag = tag(id)
 
 . count if tag == 1
-  5,354,788
+  1,518,151
 
 . local N_indiv_nosmall = r(N)
 
@@ -1930,21 +1949,21 @@ file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000008 saved as .
 . egen tag = tag(municipality)
 
 . count if tag == 1
-  1,435
+  1,426
 
 . local N_mun_nosmall = r(N)
 
 . 
 . * Drop attriters
 . drop if total_n != 5
-(5,697,680 observations deleted)
+(1,643,835 observations deleted)
 
 . cap drop tag 
 
 . egen tag = tag(id)
 
 . count if tag == 1
-  3,232,644
+  876,307
 
 . local N_indiv_attriter = r(N)
 
@@ -1954,7 +1973,7 @@ file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000008 saved as .
 . egen tag = tag(municipality)
 
 . count if tag == 1
-  1,403
+  1,399
 
 . local N_mun_attriter = r(N)
 
@@ -2030,7 +2049,7 @@ file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68100.000008 saved as .
 . * =============================================================================
 . * III. Create sample by year table
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+. use "../input/final_indiv.dta", clear
 
 . 
 . destring year total_n, replace 
@@ -2237,7 +2256,7 @@ total_n already numeric; no replace
 . * =============================================================================
 . * IV. Create time series of enrollment rate
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+. use "../input/final_indiv.dta", clear
 
 . 
 . destring year month, replace
@@ -2297,7 +2316,7 @@ file /Users/wernerd/Desktop/Dropouts/2_analysis/source/../output/Figures/enrollm
 . * =============================================================================
 . * Demographic Table by Time Period with F-tests
 . * =============================================================================
-. use "/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta", clear
+. use "../input/ENOE_panel.dta", clear
 
 . destring total_n, replace
 total_n already numeric; no replace
@@ -2447,8 +2466,8 @@ end of do-file
 The following files were created in enoe.do:
 sample_construction.tex dropout_stats.tex mun_summary_stats.tex demographics_by_period.tex sample_time_period.tex enoe_scalars.tex enrollment_TS.pdf 
 
-Script maps.R in Rscript started at 2026-03-04 20:52:15
-Script maps.R finished successfully at 2026-03-04 20:52:21
+Script maps.R in Rscript started at 2026-03-20 16:09:31
+Script maps.R finished successfully at 2026-03-20 16:09:37
 Output: Loading required package: devtools
 Loading required package: usethis
 Using GitHub PAT from the git credential store.
@@ -2556,8 +2575,8 @@ Warning messages:
 The following files were created in maps.R:
 war_hom_map.pdf respike_hom_map.pdf total_hom_map.pdf interim_hom_map.pdf 
 
-Script main_results.do in StataMP started at 2026-03-04 20:52:21
-Script main_results.do finished successfully at 2026-03-04 21:03:10
+Script main_results.do in StataMP started at 2026-03-20 16:09:37
+Script main_results.do finished successfully at 2026-03-20 16:22:46
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -2612,7 +2631,7 @@ Notes:
 . 
 . 
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear 
+. use "../input/final_indiv.dta", clear 
 
 . destring total_n, replace
 total_n already numeric; no replace
@@ -2628,12 +2647,12 @@ total_n already numeric; no replace
 . tempfile indiv_temp
 
 . save `indiv_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68235.000001 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68235.000001 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59722.000001 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59722.000001 saved as .dta format
 
 . 
 . * Load the municipal-level dataset
-. use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+. use "../input/final_mun.dta", clear
 
 .  
 . * Keep only the variables you need from municipal data
@@ -2644,8 +2663,8 @@ file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68235.000001 saved as .
 . tempfile muni_temp
 
 . save `muni_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68235.000002 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_68235.000002 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59722.000002 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59722.000002 saved as .dta format
 
 . 
 . * Reload individual data
@@ -4044,7 +4063,7 @@ Absorbed degrees of freedom:
 . * Kleibergen-Paap F-stat row
 . file write myfile "Kleibergen-Paap F-stat" _n
 
-. file write myfile " & –- & –- & `kpout3' & `kpout4' & `kpout5' & `kpout6' & `kpout7' \\" _n
+. file write myfile " & -- & -- & `kpout3' & `kpout4' & `kpout5' & `kpout6' & `kpout7' \\" _n
 
 . 
 . * Observations row
@@ -8131,7 +8150,7 @@ Absorbed degrees of freedom:
 . 
 . * Calculate a few more scalars
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/homicides.dta", clear 
+. use "../input/homicides.dta", clear 
 
 . 
 . * Calculate SD across all municipality-month observations
@@ -8166,7 +8185,7 @@ year: all characters numeric; replaced as int
 . local effect_1sd_resurge_male = `coef_male' * `delta_log'
 
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear 
+. use "../input/seizure_data.dta", clear 
 
 . summarize cs_big
 
@@ -8177,7 +8196,7 @@ year: all characters numeric; replaced as int
 . local cs_mean = r(mean)
 
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/final_geo.dta", clear 
+. use "../input/final_geo.dta", clear 
 
 . summarize d_to_pc
 
@@ -8289,7 +8308,7 @@ year: all characters numeric; replaced as int
 . 
 . file write scalars "\newcommand{\MainCoef}{ `b_main_fmt' }" _n
 
-. file write scalars "\newcommand{\TWFESe}{ `se_main_fmt' }" _n
+. file write scalars "\newcommand{\MainSe}{ `se_main_fmt' }" _n
 
 . 
 . file write scalars "\newcommand{\WarCoef}{ `b_war_fmt' }" _n
@@ -8321,8 +8340,8 @@ end of do-file
 The following files were created in main_results.do:
 subgroup_iv_interim.tex subgroup_iv_war.tex subgroup_iv_whole_samp.tex main_iv.tex subgroup_iv_respike.tex main_analysis_scalars.tex 
 
-Script quarterly_results.do in StataMP started at 2026-03-04 21:03:10
-Script quarterly_results.do finished successfully at 2026-03-04 21:10:20
+Script quarterly_results.do in StataMP started at 2026-03-20 16:22:46
+Script quarterly_results.do finished successfully at 2026-03-20 16:29:57
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -8377,7 +8396,7 @@ Notes:
 . 
 . 
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv_quarterly.dta", clear 
+. use "../input/final_indiv_quarterly.dta", clear 
 
 . destring total_n, replace 
 total_n already numeric; no replace
@@ -8393,12 +8412,12 @@ total_n already numeric; no replace
 . tempfile indiv_temp
 
 . save `indiv_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71748.000001 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71748.000001 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59968.000001 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59968.000001 saved as .dta format
 
 . 
 . * Load the municipal-level dataset
-. use "/Users/wernerd/Desktop/Daniel Werner/final_mun_quarterly.dta", clear
+. use "../input/final_mun_quarterly.dta", clear
 
 .  
 . * Keep only the variables you need from municipal data
@@ -8409,8 +8428,8 @@ file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71748.000001 saved as .
 . tempfile muni_temp
 
 . save `muni_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71748.000002 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71748.000002 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59968.000002 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_59968.000002 saved as .dta format
 
 . 
 . * Reload individual data
@@ -13642,8 +13661,8 @@ end of do-file
 The following files were created in quarterly_results.do:
 subgroup_iv_respike_quarterly.tex subgroup_iv_whole_samp_quarterly.tex subgroup_iv_interim_quarterly.tex main_iv_quarterly.tex subgroup_iv_war_quarterly.tex 
 
-Script robustness.do in StataMP started at 2026-03-04 21:10:20
-Script robustness.do finished successfully at 2026-03-04 21:26:26
+Script robustness.do in StataMP started at 2026-03-20 16:29:57
+Script robustness.do finished successfully at 2026-03-20 16:45:53
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -13701,7 +13720,7 @@ Notes:
 . * PART 1: Robustness Table
 . ********************************************************************************
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear 
+. use "../input/final_indiv.dta", clear 
 
 . destring total_n, replace
 total_n already numeric; no replace
@@ -13711,19 +13730,19 @@ total_n already numeric; no replace
 . tempfile indiv_temp
 
 . save `indiv_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71931.000001 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71931.000001 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60318.000001 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60318.000001 saved as .dta format
 
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+. use "../input/final_mun.dta", clear
 
 . keep municipality year month avg_* employment_rate
 
 . tempfile muni_temp
 
 . save `muni_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71931.000002 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_71931.000002 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60318.000002 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60318.000002 saved as .dta format
 
 . 
 . use `indiv_temp', clear
@@ -19050,8 +19069,8 @@ end of do-file
 The following files were created in robustness.do:
 robustness_iv.tex 
 
-Script violence_predicts_attrit.do in StataMP started at 2026-03-04 21:26:26
-Script violence_predicts_attrit.do finished successfully at 2026-03-04 21:29:16
+Script violence_predicts_attrit.do in StataMP started at 2026-03-20 16:45:53
+Script violence_predicts_attrit.do finished successfully at 2026-03-20 16:48:42
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -19108,26 +19127,26 @@ Notes:
 . * PART 1: Robustness Table (attrition)
 . ********************************************************************************
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear 
+. use "../input/final_indiv.dta", clear 
 
 . 
 . * Bring in municipal controls
 . tempfile indiv_temp
 
 . save `indiv_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72305.000001 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72305.000001 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60562.000001 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60562.000001 saved as .dta format
 
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+. use "../input/final_mun.dta", clear
 
 . keep municipality year month avg_* employment_rate
 
 . tempfile muni_temp
 
 . save `muni_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72305.000002 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72305.000002 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60562.000002 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60562.000002 saved as .dta format
 
 . 
 . use `indiv_temp', clear
@@ -19763,8 +19782,8 @@ end of do-file
 The following files were created in violence_predicts_attrit.do:
 attrition_robustness.tex 
 
-Script iv_validation.do in StataMP started at 2026-03-04 21:29:16
-Script iv_validation.do finished successfully at 2026-03-04 21:29:43
+Script iv_validation.do in StataMP started at 2026-03-20 16:48:42
+Script iv_validation.do finished successfully at 2026-03-20 16:49:10
 Output:
 
   ___  ____  ____  ____  ____ ®
@@ -19823,7 +19842,7 @@ Notes:
 . * PART 1: Correlation with mexican drug seizures  
 . ********************************************************************************
 . * Load in Colombia data (2007-2024)
-. use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear
+. use "../input/seizure_data.dta", clear
 
 . 
 . keep Year cs_big
@@ -19839,12 +19858,12 @@ Notes:
 . tempfile colombia_temp
 
 . save `colombia_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72376.000001 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72376.000001 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60654.000001 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60654.000001 saved as .dta format
 
 . 
 . * Load in Mexico data (2012-2018)
-. import excel "/Users/wernerd/Desktop/Daniel Werner/DRUGS_MEX.xlsx", firstrow clear
+. import excel "../input/DRUGS_MEX.xlsx", firstrow clear
 (6 vars, 43 obs)
 
 . drop if Años == .
@@ -19892,12 +19911,12 @@ variable meth was long now double
 . tempfile mex_temp
 
 . save `mex_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72376.000002 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72376.000002 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60654.000002 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60654.000002 saved as .dta format
 
 . 
 . * Load in Mexico data (2000-2014)
-. import delimited "/Users/wernerd/Desktop/Daniel Werner/SEDENA.csv", varnames(1) clear
+. import delimited "../input/SEDENA.csv", varnames(1) clear
 (encoding automatically selected: ISO-8859-2)
 (7 vars, 454 obs)
 
@@ -20175,7 +20194,7 @@ Linear regression                               Number of obs     =         12
 . ********************************************************************************
 . 
 . * 1) Municipal-level regressions
-. use "/Users/wernerd/Desktop/Daniel Werner/final_mun.dta", clear
+. use "../input/final_mun.dta", clear
 
 . 
 . destring municipality, replace
@@ -20309,7 +20328,7 @@ Absorbed degrees of freedom:
 . 
 . 
 . * 2) Individual-level regressions
-. use "/Users/wernerd/Desktop/Daniel Werner/final_indiv.dta", clear
+. use "../input/final_indiv.dta", clear
 
 . 
 . gen month_year_date = date(year_month, "YM")
@@ -20442,7 +20461,7 @@ Absorbed degrees of freedom:
 
 . 
 . * 3) Real GDP numbers (millions of real pesos, seasonally adjusted)
-. import delimited "/Users/wernerd/Desktop/Daniel Werner/gdp.csv", varnames(1) clear
+. import delimited "../input/gdp.csv", varnames(1) clear
 (encoding automatically selected: ISO-8859-1)
 (2 vars, 72 obs)
 
@@ -20479,11 +20498,11 @@ variable year was byte now int
 . tempfile gdp_temp
 
 . save `gdp_temp', replace
-(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72376.000003 not found)
-file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_72376.000003 saved as .dta format
+(file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60654.000003 not found)
+file /var/folders/r_/70svtsrx2k563rzqwg09prpw0000gn/T//S_60654.000003 saved as .dta format
 
 . 
-. use "/Users/wernerd/Desktop/Daniel Werner/seizure_data.dta", clear
+. use "../input/seizure_data.dta", clear
 
 . 
 . keep Year Month cs_big
@@ -20605,8 +20624,8 @@ Linear regression                               Number of obs     =         72
 
 . * Column labels with shortstack
 . file write mytable ///
-> " & \shortstack{Employment \\ Rate} & \shortstack{Avg \\ Income} & \shortstack{Avg Weekly \\ Hours} & \shortstack{HH Adult \\ Employment} & \shortstack{HH \\ Income} & \shortstack{HH Adult \\ Hours} & \shortstack{
-> Real \\ GDP} \\" _n
+> " & \shortstack{Employment \\ Rate} & \shortstack{Avg \\ Income} & \shortstack{Avg Weekly \\ Hours} & \shortstack{HH Adult \\ Employment} & \shorts
+> tack{HH \\ Income} & \shortstack{HH Adult \\ Hours} & \shortstack{Real \\ GDP} \\" _n
 
 . file write mytable ///
 > " & (1) & (2) & (3) & (4) & (5) & (6) & (7) \\" _n
@@ -20642,4 +20661,4 @@ end of do-file
 The following files were created in iv_validation.do:
 drug_correlations.tex 
 
-make.sh finished at 2026-03-04 21:29:43
+make.sh finished at 2026-03-20 16:49:10

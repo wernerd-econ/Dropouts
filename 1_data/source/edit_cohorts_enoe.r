@@ -59,7 +59,7 @@ create_new_variables <- function(df, cohort_number) {
   
   
   # load in FX and convert to USD
-  path <- "/Users/wernerd/Desktop/Daniel Werner/FX, CPI"
+  path <- "../input/FX, CPI"
   fx_rates <- read_excel(file.path(path, "FX.xlsx"))
   fx_rates <- year_month(fx_rates)
   fx_rates <- fx_rates %>% mutate(FX = as.numeric(FX))

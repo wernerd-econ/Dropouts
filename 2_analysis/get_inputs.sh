@@ -7,8 +7,19 @@
 # You can also use paths to folders:
 # ../examples/inputs_for_examples/
 INPUT_FILES=(
-    # /path/to/your/input/file.csv (replace with your actual input paths)
-    # Add more input paths as needed
+    # Final analysis datasets produced by 1_data and written to Google Drive
+    "../external/raw_data/final_indiv.dta"
+    "../external/raw_data/final_mun.dta"
+    "../external/raw_data/final_indiv_quarterly.dta"
+    "../external/raw_data/final_mun_quarterly.dta"
+    "../external/raw_data/homicides.dta"
+    "../external/raw_data/seizure_data.dta"
+    "../external/raw_data/final_geo.dta"
+    "../external/raw_data/ENOE_panel.dta"
+    # Raw auxiliary datasets (external Google Drive)
+    "../external/raw_data/DRUGS_MEX.xlsx"
+    "../external/raw_data/SEDENA.csv"
+    "../external/raw_data/gdp.csv"
 )
 
 # Path to current module

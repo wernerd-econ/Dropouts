@@ -65,5 +65,6 @@ for col in all_data.select_dtypes(include=["object"]).columns:
     if col != "trim":
         all_data[col] = pd.to_numeric(all_data[col], errors="coerce")
 
-all_data.to_stata(os.path.expanduser("/Users/wernerd/Desktop/Daniel Werner/ENOE_panel.dta"), write_index=False)
+all_data.to_stata("../../external/raw_data/ENOE_panel.dta", write_index=False)
+all_data.to_stata("../output/ENOE_panel.dta", write_index=False)
 print("Done!")
