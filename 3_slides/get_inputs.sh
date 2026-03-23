@@ -7,8 +7,8 @@
 # You can also use paths to folders:
 # ../examples/inputs_for_examples/
 INPUT_FILES=(
-    # /path/to/your/input/file.csv (replace with your actual input paths)
-    # Add more input paths as needed
+    ../2_analysis/output/Tables          # regression tables, scalars, and LaTeX fragments
+    ../2_analysis/output/Figures         # maps and time-series figures
 )
 
 # Path to current module

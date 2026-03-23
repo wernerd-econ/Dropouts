@@ -1,0 +1,608 @@
+\documentclass[aspectratio=169]{beamer}
+
+% --- PACKAGES ---
+\usepackage{graphicx, bbm, amsmath, amsthm, amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{threeparttable}
+\usepackage{subcaption}
+\usepackage{xfp}
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+
+% --- THEME AND COLORS ---
+\usetheme{moloch}
+\setbeamercolor{background canvas}{bg=white}
+\definecolor{cardinalred}{rgb}{0.549, 0.082, 0.082}
+\setbeamercolor{title separator}{fg=cardinalred}
+\setbeamercolor{progress bar in section page}{fg=cardinalred}
+\setbeamercovered{invisible}
+\setbeamertemplate{footline}[frame number]
+\setbeamersize{text margin left=1.5em,text margin right=1em}
+
+% --- SCALAR INPUTS ---
+\input{../input/Tables/enoe_scalars}
+\input{../input/Tables/homicide_scalars}
+\input{../input/Tables/cocaine_scalars}
+\input{../input/Tables/main_analysis_scalars}
+
+% --- TITLE PAGE ---
+\title{Crime and the Classroom}
+\subtitle{How Local Violence Affects School Dropout Decisions in Mexico}
+\author{Daniel Werner}
+\institute{Stanford University}
+\date{}
+
+% ======================================================
+\begin{document}
+
+% --- TITLE SLIDE ---
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+% ======================================================
+\section{Introduction}
+
+\begin{frame}{Mexico's violence epidemic}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+    \begin{itemize}
+        \item Drug trafficking organizations (DTOs) generate \$19--29 billion USD annually
+        \item Three distinct eras of violence since 2007:
+        \begin{itemize}
+            \item \textbf{War on Drugs} (2007--2012): Calder\'on's militarized offensive
+            \item \textbf{Interim Period} (2013--2016): Strategic withdrawal, lower rates
+            \item \textbf{Resurgence} (2017--2024): Historically high, persistent violence
+        \end{itemize}
+        \item 2016: Mexico was the world's \#2 deadliest conflict zone (behind Syria)
+        \item In 2024: 35,600 persons reported missing
+    \end{itemize}
+\end{column}
+\begin{column}{0.45\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../input/Figures/Homicide_TS.pdf}
+    \end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Violence is geographically concentrated}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.78\textwidth]{../input/Figures/total_hom_map.pdf}
+\end{figure}
+\vspace{-0.3em}
+{\footnotesize Average municipal homicide rates 2007--2024. Darkest municipalities are along the Pacific coast.}
+\end{frame}
+
+
+\begin{frame}{Research question}
+
+    \begin{block}{}
+        \centering
+        Does an increase in the local homicide rate cause young people to drop out of school?
+    \end{block}
+
+\vspace{0.5cm}
+\pause
+
+The effect is \textbf{theoretically ambiguous}:
+
+\vspace{0.3cm}
+\begin{columns}
+\begin{column}{0.47\textwidth}
+    \textbf{Violence $\uparrow$ dropout:}
+    \begin{itemize}
+        \item Fear reduces perceived safety
+        \item Children supplement lost household income
+        \item DTOs recruit youth as enforcers, runners, lookouts
+    \end{itemize}
+\end{column}
+\begin{column}{0.47\textwidth}
+    \textbf{Violence $\downarrow$ dropout:}
+    \begin{itemize}
+        \item Schools function as safe havens
+        \item Higher enforcement risk deters participation
+        \item Social stigma of drug trade discourages recruitment
+    \end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{0.5cm}
+\pause
+$\implies$ This is an \textbf{empirical question}
+
+\end{frame}
+
+
+\begin{frame}{This paper}
+
+\textbf{Research question}: What is the causal effect of drug-trafficking violence on school dropout in Mexico?
+
+\pause
+\vspace{0.5cm}
+
+\textbf{Approach}:
+\begin{itemize}
+    \item Individual-level panel data from ENOE (2007--2024): \totalKids\ children
+    \item Construct high-frequency monthly dropout indicator
+    \item Instrumental variables: Colombian cocaine seizures $\times$ distance to Pacific coast
+    \item Exploit three eras of violence and enforcement policy
+\end{itemize}
+
+\pause
+\vspace{0.5cm}
+
+\textbf{Preview of findings}:
+\begin{itemize}
+    \item Pooled IV estimate: small positive effect, imprecise
+    \item \textbf{Resurgence period (2017--2024)}: large, positive, statistically significant
+    \item Effects concentrated among \textbf{high school--aged males}
+    \item Evidence consistent with \textbf{DTO recruitment mechanism}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Contributions}
+\begin{enumerate}
+    \item \textbf{Identification}: IV strategy (shift-share) addresses reverse causality and omitted variable bias present in prior TWFE estimates
+
+    \vspace{0.4cm}
+
+    \item \textbf{Sample period}: Covers 2007--2024 --- the longest panel in this literature; most prior work covers only 2007--2012
+
+    \vspace{0.4cm}
+
+    \item \textbf{Outcome}: First monthly, individual-level dropout measure for Mexico; avoids institutional reporting incentives in administrative data
+
+    \vspace{0.4cm}
+
+    \item \textbf{New finding}: Evidence of a structural break under AMLO's permissive enforcement regime, consistent with heightened DTO recruitment
+\end{enumerate}
+\end{frame}
+
+
+% ======================================================
+\section{Data}
+
+\begin{frame}{Data}
+\begin{enumerate}
+    \item ENOE: National Survey of Occupation and Employment
+    \item Homicides: INEGI official death records
+    \item Colombian cocaine seizures: Colombian Ministry of Defense
+    \item Geographic data: INEGI shapefiles
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}{ENOE: rotating individual panel}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+    \begin{itemize}
+        \item Nationally representative rotating panel, 5 consecutive quarters per individual
+        \item Covers 2007--2024; one quarter missing (COVID, Q2 2020)
+        \item Keep only individuals completing all 5 surveys
+        \item \textbf{Sample}: \totalKids\ children aged 12--18 in urban municipalities ($\geq$15,000 pop.)
+        \item \textbf{Dropout}: transition from enrolled $\rightarrow$ not enrolled between two survey waves
+        \begin{itemize}
+            \item Sidesteps institutional reporting incentives
+        \end{itemize}
+    \end{itemize}
+\end{column}
+\begin{column}{0.45\textwidth}
+    \begin{itemize}
+        \item Dropout rates by school level:
+        \begin{itemize}
+            \item Secondary: \dRateSecondary\%
+            \item High school: \dRateHigh\%
+        \end{itemize}
+        \item Discontinuity at age 15 = minimum legal working age
+        \item Primary-age children (6--11) excluded:
+        \begin{itemize}
+            \item Negligible dropout
+            \item Theoretical channels don't apply
+        \end{itemize}
+    \end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Enrollment rates have been roughly flat since 2015}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.82\textwidth]{../input/Figures/enrollment_TS.pdf}
+\end{figure}
+\vspace{-0.3em}
+{\footnotesize Average monthly enrollment rate among secondary and high school students (ENOE).}
+\end{frame}
+
+
+\begin{frame}{Homicide data: three eras of violence}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.82\textwidth]{../input/Figures/Homicide_TS.pdf}
+\end{figure}
+\vspace{-0.5em}
+{\footnotesize National and average municipal homicide rates per 10,000 inhabitants (INEGI). Vertical lines mark period boundaries.}
+\end{frame}
+
+
+\begin{frame}{Colombian cocaine seizures: the supply shock}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+    \begin{itemize}
+        \item Large coastal seizures only ($\geq$500 kg)
+        \item \nSeizeWholeSamp\ seizure events/month on average
+        \item Average of \kgSeizeWholeSamp\ metric tonnes/month
+        \item Standard deviation: \sdSeizeWholeSamp\ metric tonnes
+        \item High correlation with Mexican homicide rates
+        \item Variation is mostly idiosyncratic (Colombian enforcement operations)
+    \end{itemize}
+\end{column}
+\begin{column}{0.45\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../input/Figures/Seizure_TS.pdf}
+    \end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+% ======================================================
+\section{Empirical Strategy}
+
+\begin{frame}{Empirical strategy}
+
+\textbf{Challenge}: Violence is endogenous
+\begin{itemize}
+    \item Reverse causality: dropouts may themselves affect violence
+    \item Omitted variable bias: unobserved factors drive both
+\end{itemize}
+
+\vspace{0.5cm}
+\pause
+
+\textbf{Solution}: Instrumental Variables (IV)
+\begin{itemize}
+    \item Instrument: $\underbrace{d_i}_{\text{distance to Pacific}} \times \underbrace{c_{j,t}}_{\text{Colombian seizures}}$
+    \item Shift-share design, following \citet{dubevargas}
+\end{itemize}
+
+\vspace{0.5cm}
+\pause
+
+\textbf{Identifying assumption}: Colombian seizures $\times$ Pacific distance affect dropout \emph{only} through changes in local homicide rates
+
+\end{frame}
+
+
+\begin{frame}{The instrument: two components}
+
+\textbf{1. Colombian cocaine seizures} ($c_{j,t}$): supply shocks
+\begin{itemize}
+    \item Large Colombian seizures reduce cocaine supply
+    \item Short-run demand is inelastic $\Rightarrow$ retail prices rise
+    \item Mexican DTOs compete violently for control of trafficking routes
+    \item Driven by Colombian enforcement operations: orthogonal to Mexico
+\end{itemize}
+
+\vspace{0.5cm}
+\pause
+
+\textbf{2. Distance to Pacific coast} ($d_i$): exposure
+\begin{itemize}
+    \item $\approx$70\% of Colombian cocaine enters Mexico via Pacific routes
+    \item Closer to Pacific $=$ more important within the trafficking network
+    \item Time-invariant: identification from differential exposure to common shocks
+    \item Consistent with Figure: highest homicide rates along Pacific corridor
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Model}
+
+\textbf{First stage}:
+\small
+\begin{equation*}
+    \ln(1 + h_{i,j,t}) = \gamma_1 + \gamma_2 \bigl[ d_i \times c_{j,t} \bigr] + \mathbf{X}_{i,j,t}'\Gamma + \mathbf{W}_{s,i,j,t}'\Theta + \delta_{j,t} + m_s + \nu_{i,j,t}
+\end{equation*}
+
+\normalsize
+\vspace{0.4cm}
+\pause
+
+\textbf{Second stage}:
+\small
+\begin{equation*}
+    y_{s,i,j,t} = \beta_1 + \beta_2\,\widehat{\ln(1 + h_{i,j,t})} + \mathbf{X}_{i,j,t}'\Gamma + \mathbf{W}_{s,i,j,t}'\Theta + \delta_{j,t} + m_s + \varepsilon_{s,i,j,t}
+\end{equation*}
+
+\normalsize
+\vspace{0.4cm}
+
+where:
+\begin{itemize}
+    \item $y_{s,i,j,t}$ = 1 if student $s$ drops out in municipality $i$, year $j$, month $t$
+    \item $\mathbf{X}_{i,j,t}$ = municipal controls (employment, income, population, lags of violence)
+    \item $\mathbf{W}_{s,i,j,t}$ = individual/household controls
+    \item $m_s$ = individual fixed effects; $\delta_{j,t}$ = month--by--year fixed effects
+    \item Standard errors clustered at the individual level
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Instrument validity: uncorrelated with Mexican enforcement}
+
+\begin{center}
+\scalebox{0.72}{%
+\begin{threeparttable}
+\input{../input/Tables/drug_correlations}
+\end{threeparttable}
+}
+\end{center}
+\vspace{0.3em}
+{\footnotesize Colombian seizures have \textbf{no significant correlation} with Mexican drug interdiction efforts across any substance (2007--2018). Annual data; 12 observations.}
+
+\end{frame}
+
+
+\begin{frame}{Instrument validity: uncorrelated with economic outcomes}
+
+\begin{center}
+\scalebox{0.72}{%
+\begin{threeparttable}
+\input{../input/Tables/placebo_seizures}
+\end{threeparttable}
+}
+\end{center}
+\vspace{0.3em}
+{\footnotesize Colombian seizures are uncorrelated with municipal employment rates, average income, weekly hours, household income, or national GDP.}
+
+\end{frame}
+
+
+% ======================================================
+\section{Results}
+
+\begin{frame}{Main results}
+
+\begin{center}
+\scalebox{0.62}{%
+\begin{threeparttable}
+\input{../input/Tables/main_iv}
+\end{threeparttable}
+}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Three key findings from baseline estimates}
+
+\begin{enumerate}
+
+    \item \textbf{OLS and TWFE} yield small, negative estimates --- likely reflecting selection bias and time-invariant confounders
+
+    \vspace{0.4cm}
+
+    \item \textbf{Pooled IV}: positive point estimates --- reversal from OLS suggests endogeneity was masking a positive effect; but pooled estimate is imprecise
+
+    \vspace{0.4cm}
+
+    \item \textbf{Time heterogeneity} (the central finding):
+    \begin{itemize}
+        \item War on Drugs (2007--12): negative, imprecise; weak first stage
+        \item Interim Period (2013--16): negative, tight around zero; strong first stage
+        \item \textbf{Resurgence (2017--24): large, positive, significant at 5\%}
+    \end{itemize}
+
+\end{enumerate}
+
+\vspace{0.3cm}
+\pause
+Kleibergen--Paap F-stat (pooled): \Fstat\ $\gg$ conventional thresholds
+
+\end{frame}
+
+
+\begin{frame}{Resurgence period: effects concentrated in older males}
+
+\begin{center}
+\scalebox{0.72}{%
+\begin{threeparttable}
+\input{../input/Tables/subgroup_iv_respike}
+\end{threeparttable}
+}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Magnitude of the Resurgence effect}
+
+A one--standard deviation increase in the municipal homicide rate (\MunicipalHRSD\ per 10,000):
+
+\vspace{0.4cm}
+
+\begin{itemize}
+    \item \textbf{All students (12--18)}: increases dropout probability by $\approx$ {\fpeval{round(\sdEffectRespike * 100,2)}} pp
+    \begin{itemize}
+        \item Mean dropout rate $\approx$ 7.4\%
+    \end{itemize}
+
+    \vspace{0.3cm}
+
+    \item \textbf{High school students (15--18)}: $\approx$ {\fpeval{round(\sdEffectRespikeHigh * 100,2)}} pp
+    \begin{itemize}
+        \item Mean $\approx$ 9.5\%
+    \end{itemize}
+
+    \vspace{0.3cm}
+
+    \item \textbf{High school males}: $\approx$ {\fpeval{round(\sdEffectRespikeMale * 100,2)}} pp
+    \begin{itemize}
+        \item Mean $\approx$ 8\%
+    \end{itemize}
+\end{itemize}
+
+\vspace{0.4cm}
+\pause
+
+Results are \textbf{robust} to quarterly aggregation (Appendix Table)
+
+\end{frame}
+
+
+% ======================================================
+\section{Mechanism}
+
+\begin{frame}{Mechanism: DTO recruitment, not safety fears}
+
+\textbf{If the mechanism were fear of physical danger}, we would expect:
+\begin{itemize}
+    \item Effects concentrated among \textit{younger} and \textit{female} students (more vulnerable)
+\end{itemize}
+
+\vspace{0.4cm}
+\pause
+
+\textbf{But the data show the opposite}:
+\begin{itemize}
+    \item Larger effects for \textit{older} students (high school $>$ secondary)
+    \item Concentrated in \textit{males}; null effects for females
+\end{itemize}
+
+\vspace{0.4cm}
+\pause
+
+\textbf{Consistent with DTO recruitment}:
+\begin{itemize}
+    \item DTOs recruit older adolescent males as enforcers, distributors, operatives
+    \item Younger teens serve in peripheral roles (lookouts) compatible with school
+    \item Older teens accumulate ``criminal capital'' $\rightarrow$ full-time criminal careers \citep{Sviatschi2022}
+    \item DTO recruitment overwhelmingly targets young men
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Why the Resurgence period specifically?}
+
+Effect is large in 2017--2024 but not before. Why?
+
+\vspace{0.4cm}
+\pause
+
+\textbf{AMLO's ``abrazos, no balazos'' (hugs, not bullets)}:
+\begin{itemize}
+    \item Explicitly non-confrontational stance toward organized crime
+    \item Reduced perceived risk of imprisonment or death from cartel membership
+    \item Implicitly reduced the social stigma of participating in the drug trade
+    \item Under Calder\'on: intense crackdowns $\Rightarrow$ high mortality risk of cartel membership
+    \item Under AMLO: weak deterrence $\Rightarrow$ opportunity cost of school falls
+\end{itemize}
+
+\vspace{0.4cm}
+\pause
+
+\textbf{Mexico's National Registry of Missing Persons}:
+\begin{itemize}
+    \item 3,000 missing in 2007 $\rightarrow$ 11,000 in 2012 $\rightarrow$ 35,600 in 2024
+    \item Age-gender distribution: males peak at 15--19 and remain elevated through middle age
+    \item Precisely the age range where dropout effects are largest
+\end{itemize}
+
+\end{frame}
+
+
+% ======================================================
+\section{Robustness}
+
+\begin{frame}{Robustness checks}
+
+\begin{center}
+\scalebox{0.62}{%
+\begin{threeparttable}
+\input{../input/Tables/robustness_iv}
+\end{threeparttable}
+}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Robustness: summary}
+
+Positive Resurgence estimate is robust to:
+
+\begin{itemize}
+    \item Including survey attriters (removing 5-quarter balance requirement)
+    \item Lowering population threshold to 10,000
+    \item Using all Colombian cocaine seizures (not just large coastal events)
+    \item Dropping 2020 (COVID)
+    \item Using school enrollment as outcome (sign reverses, as expected)
+    \item Quarterly aggregation (separate Appendix)
+\end{itemize}
+
+\vspace{0.4cm}
+\pause
+
+Violence does \textbf{not} predict survey attrition:
+\begin{itemize}
+    \item Small, statistically insignificant coefficients across all periods
+    \item Only exception: slightly negative during the Interim period
+\end{itemize}
+
+\end{frame}
+
+
+% ======================================================
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+
+\textbf{Question}: Does drug-trafficking violence cause school dropout in Mexico?
+
+\vspace{0.5cm}
+
+\textbf{Method}: IV with Colombian cocaine seizures $\times$ distance to Pacific coast; individual panel 2007--2024
+
+\vspace{0.5cm}
+\pause
+
+\textbf{Findings}:
+\begin{itemize}
+    \item Pooled effect is small and positive (larger than TWFE estimates in the literature)
+    \item \textbf{Resurgence period (2017--2024)}: large, positive, and significant at 5\%
+    \item Effects are concentrated among \textbf{older males}
+\end{itemize}
+
+\vspace{0.3cm}
+\pause
+
+\textbf{Interpretation}: Consistent with DTO recruitment when enforcement is permissive. Not consistent with fear-based or income-substitution mechanisms.
+
+\vspace{0.3cm}
+\pause
+
+\textbf{Policy implication}: Scholarship programs targeting high school males in high-violence areas may reduce recruitment incentives of criminal organizations
+
+\end{frame}
+
+
+% ======================================================
+% References (hidden from presentation; needed for \citet{} to resolve)
+\begin{frame}[allowframebreaks]{References}
+\bibliography{../../4_paper/source/refs}
+\end{frame}
+
+\end{document}
