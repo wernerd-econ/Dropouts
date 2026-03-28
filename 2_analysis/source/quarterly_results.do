@@ -114,7 +114,13 @@ local kp_3 = e(rkf)
 quietly sum school if e(sample)
 local mean_3 : display %6.3f r(mean)
 
-* IV main specification	
+* First stage: minimal controls
+reghdfe ln_homicide iv ln_hom_lag1 pop_tot, ///
+		absorb(i.trim_f i.id) cluster(id)
+local fs_b_3 = _b[iv]
+local fs_se_3 = _se[iv]
+
+* IV main specification
 ivreghdfe dropout hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
 		hh_n_employed_adults hh_n_other_children hh_children /// 
 		ln_hom_lag1   pop_tot pct_pop_fem ///
@@ -132,6 +138,18 @@ local kp_4 = e(rkf)
 local k_stat_whole = e(rkf)
 quietly sum school if e(sample)
 local mean_4 : display %6.3f r(mean)
+
+* First stage: main specification
+reghdfe ln_homicide iv hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+		hh_n_employed_adults hh_n_other_children hh_children ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
+		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children ///
+		avg_income avg_hincome employment_rate avg_hh_n_employed_adults ///
+		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers ///
+		pct_pop_male pct_pop_student, ///
+		absorb(i.trim_f i.id) cluster(id)
+local fs_b_4 = _b[iv]
+local fs_se_4 = _se[iv]
 
 ********************************************************************************
 * PART 3: Time period analysis
@@ -168,6 +186,18 @@ local N_5 = e(N)
 local kp_5 = e(rkf)
 quietly sum school if e(sample)
 local mean_5 : display %6.3f r(mean)
+
+* First stage: War on Drugs
+reghdfe ln_homicide iv hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+		hh_n_employed_adults hh_n_other_children hh_children ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
+		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children ///
+		avg_income avg_hincome employment_rate avg_hh_n_employed_adults ///
+		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers ///
+		pct_pop_male pct_pop_student, ///
+		absorb(i.trim_f i.id) cluster(id)
+local fs_b_5 = _b[iv]
+local fs_se_5 = _se[iv]
 restore
 
 * Period 2: 2013-2016
@@ -188,6 +218,18 @@ local N_6 = e(N)
 local kp_6 = e(rkf)
 quietly sum school if e(sample)
 local mean_6 : display %6.3f r(mean)
+
+* First stage: Interim
+reghdfe ln_homicide iv hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+		hh_n_employed_adults hh_n_other_children hh_children ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
+		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children ///
+		avg_income avg_hincome employment_rate avg_hh_n_employed_adults ///
+		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers ///
+		pct_pop_male pct_pop_student, ///
+		absorb(i.trim_f i.id) cluster(id)
+local fs_b_6 = _b[iv]
+local fs_se_6 = _se[iv]
 
 restore
 
@@ -210,6 +252,18 @@ local N_7 = e(N)
 local kp_7 = e(rkf)
 quietly sum school if e(sample)
 local mean_7 : display %6.3f r(mean)
+
+* First stage: Resurgence
+reghdfe ln_homicide iv hh_income hh_adult_schooling hh_adult_hours hh_adult_employment_rate ///
+		hh_n_employed_adults hh_n_other_children hh_children ///
+		ln_hom_lag1 pop_tot pct_pop_fem ///
+		avg_age avg_hh_adult_hours avg_hh_adult_schooling avg_hh_children ///
+		avg_income avg_hincome employment_rate avg_hh_n_employed_adults ///
+		avg_hh_size avg_weekly_hours_worked avg_weekly_hours_worked_workers ///
+		pct_pop_male pct_pop_student, ///
+		absorb(i.trim_f i.id) cluster(id)
+local fs_b_7 = _b[iv]
+local fs_se_7 = _se[iv]
 restore
 
 // ============================================
@@ -290,6 +344,78 @@ file write myfile " & -- & -- & `kpout3' & `kpout4' & `kpout5' & `kpout6' & `kpo
 file write myfile "\hline" _n
 file write myfile "Observations" _n
 file write myfile " & `Nout1' & `Nout2' & `Nout3' & `Nout4' & `Nout5' & `Nout6' & `Nout7' \\" _n
+
+* Close table
+file write myfile "\hline\hline" _n
+file write myfile "\end{tabular}" _n
+
+file close myfile
+
+// ============================================
+// WRITE LATEX TABLE (First Stage - Quarterly)
+// ============================================
+
+* Format first stage coefficients (rescale by 10^8 for display)
+forvalues j = 3/7 {
+	local fs_b_scaled = `fs_b_`j'' * 100000000
+	local fs_se_scaled = `fs_se_`j'' * 100000000
+
+	* t/z statistic
+	local t = abs(`fs_b_scaled' / `fs_se_scaled')
+	local p = 2 * normal(-`t')
+
+	* stars
+	local stars ""
+	if (`p' < 0.10) local stars "*"
+	if (`p' < 0.05) local stars "**"
+	if (`p' < 0.01) local stars "***"
+
+	* formatted numbers
+	local fs_b_tex : display %6.3f `fs_b_scaled'
+	local fs_se_tex : display %6.3f `fs_se_scaled'
+	local fs_kp_tex : display %6.2f `kp_`j''
+
+	* store LaTeX-ready output
+	local fs_coef`j' "\$`fs_b_tex'^{`stars'}\$"
+	local fs_seout`j' "(`fs_se_tex')"
+	local fs_kpout`j' "`fs_kp_tex'"
+
+	local N = `N_`j''
+	if `N' >= 10000 {
+		local fs_Nout`j' : display %9.0fc `N'
+	}
+	else {
+		local fs_Nout`j' : display %9.0f `N'
+	}
+}
+
+file open myfile using "${TABLES}main_first_stage_quarterly.tex", write replace
+
+* Write table header
+file write myfile "\begin{tabular}{l c c c c c}" _n
+file write myfile "\hline\hline" _n
+file write myfile ///
+" {\small \textit{Outcome: $\ln(1+\text{Homicides per 10,000})$}} & \shortstack{Minimal \\ controls \\ (1)}" ///
+" & \shortstack{Primary \\ specification \\ (2)}" ///
+" & \shortstack{War on drugs \\ 2007-2012 \\ (3)}" ///
+" & \shortstack{Interim \\ 2013-2016 \\ (4)}" ///
+" & \shortstack{Resurgence \\ 2017-2024 \\ (5)} \\" _n
+file write myfile "\hline" _n
+
+* Coefficient row
+file write myfile "Seizures $\times$ Distance ($\times 10^{-8}$)" _n
+file write myfile " & `fs_coef3' & `fs_coef4' & `fs_coef5' & `fs_coef6' & `fs_coef7' \\" _n
+file write myfile " & `fs_seout3' & `fs_seout4' & `fs_seout5' & `fs_seout6' & `fs_seout7' \\" _n
+
+* Kleibergen-Paap F-stat row
+file write myfile "\hline" _n
+file write myfile "Kleibergen-Paap F-stat" _n
+file write myfile " & `fs_kpout3' & `fs_kpout4' & `fs_kpout5' & `fs_kpout6' & `fs_kpout7' \\" _n
+
+* Observations row
+file write myfile "\hline" _n
+file write myfile "Observations" _n
+file write myfile " & `fs_Nout3' & `fs_Nout4' & `fs_Nout5' & `fs_Nout6' & `fs_Nout7' \\" _n
 
 * Close table
 file write myfile "\hline\hline" _n

@@ -1,6 +1,6 @@
 
-Script main.tex in latexmk -pdf -bibtex started at 2026-03-20 17:03:49
-Script main.tex finished successfully at 2026-03-20 17:03:55
+Script main.tex in latexmk -pdf -bibtex started at 2026-03-27 17:07:42
+Script main.tex finished successfully at 2026-03-27 17:07:48
 Output: Rc files read:
   NONE
 Latexmk: This is Latexmk, John Collins, 27 Dec. 2024. Version 4.86a.
@@ -313,415 +313,423 @@ Non-PDF special ignored!
 al/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/202
 5/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
 
-Package natbib Warning: Citation `psacharopoulos2018' on page 1 undefined on in
-put line 159.
-
-
 Package natbib Warning: Citation `cattan2022' on page 1 undefined on input line
- 159.
+ 157.
 
 
 Package natbib Warning: Citation `drager2024' on page 1 undefined on input line
- 159.
+ 157.
 
 
 Package natbib Warning: Citation `dehoyos2014' on page 1 undefined on input lin
-e 159.
+e 157.
 
 
 Package natbib Warning: Citation `harberger2012' on page 1 undefined on input l
-ine 159.
+ine 157.
+
+
+Package natbib Warning: Citation `unodc2010' on page 1 undefined on input line 
+161.
+
+
+Package natbib Warning: Citation `dubevargas' on page 1 undefined on input line
+ 161.
+
+
+Package natbib Warning: Citation `bartik1991' on page 1 undefined on input line
+ 161.
 
 
 [1]
+
+Package natbib Warning: Citation `mccormik2019' on page 2 undefined on input li
+ne 165.
+
+
 [2]
 
 Package natbib Warning: Citation `dubevargas' on page 3 undefined on input line
- 171.
+ 175.
 
 
 Package natbib Warning: Citation `igarape' on page 3 undefined on input line 17
-1.
+5.
 
 
 Package natbib Warning: Citation `iiss2017' on page 3 undefined on input line 1
-71.
-
-
-Package natbib Warning: Citation `leon2012' on page 3 undefined on input line 1
-73.
-
-
-Package natbib Warning: Citation `justino2013' on page 3 undefined on input lin
-e 173.
-
-
-Package natbib Warning: Citation `ichino2004' on page 3 undefined on input line
- 173.
-
-
-Package natbib Warning: Citation `shemayinka2011' on page 3 undefined on input 
-line 173.
-
-
-Package natbib Warning: Citation `akresh2008' on page 3 undefined on input line
- 173.
-
-
-Package natbib Warning: Citation `montes2021' on page 3 undefined on input line
- 173.
-
-
-Package natbib Warning: Citation `koppensteiner2021' on page 3 undefined on inp
-ut line 173.
-
-
-Package natbib Warning: Citation `monteiro2017' on page 3 undefined on input li
-ne 173.
-
-
-Package natbib Warning: Citation `brown2017' on page 3 undefined on input line 
-173.
-
-
-Package natbib Warning: Citation `jarillo2016' on page 3 undefined on input lin
-e 173.
-
-
-Package natbib Warning: Citation `caudillo2014' on page 3 undefined on input li
-ne 173.
-
-
-Package natbib Warning: Citation `michaelsen2020' on page 3 undefined on input 
-line 173.
-
-
-Package natbib Warning: Citation `orraca2018' on page 3 undefined on input line
- 173.
-
-
-Package natbib Warning: Citation `jarillo2016' on page 3 undefined on input lin
-e 173.
-
-
-Package natbib Warning: Citation `swee2015' on page 3 undefined on input line 1
-73.
-
-
-Package natbib Warning: Citation `justino2012' on page 3 undefined on input lin
-e 173.
-
-
-Package natbib Warning: Citation `rodriguez2009' on page 3 undefined on input l
-ine 173.
-
-
-Package natbib Warning: Citation `michaelsen2020' on page 3 undefined on input 
-line 173.
-
-
-Package natbib Warning: Citation `padilla2015' on page 3 undefined on input lin
-e 173.
+75.
 
 
 [3]
 
+Package natbib Warning: Citation `leon2012' on page 4 undefined on input line 1
+77.
+
+
+Package natbib Warning: Citation `justino2013' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `ichino2004' on page 4 undefined on input line
+ 177.
+
+
+Package natbib Warning: Citation `shemayinka2011' on page 4 undefined on input 
+line 177.
+
+
+Package natbib Warning: Citation `akresh2008' on page 4 undefined on input line
+ 177.
+
+
+Package natbib Warning: Citation `brown2017' on page 4 undefined on input line 
+177.
+
+
+Package natbib Warning: Citation `jarillo2016' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `caudillo2014' on page 4 undefined on input li
+ne 177.
+
+
+Package natbib Warning: Citation `michaelsen2020' on page 4 undefined on input 
+line 177.
+
+
+Package natbib Warning: Citation `padilla2015' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `orraca2018' on page 4 undefined on input line
+ 177.
+
+
+Package natbib Warning: Citation `montes2021' on page 4 undefined on input line
+ 177.
+
+
+Package natbib Warning: Citation `koppensteiner2021' on page 4 undefined on inp
+ut line 177.
+
+
+Package natbib Warning: Citation `monteiro2017' on page 4 undefined on input li
+ne 177.
+
+
+Package natbib Warning: Citation `jarillo2016' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `swee2015' on page 4 undefined on input line 1
+77.
+
+
+Package natbib Warning: Citation `justino2012' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `rodriguez2009' on page 4 undefined on input l
+ine 177.
+
+
 Package natbib Warning: Citation `guerrero2011' on page 4 undefined on input li
-ne 178.
+ne 182.
 
 
 Package natbib Warning: Citation `dube2016' on page 4 undefined on input line 1
-78.
+82.
 
 
 Package natbib Warning: Citation `dell2015' on page 4 undefined on input line 1
-78.
+82.
 
 
 Package natbib Warning: Citation `kilmer2010' on page 4 undefined on input line
- 178.
+ 182.
 
 
 Package natbib Warning: Citation `unodc2010' on page 4 undefined on input line 
-178.
+182.
 
 
 [4]
 
 Package natbib Warning: Citation `Castillo2020' on page 5 undefined on input li
-ne 180.
+ne 184.
 
 
 Package natbib Warning: Citation `Castillo2020' on page 5 undefined on input li
-ne 182.
+ne 186.
 
 
 Package natbib Warning: Citation `Castillo2020' on page 5 undefined on input li
-ne 182.
+ne 186.
 
 
 Package natbib Warning: Citation `becker2006' on page 5 undefined on input line
- 182.
+ 186.
 
 
 Package natbib Warning: Citation `Castillo2020' on page 5 undefined on input li
-ne 182.
+ne 186.
 
 
 Package natbib Warning: Citation `dell2015' on page 5 undefined on input line 1
-84.
+88.
 
 
 [5]
 
 Package natbib Warning: Citation `dell2015' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `rios2013' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `dell2019' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `dube2013' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `dube2016' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `Calderon2013' on page 6 undefined on input li
-ne 186.
+ne 190.
 
 
 Package natbib Warning: Citation `dell2015' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `Calderon2013' on page 6 undefined on input li
-ne 188.
+ne 192.
 
 
 Package natbib Warning: Citation `guerrero2011' on page 6 undefined on input li
-ne 188.
+ne 192.
 
 
 Package natbib Warning: Citation `rios2018' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `rios2018' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `jones2013youth' on page 6 undefined on input 
-line 188.
+line 192.
 
 
 Package natbib Warning: Citation `guerrero2011' on page 6 undefined on input li
-ne 188.
+ne 192.
 
 
 Package natbib Warning: Citation `rios2018' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `rios2018' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `francovivanco2023' on page 6 undefined on inp
-ut line 188.
+ut line 192.
 
 
 [6]
 
 Package natbib Warning: Citation `mccormik2019' on page 7 undefined on input li
-ne 192.
+ne 196.
 
 
 Package natbib Warning: Citation `rios2018' on page 7 undefined on input line 1
-92.
+96.
 
 
 [7]
 
 Package natbib Warning: Citation `mccormik2019' on page 8 undefined on input li
-ne 194.
+ne 198.
 
 
 Package natbib Warning: Citation `mccormik2019' on page 8 undefined on input li
-ne 194.
+ne 198.
 
 
 Package natbib Warning: Citation `quackenbush2019' on page 8 undefined on input
- line 194.
+ line 198.
 
 
 Package natbib Warning: Citation `CriminalViolenceInMexico2025' on page 8 undef
-ined on input line 194.
+ined on input line 198.
 
 
 Package natbib Warning: Citation `unodc2017' on page 8 undefined on input line 
-194.
+198.
 
 
 Package natbib Warning: Citation `dea2024' on page 8 undefined on input line 19
-4.
+8.
 
 
 Package natbib Warning: Citation `jaitman2017' on page 8 undefined on input lin
-e 196.
+e 200.
 
 
 Package natbib Warning: Citation `Calderon2013' on page 8 undefined on input li
-ne 196.
+ne 200.
 
 
 Package natbib Warning: Citation `imf2024violent' on page 8 undefined on input 
-line 196.
+line 200.
 
 
 Package natbib Warning: Citation `jones2013kingpin' on page 8 undefined on inpu
-t line 196.
+t line 200.
 
 
-Package natbib Warning: Citation `rios2013' on page 8 undefined on input line 1
-96.
+Package natbib Warning: Citation `rios2013' on page 8 undefined on input line 2
+00.
 
 
 Package natbib Warning: Citation `diazcayeros2017' on page 8 undefined on input
- line 196.
+ line 200.
 
 
 [8]
 
 LaTeX Warning: Reference `tab: DropoutStats' on page 9 undefined on input line 
-203.
+207.
 
-(../input/Tables/dropout_stats.tex)
-Overfull \hbox (17.19142pt too wide) in paragraph at lines 1--216
+
+[9] (../input/Tables/dropout_stats.tex)
+Overfull \hbox (17.19142pt too wide) in paragraph at lines 1--220
  [][] 
 
-[9]
-
 LaTeX Warning: Reference `tab: DropoutStats' on page 10 undefined on input line
- 218.
+ 222.
 
 
 Package natbib Warning: Citation `redim2011' on page 10 undefined on input line
- 218.
+ 222.
 
 
 [10]
 
 LaTeX Warning: Reference `figure:enrollment' on page 11 undefined on input line
- 220.
+ 224.
 
 
-LaTeX Warning: Reference `tab:EnoeStats' on page 11 undefined on input line 222
+LaTeX Warning: Reference `tab:EnoeStats' on page 11 undefined on input line 226
 .
 
 (../input/Tables/mun_summary_stats.tex)
 [11]
 
 LaTeX Warning: Reference `tab:sample_construction' on page 12 undefined on inpu
-t line 236.
+t line 240.
 
 
 LaTeX Warning: Reference `tab:sample_time_period' on page 12 undefined on input
- line 236.
+ line 240.
 
 
-LaTeX Warning: Reference `figure:HomTS' on page 12 undefined on input line 241.
+LaTeX Warning: Reference `figure:HomTS' on page 12 undefined on input line 245.
 
 
 
 LaTeX Warning: Reference `figure:enrollment' on page 12 undefined on input line
- 241.
+ 245.
 
 
 [12]
 
-LaTeX Warning: Reference `figure:HomTS' on page 13 undefined on input line 253.
+LaTeX Warning: Reference `figure:HomTS' on page 13 undefined on input line 257.
 
 
 
 LaTeX Warning: Reference `tab:homicide_summary' on page 13 undefined on input l
-ine 253.
+ine 257.
 
 
 LaTeX Warning: Reference `figure:totalHeatMap' on page 13 undefined on input li
-ne 253.
+ne 257.
 
 
-LaTeX Warning: Reference `figure:HomTS' on page 13 undefined on input line 253.
+LaTeX Warning: Reference `figure:HomTS' on page 13 undefined on input line 257.
 
 
 
 LaTeX Warning: Reference `figure:warHeatMap' on page 13 undefined on input line
- 253.
+ 257.
 
 
 LaTeX Warning: Reference `figure:interimHeatMap' on page 13 undefined on input 
-line 253.
+line 257.
 
 
 LaTeX Warning: Reference `figure:respikeHeatMap' on page 13 undefined on input 
-line 253.
+line 257.
 
 
 [13 <../input/Figures/Homicide_TS.pdf>]
 
 LaTeX Warning: Reference `figure:totalHeatMap' on page 14 undefined on input li
-ne 263.
+ne 267.
 
 
 LaTeX Warning: Reference `tab:Seizure Summary' on page 14 undefined on input li
-ne 266.
+ne 270.
 
 
 LaTeX Warning: Reference `figure:SeizuresTS' on page 14 undefined on input line
- 266.
+ 270.
 
 (../input/Tables/seizure_stats.tex)
 [14 <../input/Figures/total_hom_map.pdf>]
 
 Package natbib Warning: Citation `Castillo2020' on page 15 undefined on input l
-ine 277.
+ine 281.
 
 
 [15]
 
 Package natbib Warning: Citation `dubevargas' on page 16 undefined on input lin
-e 284.
+e 288.
 
 
 Package natbib Warning: Citation `morenolouzada2025' on page 16 undefined on in
-put line 284.
+put line 288.
 
 
 Package natbib Warning: Citation `bartik1991' on page 16 undefined on input lin
-e 284.
+e 288.
 
 
 LaTeX Warning: Reference `figure:borderMap' on page 16 undefined on input line 
-284.
+288.
 
 
 LaTeX Warning: Reference `figure:geoDist' on page 16 undefined on input line 28
-4.
+8.
 
 
 Package natbib Warning: Citation `bauer2016' on page 16 undefined on input line
- 297.
+ 301.
 
 
-LaTeX Warning: Reference `eq:FE' on page 16 undefined on input line 297.
+LaTeX Warning: Reference `eq:FE' on page 16 undefined on input line 301.
 
 
 [16{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/l
@@ -729,147 +737,151 @@ ocal/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2
 025/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
 [17]
 
-LaTeX Warning: Reference `eq:Stage1' on page 18 undefined on input line 333.
+LaTeX Warning: Reference `eq:Stage1' on page 18 undefined on input line 337.
 
 
 Package natbib Warning: Citation `unodc2010' on page 18 undefined on input line
- 338.
+ 342.
 
 
 LaTeX Warning: Reference `figure:totalHeatMap' on page 18 undefined on input li
-ne 340.
+ne 344.
 
 
 [18]
 
-LaTeX Warning: Reference `tab:mex_drugs' on page 19 undefined on input line 346
+LaTeX Warning: Reference `tab:mex_drugs' on page 19 undefined on input line 350
 .
 
 (../input/Tables/drug_correlations.tex)
 
 LaTeX Warning: Reference `tab:econ_validation' on page 19 undefined on input li
-ne 359.
+ne 363.
 
 
 LaTeX Warning: Reference `tab:econ_validation' on page 19 undefined on input li
-ne 359.
+ne 363.
 
 (../input/Tables/placebo_seizures.tex)
-Overfull \hbox (3.8372pt too wide) in paragraph at lines 1--371
+Overfull \hbox (3.8372pt too wide) in paragraph at lines 1--375
  [][] 
 
 [19]
 
-LaTeX Warning: Reference `eq:Stage1' on page 20 undefined on input line 376.
+LaTeX Warning: Reference `tab:main_first_stage' on page 20 undefined on input l
+ine 378.
 
 
-Overfull \hbox (9.90672pt too wide) in paragraph at lines 376--377
+LaTeX Warning: Reference `eq:Stage1' on page 20 undefined on input line 380.
+
+
+Overfull \hbox (9.90672pt too wide) in paragraph at lines 380--381
 []\T1/lmr/m/n/12 To put this co-ef-fi-cient in con-text, the es-ti-mate im-plie
 s that mov-ing one stan-dard deviation---
 
 [20]
 
 LaTeX Warning: Reference `tab:baseline_specs' on page 21 undefined on input lin
-e 381.
+e 385.
 
 
-LaTeX Warning: Reference `eq:FE' on page 21 undefined on input line 381.
+LaTeX Warning: Reference `eq:FE' on page 21 undefined on input line 385.
 
 
-LaTeX Warning: Reference `eq:Stage2' on page 21 undefined on input line 383.
+LaTeX Warning: Reference `eq:Stage2' on page 21 undefined on input line 387.
 
 
 LaTeX Warning: Reference `tab:violence_attrition' on page 21 undefined on input
- line 383.
+ line 387.
 
 
 [21]
 
 LaTeX Warning: Reference `tab:main_iv_quarterly' on page 22 undefined on input 
-line 387.
+line 391.
 
 
-LaTeX Warning: Reference `eq:Stage2' on page 22 undefined on input line 387.
+LaTeX Warning: Reference `eq:Stage2' on page 22 undefined on input line 391.
 
 
-LaTeX Warning: Reference `eq:Stage2' on page 22 undefined on input line 387.
+LaTeX Warning: Reference `eq:Stage2' on page 22 undefined on input line 391.
 
 
 LaTeX Warning: Reference `tab:main_iv_quarterly' on page 22 undefined on input 
-line 387.
+line 391.
 
 (../input/Tables/main_iv.tex)
-Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--399
+Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--403
  [][] 
 
 [22{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}]
 
 LaTeX Warning: Reference `tab:subgroup_specs' on page 23 undefined on input lin
-e 402.
+e 406.
 
 
 LaTeX Warning: Reference `tab:subgroup_respike_quarterly' on page 23 undefined 
-on input line 402.
+on input line 406.
 
 
 LaTeX Warning: Reference `tab:demographics by period' on page 23 undefined on i
-nput line 402.
+nput line 406.
 
 
 LaTeX Warning: Reference `tab:subgroup_whole_samp' on page 23 undefined on inpu
-t line 402.
+t line 406.
 
 
 LaTeX Warning: Reference `tab:subgroup_war' on page 23 undefined on input line 
-402.
+406.
 
 
 LaTeX Warning: Reference `tab:subgroup_interim' on page 23 undefined on input l
-ine 402.
+ine 406.
 
 
 LaTeX Warning: Reference `tab:subgroup_whole_quarterly' on page 23 undefined on
- input line 402.
+ input line 406.
 
 
 LaTeX Warning: Reference `tab:subgroup_war_quarterly' on page 23 undefined on i
-nput line 402.
+nput line 406.
 
 
 LaTeX Warning: Reference `tab:subgroup_interim_quarterly' on page 23 undefined 
-on input line 402.
+on input line 406.
 
 
 [23] (../input/Tables/subgroup_iv_respike.tex)
 
-LaTeX Warning: Reference `tab:robustness' on page 24 undefined on input line 41
-9.
+LaTeX Warning: Reference `tab:robustness' on page 24 undefined on input line 42
+3.
 
 
 LaTeX Warning: Reference `sec:quarterly_appendix' on page 24 undefined on input
- line 422.
+ line 426.
 
 
 [24]
 
 Package natbib Warning: Citation `Sviatschi2022' on page 25 undefined on input 
-line 427.
+line 431.
 
 
-Overfull \hbox (8.40022pt too wide) in paragraph at lines 429--430
+Overfull \hbox (8.40022pt too wide) in paragraph at lines 433--434
 []\T1/lmr/m/n/12 While in-come ef-fects could the-o-ret-i-cally pro-duce sim-i-
 lar de-mo-graphic patterns---households
 
 [25]
 
 Package natbib Warning: Citation `redim2011' on page 26 undefined on input line
- 435.
+ 439.
 
 
 [26]
 
 Package natbib Warning: Citation `prieto2023' on page 27 undefined on input lin
-e 440.
+e 444.
 
 
 [27]
@@ -887,64 +899,80 @@ No file main.bbl.
 (../input/Tables/sample_time_period.tex)
 
 LaTeX Warning: Reference `tab:sample_construction' on page 36 undefined on inpu
-t line 577.
+t line 581.
 
 (../input/Tables/demographics_by_period.tex)
-[36] (../input/Tables/subgroup_iv_whole_samp.tex)
-(../input/Tables/subgroup_iv_war.tex) (../input/Tables/subgroup_iv_interim.tex)
+[36] (../input/Tables/main_first_stage.tex)
 
-[37] (../input/Tables/attrition_robustness.tex)
-(../input/Tables/robustness_iv.tex)
-[38] (../input/Tables/main_iv_quarterly.tex)
-
-LaTeX Warning: Reference `tab:baseline_specs' on page 39 undefined on input lin
-e 678.
+LaTeX Warning: Reference `eq:Stage1' on page 37 undefined on input line 609.
 
 
-Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--680
+Overfull \hbox (19.7333pt too wide) in paragraph at lines 1--611
+ [][] 
+(../input/Tables/subgroup_iv_whole_samp.tex)
+(../input/Tables/subgroup_iv_war.tex)
+[37] (../input/Tables/subgroup_iv_interim.tex)
+(../input/Tables/attrition_robustness.tex)
+[38] (../input/Tables/robustness_iv.tex)
+(../input/Tables/main_first_stage_quarterly.tex)
+
+LaTeX Warning: Reference `tab:main_first_stage' on page 39 undefined on input l
+ine 697.
+
+
+Overfull \hbox (29.0875pt too wide) in paragraph at lines 1--699
+ [][] 
+
+[39] (../input/Tables/main_iv_quarterly.tex)
+
+LaTeX Warning: Reference `tab:baseline_specs' on page 40 undefined on input lin
+e 710.
+
+
+Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--712
  [][] 
 (../input/Tables/subgroup_iv_whole_samp_quarterly.tex)
 
-LaTeX Warning: Reference `tab:subgroup_whole_samp' on page 39 undefined on inpu
-t line 691.
+LaTeX Warning: Reference `tab:subgroup_whole_samp' on page 40 undefined on inpu
+t line 723.
 
 
-[39] (../input/Tables/subgroup_iv_war_quarterly.tex)
+[40] (../input/Tables/subgroup_iv_war_quarterly.tex)
 
-LaTeX Warning: Reference `tab:subgroup_war' on page 40 undefined on input line 
-705.
+LaTeX Warning: Reference `tab:subgroup_war' on page 41 undefined on input line 
+737.
 
 (../input/Tables/subgroup_iv_interim_quarterly.tex)
 
-LaTeX Warning: Reference `tab:subgroup_interim' on page 40 undefined on input l
-ine 719.
+LaTeX Warning: Reference `tab:subgroup_interim' on page 41 undefined on input l
+ine 751.
 
 
-[40] (../input/Tables/subgroup_iv_respike_quarterly.tex)
+[41] (../input/Tables/subgroup_iv_respike_quarterly.tex)
 
-LaTeX Warning: Reference `tab:subgroup_specs' on page 41 undefined on input lin
-e 733.
+LaTeX Warning: Reference `tab:subgroup_specs' on page 42 undefined on input lin
+e 765.
 
 
-Overfull \hbox (0.6387pt too wide) in paragraph at lines 743--744
+Overfull \hbox (0.6387pt too wide) in paragraph at lines 775--776
 \T1/lmr/m/n/12 This ap-pendix de-scribes the con-struc-tion of the individual- 
 and municipal-level panel datasets
 
-[41]
 [42]
 [43]
-
-Package natbib Warning: Citation `gargiulo2023' on page 44 undefined on input l
-ine 773.
-
-
 [44]
 
-LaTeX Warning: Reference `figure:borderMap' on page 45 undefined on input line 
-787.
+Package natbib Warning: Citation `gargiulo2023' on page 45 undefined on input l
+ine 805.
 
 
 [45]
+
+LaTeX Warning: Reference `figure:borderMap' on page 46 undefined on input line 
+819.
+
+
+[46]
 
 Package minitoc(hints) Warning: W0033
 (minitoc(hints))                The caption package should be 
@@ -959,7 +987,7 @@ Package minitoc(hints) Warning: W0024
 Package natbib Warning: There were undefined citations.
 
 
-[46] (./main.aux)
+[47] (./main.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -982,15 +1010,16 @@ al/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/
 2025/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025/texmf-
 dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/
 type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/publi
-c/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pf
-b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/lo
-cal/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texliv
-e/2025/texmf-dist/fonts/type1/public/lm/lmri8.pfb></usr/local/texlive/2025/texm
-f-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fon
-ts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
-blic/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfon
-ts/symbols/msbm10.pfb>
-Output written on main.pdf (47 pages, 9898709 bytes).
+c/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr7.pf
+b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/loca
+l/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/
+2025/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive/2025/texmf
+-dist/fonts/type1/public/lm/lmri8.pfb></usr/local/texlive/2025/texmf-dist/fonts
+/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pub
+lic/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy
+8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/m
+sbm10.pfb>
+Output written on main.pdf (48 pages, 9926304 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -1332,299 +1361,307 @@ Non-PDF special ignored!
 al/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/202
 5/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
 
-Package natbib Warning: Citation `psacharopoulos2018' on page 1 undefined on in
-put line 159.
-
-
 Package natbib Warning: Citation `cattan2022' on page 1 undefined on input line
- 159.
+ 157.
 
 
 Package natbib Warning: Citation `drager2024' on page 1 undefined on input line
- 159.
+ 157.
 
 
 Package natbib Warning: Citation `dehoyos2014' on page 1 undefined on input lin
-e 159.
+e 157.
 
 
 Package natbib Warning: Citation `harberger2012' on page 1 undefined on input l
-ine 159.
+ine 157.
+
+
+Package natbib Warning: Citation `unodc2010' on page 1 undefined on input line 
+161.
+
+
+Package natbib Warning: Citation `dubevargas' on page 1 undefined on input line
+ 161.
+
+
+Package natbib Warning: Citation `bartik1991' on page 1 undefined on input line
+ 161.
 
 
 [1]
+
+Package natbib Warning: Citation `mccormik2019' on page 2 undefined on input li
+ne 165.
+
+
 [2]
 
 Package natbib Warning: Citation `dubevargas' on page 3 undefined on input line
- 171.
+ 175.
 
 
 Package natbib Warning: Citation `igarape' on page 3 undefined on input line 17
-1.
+5.
 
 
 Package natbib Warning: Citation `iiss2017' on page 3 undefined on input line 1
-71.
-
-
-Package natbib Warning: Citation `leon2012' on page 3 undefined on input line 1
-73.
-
-
-Package natbib Warning: Citation `justino2013' on page 3 undefined on input lin
-e 173.
-
-
-Package natbib Warning: Citation `ichino2004' on page 3 undefined on input line
- 173.
-
-
-Package natbib Warning: Citation `shemayinka2011' on page 3 undefined on input 
-line 173.
-
-
-Package natbib Warning: Citation `akresh2008' on page 3 undefined on input line
- 173.
-
-
-Package natbib Warning: Citation `montes2021' on page 3 undefined on input line
- 173.
-
-
-Package natbib Warning: Citation `koppensteiner2021' on page 3 undefined on inp
-ut line 173.
-
-
-Package natbib Warning: Citation `monteiro2017' on page 3 undefined on input li
-ne 173.
-
-
-Package natbib Warning: Citation `brown2017' on page 3 undefined on input line 
-173.
-
-
-Package natbib Warning: Citation `jarillo2016' on page 3 undefined on input lin
-e 173.
-
-
-Package natbib Warning: Citation `caudillo2014' on page 3 undefined on input li
-ne 173.
-
-
-Package natbib Warning: Citation `michaelsen2020' on page 3 undefined on input 
-line 173.
-
-
-Package natbib Warning: Citation `orraca2018' on page 3 undefined on input line
- 173.
-
-
-Package natbib Warning: Citation `jarillo2016' on page 3 undefined on input lin
-e 173.
-
-
-Package natbib Warning: Citation `swee2015' on page 3 undefined on input line 1
-73.
-
-
-Package natbib Warning: Citation `justino2012' on page 3 undefined on input lin
-e 173.
-
-
-Package natbib Warning: Citation `rodriguez2009' on page 3 undefined on input l
-ine 173.
-
-
-Package natbib Warning: Citation `michaelsen2020' on page 3 undefined on input 
-line 173.
-
-
-Package natbib Warning: Citation `padilla2015' on page 3 undefined on input lin
-e 173.
+75.
 
 
 [3]
 
+Package natbib Warning: Citation `leon2012' on page 4 undefined on input line 1
+77.
+
+
+Package natbib Warning: Citation `justino2013' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `ichino2004' on page 4 undefined on input line
+ 177.
+
+
+Package natbib Warning: Citation `shemayinka2011' on page 4 undefined on input 
+line 177.
+
+
+Package natbib Warning: Citation `akresh2008' on page 4 undefined on input line
+ 177.
+
+
+Package natbib Warning: Citation `brown2017' on page 4 undefined on input line 
+177.
+
+
+Package natbib Warning: Citation `jarillo2016' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `caudillo2014' on page 4 undefined on input li
+ne 177.
+
+
+Package natbib Warning: Citation `michaelsen2020' on page 4 undefined on input 
+line 177.
+
+
+Package natbib Warning: Citation `padilla2015' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `orraca2018' on page 4 undefined on input line
+ 177.
+
+
+Package natbib Warning: Citation `montes2021' on page 4 undefined on input line
+ 177.
+
+
+Package natbib Warning: Citation `koppensteiner2021' on page 4 undefined on inp
+ut line 177.
+
+
+Package natbib Warning: Citation `monteiro2017' on page 4 undefined on input li
+ne 177.
+
+
+Package natbib Warning: Citation `jarillo2016' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `swee2015' on page 4 undefined on input line 1
+77.
+
+
+Package natbib Warning: Citation `justino2012' on page 4 undefined on input lin
+e 177.
+
+
+Package natbib Warning: Citation `rodriguez2009' on page 4 undefined on input l
+ine 177.
+
+
 Package natbib Warning: Citation `guerrero2011' on page 4 undefined on input li
-ne 178.
+ne 182.
 
 
 Package natbib Warning: Citation `dube2016' on page 4 undefined on input line 1
-78.
+82.
 
 
 Package natbib Warning: Citation `dell2015' on page 4 undefined on input line 1
-78.
+82.
 
 
 Package natbib Warning: Citation `kilmer2010' on page 4 undefined on input line
- 178.
+ 182.
 
 
 Package natbib Warning: Citation `unodc2010' on page 4 undefined on input line 
-178.
+182.
 
 
 [4]
 
 Package natbib Warning: Citation `Castillo2020' on page 5 undefined on input li
-ne 180.
+ne 184.
 
 
 Package natbib Warning: Citation `Castillo2020' on page 5 undefined on input li
-ne 182.
+ne 186.
 
 
 Package natbib Warning: Citation `Castillo2020' on page 5 undefined on input li
-ne 182.
+ne 186.
 
 
 Package natbib Warning: Citation `becker2006' on page 5 undefined on input line
- 182.
+ 186.
 
 
 Package natbib Warning: Citation `Castillo2020' on page 5 undefined on input li
-ne 182.
+ne 186.
 
 
 Package natbib Warning: Citation `dell2015' on page 5 undefined on input line 1
-84.
+88.
 
 
 [5]
 
 Package natbib Warning: Citation `dell2015' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `rios2013' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `dell2019' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `dube2013' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `dube2016' on page 6 undefined on input line 1
-86.
+90.
 
 
 Package natbib Warning: Citation `Calderon2013' on page 6 undefined on input li
-ne 186.
+ne 190.
 
 
 Package natbib Warning: Citation `dell2015' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `Calderon2013' on page 6 undefined on input li
-ne 188.
+ne 192.
 
 
 Package natbib Warning: Citation `guerrero2011' on page 6 undefined on input li
-ne 188.
+ne 192.
 
 
 Package natbib Warning: Citation `rios2018' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `rios2018' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `jones2013youth' on page 6 undefined on input 
-line 188.
+line 192.
 
 
 Package natbib Warning: Citation `guerrero2011' on page 6 undefined on input li
-ne 188.
+ne 192.
 
 
 Package natbib Warning: Citation `rios2018' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `rios2018' on page 6 undefined on input line 1
-88.
+92.
 
 
 Package natbib Warning: Citation `francovivanco2023' on page 6 undefined on inp
-ut line 188.
+ut line 192.
 
 
 [6]
 
 Package natbib Warning: Citation `mccormik2019' on page 7 undefined on input li
-ne 192.
+ne 196.
 
 
 Package natbib Warning: Citation `rios2018' on page 7 undefined on input line 1
-92.
+96.
 
 
 [7]
 
 Package natbib Warning: Citation `mccormik2019' on page 8 undefined on input li
-ne 194.
+ne 198.
 
 
 Package natbib Warning: Citation `mccormik2019' on page 8 undefined on input li
-ne 194.
+ne 198.
 
 
 Package natbib Warning: Citation `quackenbush2019' on page 8 undefined on input
- line 194.
+ line 198.
 
 
 Package natbib Warning: Citation `CriminalViolenceInMexico2025' on page 8 undef
-ined on input line 194.
+ined on input line 198.
 
 
 Package natbib Warning: Citation `unodc2017' on page 8 undefined on input line 
-194.
+198.
 
 
 Package natbib Warning: Citation `dea2024' on page 8 undefined on input line 19
-4.
+8.
 
 
 Package natbib Warning: Citation `jaitman2017' on page 8 undefined on input lin
-e 196.
+e 200.
 
 
 Package natbib Warning: Citation `Calderon2013' on page 8 undefined on input li
-ne 196.
+ne 200.
 
 
 Package natbib Warning: Citation `imf2024violent' on page 8 undefined on input 
-line 196.
+line 200.
 
 
 Package natbib Warning: Citation `jones2013kingpin' on page 8 undefined on inpu
-t line 196.
+t line 200.
 
 
-Package natbib Warning: Citation `rios2013' on page 8 undefined on input line 1
-96.
+Package natbib Warning: Citation `rios2013' on page 8 undefined on input line 2
+00.
 
 
 Package natbib Warning: Citation `diazcayeros2017' on page 8 undefined on input
- line 196.
+ line 200.
 
 
-[8] (../input/Tables/dropout_stats.tex)
-Overfull \hbox (17.19142pt too wide) in paragraph at lines 1--216
+[8]
+[9] (../input/Tables/dropout_stats.tex)
+Overfull \hbox (17.19142pt too wide) in paragraph at lines 1--220
  [][] 
 
-[9]
-
 Package natbib Warning: Citation `redim2011' on page 10 undefined on input line
- 218.
+ 222.
 
 
 [10] (../input/Tables/mun_summary_stats.tex)
@@ -1634,25 +1671,25 @@ Package natbib Warning: Citation `redim2011' on page 10 undefined on input line
 [14 <../input/Figures/total_hom_map.pdf>]
 
 Package natbib Warning: Citation `Castillo2020' on page 15 undefined on input l
-ine 277.
+ine 281.
 
 
 [15]
 
 Package natbib Warning: Citation `dubevargas' on page 16 undefined on input lin
-e 284.
+e 288.
 
 
 Package natbib Warning: Citation `morenolouzada2025' on page 16 undefined on in
-put line 284.
+put line 288.
 
 
 Package natbib Warning: Citation `bartik1991' on page 16 undefined on input lin
-e 284.
+e 288.
 
 
 Package natbib Warning: Citation `bauer2016' on page 16 undefined on input line
- 297.
+ 301.
 
 
 [16{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/l
@@ -1661,22 +1698,22 @@ ocal/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2
 [17]
 
 Package natbib Warning: Citation `unodc2010' on page 18 undefined on input line
- 338.
+ 342.
 
 
 [18] (../input/Tables/drug_correlations.tex)
 (../input/Tables/placebo_seizures.tex)
-Overfull \hbox (3.8372pt too wide) in paragraph at lines 1--371
+Overfull \hbox (3.8372pt too wide) in paragraph at lines 1--375
  [][] 
 
 [19]
-Overfull \hbox (9.90672pt too wide) in paragraph at lines 376--377
+Overfull \hbox (9.90672pt too wide) in paragraph at lines 380--381
 []\T1/lmr/m/n/12 To put this co-ef-fi-cient in con-text, the es-ti-mate im-plie
 s that mov-ing one stan-dard deviation---
 
 [20]
 [21] (../input/Tables/main_iv.tex)
-Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--399
+Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--403
  [][] 
 
 [22{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}]
@@ -1684,23 +1721,23 @@ Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--399
 [24]
 
 Package natbib Warning: Citation `Sviatschi2022' on page 25 undefined on input 
-line 427.
+line 431.
 
 
-Overfull \hbox (8.40022pt too wide) in paragraph at lines 429--430
+Overfull \hbox (8.40022pt too wide) in paragraph at lines 433--434
 []\T1/lmr/m/n/12 While in-come ef-fects could the-o-ret-i-cally pro-duce sim-i-
 lar de-mo-graphic patterns---households
 
 [25]
 
 Package natbib Warning: Citation `redim2011' on page 26 undefined on input line
- 435.
+ 439.
 
 
 [26]
 
 Package natbib Warning: Citation `prieto2023' on page 27 undefined on input lin
-e 440.
+e 444.
 
 
 [27] (./main.bbl
@@ -1724,32 +1761,39 @@ s Rodriguez-
 ) (../input/Tables/sample_construction.tex)
 (../input/Tables/sample_time_period.tex)
 (../input/Tables/demographics_by_period.tex)
-[41] (../input/Tables/subgroup_iv_whole_samp.tex)
-(../input/Tables/subgroup_iv_war.tex) (../input/Tables/subgroup_iv_interim.tex)
+[41] (../input/Tables/main_first_stage.tex)
+Overfull \hbox (19.7333pt too wide) in paragraph at lines 1--611
+ [][] 
+(../input/Tables/subgroup_iv_whole_samp.tex)
+(../input/Tables/subgroup_iv_war.tex)
+[42] (../input/Tables/subgroup_iv_interim.tex)
+(../input/Tables/attrition_robustness.tex)
+[43] (../input/Tables/robustness_iv.tex)
+(../input/Tables/main_first_stage_quarterly.tex)
+Overfull \hbox (29.0875pt too wide) in paragraph at lines 1--699
+ [][] 
 
-[42] (../input/Tables/attrition_robustness.tex)
-(../input/Tables/robustness_iv.tex)
-[43] (../input/Tables/main_iv_quarterly.tex)
-Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--680
+[44] (../input/Tables/main_iv_quarterly.tex)
+Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--712
  [][] 
 (../input/Tables/subgroup_iv_whole_samp_quarterly.tex)
-[44] (../input/Tables/subgroup_iv_war_quarterly.tex)
+[45] (../input/Tables/subgroup_iv_war_quarterly.tex)
 (../input/Tables/subgroup_iv_interim_quarterly.tex)
-[45] (../input/Tables/subgroup_iv_respike_quarterly.tex)
-Overfull \hbox (0.6387pt too wide) in paragraph at lines 743--744
+[46] (../input/Tables/subgroup_iv_respike_quarterly.tex)
+Overfull \hbox (0.6387pt too wide) in paragraph at lines 775--776
 \T1/lmr/m/n/12 This ap-pendix de-scribes the con-struc-tion of the individual- 
 and municipal-level panel datasets
 
-[46]
 [47]
 [48]
-
-Package natbib Warning: Citation `gargiulo2023' on page 49 undefined on input l
-ine 773.
-
-
 [49]
+
+Package natbib Warning: Citation `gargiulo2023' on page 50 undefined on input l
+ine 805.
+
+
 [50]
+[51]
 
 Package minitoc(hints) Warning: W0033
 (minitoc(hints))                The caption package should be 
@@ -1764,7 +1808,7 @@ Package minitoc(hints) Warning: W0024
 Package natbib Warning: There were undefined citations.
 
 
-[51] (./main.aux
+[52] (./main.aux
 
 Package natbib Warning: Citation(s) may have changed.
 (natbib)                Rerun to get citations correct.
@@ -1795,15 +1839,16 @@ s/type1/public/lm/lmmi12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/lm/lmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr
 10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></us
 r/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/tex
-live/2025/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2025/te
-xmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fon
-ts/type1/public/lm/lmri10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/p
-ublic/lm/lmri12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/l
-mri8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><
-/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/
-texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/202
-5/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9900559 bytes).
+live/2025/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2025/te
+xmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fon
+ts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pub
+lic/lm/lmri10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr
+i12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri8.pfb></u
+sr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/t
+exlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025
+/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist
+/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on main.pdf (53 pages, 9928260 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -2147,85 +2192,93 @@ al/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/202
 [7]
 [8]
 [9] (../input/Tables/dropout_stats.tex)
-Overfull \hbox (17.19142pt too wide) in paragraph at lines 1--216
+Overfull \hbox (17.19142pt too wide) in paragraph at lines 1--220
  [][] 
 
-[10] (../input/Tables/mun_summary_stats.tex)
-[11]
+[10]
+[11] (../input/Tables/mun_summary_stats.tex)
 [12]
-[13 <../input/Figures/Homicide_TS.pdf>] (../input/Tables/seizure_stats.tex)
-[14 <../input/Figures/total_hom_map.pdf>]
-[15]
-[16{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/l
+[13]
+[14 <../input/Figures/Homicide_TS.pdf>] (../input/Tables/seizure_stats.tex)
+[15 <../input/Figures/total_hom_map.pdf>]
+[16]
+[17{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/l
 ocal/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2
 025/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
-[17]
-[18] (../input/Tables/drug_correlations.tex)
+[18]
+[19] (../input/Tables/drug_correlations.tex)
 (../input/Tables/placebo_seizures.tex)
-Overfull \hbox (3.8372pt too wide) in paragraph at lines 1--371
+Overfull \hbox (3.8372pt too wide) in paragraph at lines 1--375
  [][] 
 
-[19]
-Overfull \hbox (9.90672pt too wide) in paragraph at lines 376--377
+[20]
+Overfull \hbox (9.90672pt too wide) in paragraph at lines 380--381
 []\T1/lmr/m/n/12 To put this co-ef-fi-cient in con-text, the es-ti-mate im-plie
 s that mov-ing one stan-dard deviation---
 
-[20]
-[21] (../input/Tables/main_iv.tex)
-Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--399
+[21]
+[22] (../input/Tables/main_iv.tex)
+Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--403
  [][] 
 
-[22{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}]
-[23] (../input/Tables/subgroup_iv_respike.tex)
-[24]
-Overfull \hbox (8.40022pt too wide) in paragraph at lines 429--430
+[23{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}]
+[24] (../input/Tables/subgroup_iv_respike.tex)
+[25]
+Overfull \hbox (8.40022pt too wide) in paragraph at lines 433--434
 []\T1/lmr/m/n/12 While in-come ef-fects could the-o-ret-i-cally pro-duce sim-i-
 lar de-mo-graphic patterns---households
 
-[25]
 [26]
-[27] (./main.bbl
-[28]
+[27]
+[28] (./main.bbl
 [29]
+[30]
 Underfull \hbox (badness 1337) in paragraph at lines 225--229
 []\T1/lmr/bx/n/12 Marquez-Padilla, Fer-nanda, Fran-cisco Perez-Arce, and Car-lo
 s Rodriguez-
 
-[30]
-[31])
-[32]
+[31]
+[32])
 [33]
-[34 <../input/Figures/enrollment_TS.pdf>]
-[35 <../input/Figures/war_hom_map.pdf>]
-[36 <../input/Figures/interim_hom_map.pdf>]
-[37 <../input/Figures/respike_hom_map.pdf>]
-[38 <../input/Figures/Seizure_TS.pdf>]
-[39 <../input/Figures/Map_w_Borders.pdf>]
-[40 <../input/Figures/d_to_pc_distribution.pdf>] (../input/Tables/hom_stats.tex
+[34]
+[35 <../input/Figures/enrollment_TS.pdf>]
+[36 <../input/Figures/war_hom_map.pdf>]
+[37 <../input/Figures/interim_hom_map.pdf>]
+[38 <../input/Figures/respike_hom_map.pdf>]
+[39 <../input/Figures/Seizure_TS.pdf>]
+[40 <../input/Figures/Map_w_Borders.pdf>]
+[41 <../input/Figures/d_to_pc_distribution.pdf>] (../input/Tables/hom_stats.tex
 ) (../input/Tables/sample_construction.tex)
 (../input/Tables/sample_time_period.tex)
 (../input/Tables/demographics_by_period.tex)
-[41] (../input/Tables/subgroup_iv_whole_samp.tex)
-(../input/Tables/subgroup_iv_war.tex) (../input/Tables/subgroup_iv_interim.tex)
+[42] (../input/Tables/main_first_stage.tex)
+Overfull \hbox (19.7333pt too wide) in paragraph at lines 1--611
+ [][] 
+(../input/Tables/subgroup_iv_whole_samp.tex)
+(../input/Tables/subgroup_iv_war.tex)
+[43] (../input/Tables/subgroup_iv_interim.tex)
+(../input/Tables/attrition_robustness.tex)
+[44] (../input/Tables/robustness_iv.tex)
+(../input/Tables/main_first_stage_quarterly.tex)
+Overfull \hbox (29.0875pt too wide) in paragraph at lines 1--699
+ [][] 
 
-[42] (../input/Tables/attrition_robustness.tex)
-(../input/Tables/robustness_iv.tex)
-[43] (../input/Tables/main_iv_quarterly.tex)
-Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--680
+[45] (../input/Tables/main_iv_quarterly.tex)
+Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--712
  [][] 
 (../input/Tables/subgroup_iv_whole_samp_quarterly.tex)
-[44] (../input/Tables/subgroup_iv_war_quarterly.tex)
+[46] (../input/Tables/subgroup_iv_war_quarterly.tex)
 (../input/Tables/subgroup_iv_interim_quarterly.tex)
-[45] (../input/Tables/subgroup_iv_respike_quarterly.tex)
-Overfull \hbox (0.6387pt too wide) in paragraph at lines 743--744
+[47] (../input/Tables/subgroup_iv_respike_quarterly.tex)
+Overfull \hbox (0.6387pt too wide) in paragraph at lines 775--776
 \T1/lmr/m/n/12 This ap-pendix de-scribes the con-struc-tion of the individual- 
 and municipal-level panel datasets
 
-[46]
-[47]
 [48]
 [49]
 [50]
+[51]
+[52]
 
 Package minitoc(hints) Warning: W0033
 (minitoc(hints))                The caption package should be 
@@ -2237,7 +2290,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                in the main.log file.
 
 
-[51] (./main.aux)
+[53] (./main.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
@@ -2251,15 +2304,16 @@ b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/loc
 al/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/
 2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-
 dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/
-type1/public/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public
-/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.p
-fb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/l
-ocal/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri8.pfb></usr/local/texliv
-e/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/tex
-mf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fon
-ts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
-blic/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9908389 bytes).
+type1/public/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public
+/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb
+></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/loc
+al/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive
+/2025/texmf-dist/fonts/type1/public/lm/lmri8.pfb></usr/local/texlive/2025/texmf
+-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/font
+s/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pub
+lic/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfont
+s/symbols/msbm10.pfb>
+Output written on main.pdf (54 pages, 9936113 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -2288,6 +2342,7 @@ Latexmk: applying rule 'pdflatex'...
 Rule 'pdflatex':  Reasons for rerun
 Changed files or newly in use/created:
   main.aux
+  main.toc
 
 ------------
 Run number 4 of rule 'pdflatex'
@@ -2599,85 +2654,93 @@ al/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/202
 [7]
 [8]
 [9] (../input/Tables/dropout_stats.tex)
-Overfull \hbox (17.19142pt too wide) in paragraph at lines 1--216
+Overfull \hbox (17.19142pt too wide) in paragraph at lines 1--220
  [][] 
 
-[10] (../input/Tables/mun_summary_stats.tex)
-[11]
+[10]
+[11] (../input/Tables/mun_summary_stats.tex)
 [12]
-[13 <../input/Figures/Homicide_TS.pdf>] (../input/Tables/seizure_stats.tex)
-[14 <../input/Figures/total_hom_map.pdf>]
-[15]
-[16{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/l
+[13]
+[14 <../input/Figures/Homicide_TS.pdf>] (../input/Tables/seizure_stats.tex)
+[15 <../input/Figures/total_hom_map.pdf>]
+[16]
+[17{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/l
 ocal/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2
 025/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
-[17]
-[18] (../input/Tables/drug_correlations.tex)
+[18]
+[19] (../input/Tables/drug_correlations.tex)
 (../input/Tables/placebo_seizures.tex)
-Overfull \hbox (3.8372pt too wide) in paragraph at lines 1--371
+Overfull \hbox (3.8372pt too wide) in paragraph at lines 1--375
  [][] 
 
-[19]
-Overfull \hbox (9.90672pt too wide) in paragraph at lines 376--377
+[20]
+Overfull \hbox (9.90672pt too wide) in paragraph at lines 380--381
 []\T1/lmr/m/n/12 To put this co-ef-fi-cient in con-text, the es-ti-mate im-plie
 s that mov-ing one stan-dard deviation---
 
-[20]
-[21] (../input/Tables/main_iv.tex)
-Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--399
+[21]
+[22] (../input/Tables/main_iv.tex)
+Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--403
  [][] 
 
-[22{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}]
-[23] (../input/Tables/subgroup_iv_respike.tex)
-[24]
-Overfull \hbox (8.40022pt too wide) in paragraph at lines 429--430
+[23{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}]
+[24] (../input/Tables/subgroup_iv_respike.tex)
+[25]
+Overfull \hbox (8.40022pt too wide) in paragraph at lines 433--434
 []\T1/lmr/m/n/12 While in-come ef-fects could the-o-ret-i-cally pro-duce sim-i-
 lar de-mo-graphic patterns---households
 
-[25]
 [26]
-[27] (./main.bbl
-[28]
+[27]
+[28] (./main.bbl
 [29]
+[30]
 Underfull \hbox (badness 1337) in paragraph at lines 225--229
 []\T1/lmr/bx/n/12 Marquez-Padilla, Fer-nanda, Fran-cisco Perez-Arce, and Car-lo
 s Rodriguez-
 
-[30]
-[31])
-[32]
+[31]
+[32])
 [33]
-[34 <../input/Figures/enrollment_TS.pdf>]
-[35 <../input/Figures/war_hom_map.pdf>]
-[36 <../input/Figures/interim_hom_map.pdf>]
-[37 <../input/Figures/respike_hom_map.pdf>]
-[38 <../input/Figures/Seizure_TS.pdf>]
-[39 <../input/Figures/Map_w_Borders.pdf>]
-[40 <../input/Figures/d_to_pc_distribution.pdf>] (../input/Tables/hom_stats.tex
+[34]
+[35 <../input/Figures/enrollment_TS.pdf>]
+[36 <../input/Figures/war_hom_map.pdf>]
+[37 <../input/Figures/interim_hom_map.pdf>]
+[38 <../input/Figures/respike_hom_map.pdf>]
+[39 <../input/Figures/Seizure_TS.pdf>]
+[40 <../input/Figures/Map_w_Borders.pdf>]
+[41 <../input/Figures/d_to_pc_distribution.pdf>] (../input/Tables/hom_stats.tex
 ) (../input/Tables/sample_construction.tex)
 (../input/Tables/sample_time_period.tex)
 (../input/Tables/demographics_by_period.tex)
-[41] (../input/Tables/subgroup_iv_whole_samp.tex)
-(../input/Tables/subgroup_iv_war.tex) (../input/Tables/subgroup_iv_interim.tex)
+[42] (../input/Tables/main_first_stage.tex)
+Overfull \hbox (19.7333pt too wide) in paragraph at lines 1--611
+ [][] 
+(../input/Tables/subgroup_iv_whole_samp.tex)
+(../input/Tables/subgroup_iv_war.tex)
+[43] (../input/Tables/subgroup_iv_interim.tex)
+(../input/Tables/attrition_robustness.tex)
+[44] (../input/Tables/robustness_iv.tex)
+(../input/Tables/main_first_stage_quarterly.tex)
+Overfull \hbox (29.0875pt too wide) in paragraph at lines 1--699
+ [][] 
 
-[42] (../input/Tables/attrition_robustness.tex)
-(../input/Tables/robustness_iv.tex)
-[43] (../input/Tables/main_iv_quarterly.tex)
-Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--680
+[45] (../input/Tables/main_iv_quarterly.tex)
+Overfull \hbox (5.95427pt too wide) in paragraph at lines 1--712
  [][] 
 (../input/Tables/subgroup_iv_whole_samp_quarterly.tex)
-[44] (../input/Tables/subgroup_iv_war_quarterly.tex)
+[46] (../input/Tables/subgroup_iv_war_quarterly.tex)
 (../input/Tables/subgroup_iv_interim_quarterly.tex)
-[45] (../input/Tables/subgroup_iv_respike_quarterly.tex)
-Overfull \hbox (0.6387pt too wide) in paragraph at lines 743--744
+[47] (../input/Tables/subgroup_iv_respike_quarterly.tex)
+Overfull \hbox (0.6387pt too wide) in paragraph at lines 775--776
 \T1/lmr/m/n/12 This ap-pendix de-scribes the con-struc-tion of the individual- 
 and municipal-level panel datasets
 
-[46]
-[47]
 [48]
 [49]
 [50]
+[51]
+[52]
 
 Package minitoc(hints) Warning: W0033
 (minitoc(hints))                The caption package should be 
@@ -2689,7 +2752,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                in the main.log file.
 
 
-[51] (./main.aux) )
+[53] (./main.aux) )
 (see the transcript file for additional information)</usr/local/texlive/2025/te
 xmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025/texmf-dist/f
 onts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1
@@ -2699,15 +2762,16 @@ b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/loc
 al/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/
 2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-
 dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/
-type1/public/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public
-/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.p
-fb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/l
-ocal/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri8.pfb></usr/local/texliv
-e/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/tex
-mf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fon
-ts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
-blic/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (52 pages, 9908389 bytes).
+type1/public/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public
+/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb
+></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/loc
+al/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive
+/2025/texmf-dist/fonts/type1/public/lm/lmri8.pfb></usr/local/texlive/2025/texmf
+-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/font
+s/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pub
+lic/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfont
+s/symbols/msbm10.pfb>
+Output written on main.pdf (54 pages, 9936109 bytes).
 Transcript written on main.log.
 Latexmk: Getting log file 'main.log'
 Latexmk: Examining 'main.fls'
@@ -2721,4 +2785,4 @@ Latexmk: All targets (main.pdf) are up-to-date
 The following files were created in main.tex:
 main.pdf 
 
-make.sh finished at 2026-03-20 17:03:55
+make.sh finished at 2026-03-27 17:07:48

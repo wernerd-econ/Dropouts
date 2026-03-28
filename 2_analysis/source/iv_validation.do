@@ -90,38 +90,33 @@ local b_1 = _b[cs_big]
 local se_1 = _se[cs_big]
 local N_1 = e(N)
 
-* Regression 2: cs_big on cocaine
-regress cocaine cs_big, vce(robust)
+
+* Regression 2: cs_big on heroin
+regress heroin cs_big, vce(robust)
 local b_2 = _b[cs_big]
 local se_2 = _se[cs_big]
 local N_2 = e(N)
 
-* Regression 3: cs_big on heroin
-regress heroin cs_big, vce(robust)
+* Regression 3: cs_big on meth
+regress meth cs_big, vce(robust)
 local b_3 = _b[cs_big]
 local se_3 = _se[cs_big]
 local N_3 = e(N)
 
-* Regression 4: cs_big on meth
-regress meth cs_big, vce(robust)
+* Regression 4: cs_big on opium
+regress opium cs_big, vce(robust)
 local b_4 = _b[cs_big]
 local se_4 = _se[cs_big]
 local N_4 = e(N)
 
-* Regression 5: cs_big on opium
-regress opium cs_big, vce(robust)
+* Regression 5: cs_big on total Mexican seizures
+regress total_mex cs_big, vce(robust)
 local b_5 = _b[cs_big]
 local se_5 = _se[cs_big]
 local N_5 = e(N)
 
-* Regression 6: cs_big on total Mexican seizures
-regress total_mex cs_big, vce(robust)
-local b_6 = _b[cs_big]
-local se_6 = _se[cs_big]
-local N_6 = e(N)
-
 * Calculate significance stars for each
-forvalues j = 1/6 {
+forvalues j = 1/5 {
     local b  = `b_`j''  
     local se = `se_`j''  
     
@@ -150,23 +145,23 @@ forvalues j = 1/6 {
 * Write LaTeX table
 file open mytable using "${TABLES}drug_correlations.tex", write replace
 
-file write mytable "\begin{tabular}{l c c c c c c}" _n
+file write mytable "\begin{tabular}{l c c c c c}" _n
 file write mytable "\hline\hline" _n
-file write mytable " & Marijuana & Cocaine & Heroin & Meth & Opium & Total \\" _n
-file write mytable " & (1) & (2) & (3) & (4) & (5) & (6) \\" _n
+file write mytable " & Marijuana & Heroin & Meth & Opium & Total \\" _n
+file write mytable " & (1) & (2) & (3) & (4) & (5) \\" _n
 file write mytable "\hline" _n
 
 * Coefficient row
 file write mytable "Colombian cocaine seizures (metric tonnes)" _n
-file write mytable " & `coef1' & `coef2' & `coef3' & `coef4' & `coef5' & `coef6'  \\" _n
-file write mytable " & `seout1' & `seout2' & `seout3' & `seout4' & `seout5' & `seout6'  \\" _n
+file write mytable " & `coef1' & `coef2' & `coef3' & `coef4' & `coef5'  \\" _n
+file write mytable " & `seout1' & `seout2' & `seout3' & `seout4' & `seout5'  \\" _n
 
 file write mytable "\hline" _n
 
 * Observations
 file write mytable "\hline" _n
 file write mytable "Observations" _n
-file write mytable " & `Nout1' & `Nout2' & `Nout3' & `Nout4' & `Nout5' & `Nout6' \\" _n
+file write mytable " & `Nout1' & `Nout2' & `Nout3' & `Nout4' & `Nout5' \\" _n
 file write mytable "\hline\hline" _n
 file write mytable "\end{tabular}" _n
 
