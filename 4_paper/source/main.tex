@@ -113,6 +113,7 @@
 \input{../input/Tables/homicide_scalars}
 \input{../input/Tables/cocaine_scalars}
 \input{../input/Tables/main_analysis_scalars}
+\input{../input/Tables/permanence_scalars}
 
 
 \newcommand{\mc}[1]{\multicolumn{1}{c}{#1}}
@@ -233,7 +234,7 @@ Table~\ref{tab:EnoeStats} reports summary statistics for the sample of all indiv
 \vspace{2mm}
 \begin{minipage}{0.95\linewidth}
 \scriptsize \singlespacing
-\textit{Notes:} This table displays summary statistics of several variables in the ENOE data. Averages are computed at the municipality--month--year level using ENOE microdata, then averaged to the municipality level, and once again across all municipalities. Household income is the sum of monthly income among all members of the household and household employment rate is calculated for adult members of the household only. Weekly hours worked is calculated by taking the average among working persons. Income figures similarly take an average for all persons with non-zero income. All income figures are reported in real Mexican pesos. Using the base year of December 2023=100, all figures are in inflation-adjusted Mexican Pesos. The numbers in parentheses present the figures in inflation adjusted USD and using the same reference year. The conversion was done using the monthly Mexican Pesos to U.S. Dollar Spot Exchange Rate from 2007 to 2024. The normalizations and exchange rate conversions were calculated using data from FRED.
+\textit{Notes:} This table displays summary statistics of several variables in the ENOE data. All statistics are computed over every individual in the ENOE panel---adults as well as children---because these variables serve as household-- and municipality--level controls in the analysis. In particular, average age refers to the average age across all surveyed household members, not the age of the school--aged children who make up the estimation sample (the estimation sample is described in Table~\ref{tab:sample_construction}). Averages are computed at the municipality--month--year level using ENOE microdata, then averaged to the municipality level, and once again across all municipalities. Household income is the sum of monthly income among all members of the household and household employment rate is calculated for adult members of the household only. Weekly hours worked is calculated by taking the average among working persons. Income figures similarly take an average for all persons with non-zero income. All income figures are reported in real Mexican pesos. Using the base year of December 2023=100, all figures are in inflation-adjusted Mexican Pesos. The numbers in parentheses present the figures in inflation adjusted USD and using the same reference year. The conversion was done using the monthly Mexican Pesos to U.S. Dollar Spot Exchange Rate from 2007 to 2024. The normalizations and exchange rate conversions were calculated using data from FRED.
 \end{minipage}
 \end{table}
 
@@ -403,6 +404,25 @@ Naturally then, the remaining three columns present estimates restricting the sa
 \end{table}
 Because the analysis relies on an instrumental variables strategy applied to outcomes constructed from survey data, the heterogeneity estimates are inherently imprecise. Indeed, a formal test of equality across the three period-specific coefficients fails to reject the null that the effects are the same across periods. Accordingly, the estimates presented above should be interpreted with caution. While they are consistent with a structural shift over time, the data do not provide sufficient statistical power to detect such a shift conclusively. That said, the point estimates differ meaningfully in magnitude, suggesting the possibility of an underlying structural change that cannot be precisely identified in this setting.
 
+\subsection*{Persistent and Temporary Dropouts}
+A natural question is whether the dropout episodes underlying these estimates represent lasting exits from schooling or short--lived interruptions. The five--quarter structure of the ENOE panel makes it possible to follow individuals after a dropout event and observe whether they subsequently re--enroll. I classify a dropout event as \textit{persistent} if the individual remains out of school for at least the two quarters following the event, and as \textit{temporary} if they re--enroll within that window. Events occurring in an individual's final two interviews cannot be classified---their subsequent enrollment status is unobserved---and are therefore excluded from the decomposition rather than assigned to either category.\footnote{Appendix Table~\ref{tab:perm_horizons} shows that the estimates are not sensitive to the choice of the two--quarter horizon.} Appendix Table~\ref{tab:dropout_permanence} reports the underlying descriptive statistics: of the \NEventsTwoQ\ dropout events observed for at least two subsequent quarters, \StillOutTwoQ\ \% remain out of school both quarters, while only \RetTwoQ\ \% return. The majority of observed dropout events thus reflect persistent withdrawals from schooling rather than brief absences.
+
+Table~\ref{tab:perm_decomposition} decomposes the baseline estimates into their persistent and temporary components. Because the two indicators partition dropout events on the classifiable sample, the coefficients in Panels A and B sum to the total effect in Panel C by construction. Note that Panel C is not directly comparable to Table~\ref{tab:baseline_specs}: only events observed with at least two quarters of follow--up can be classified (roughly half of all dropout events), which mechanically scales down the total effect relative to the baseline estimates. With this in mind, two patterns emerge. First, the persistent margin accounts for the majority of the total effect in most periods; in the Resurgence period, the split between the two margins is roughly proportional to the two--thirds share of persistent events in the raw data. Second, the decomposed estimates are imprecise throughout and no coefficient is statistically distinguishable from zero, so this evidence is descriptive in nature. Taken together, the decomposition suggests that the dropout responses documented above are unlikely to be dominated by short--lived absences, though the data cannot conclusively attribute the effect to either margin.\footnote{The results are similar when aggregating at the quarterly level; see Appendix Table~\ref{tab:perm_decomposition_quarterly}.}
+
+\begin{table}[H]
+\caption{Dropout Decomposition: Persistent and Temporary Dropouts}
+\label{tab:perm_decomposition}
+\centering
+\scriptsize
+\input{../input/Tables/perm_dropout_iv}
+\vspace{2mm}
+\begin{minipage}{0.95\linewidth}
+\scriptsize \singlespacing
+\textit{Notes:} This table decomposes the dropout outcome into persistent and temporary dropout events. A dropout event is classified as persistent if the individual remains out of school for the two quarters following the event (Panel A) and as temporary if the individual re--enrolls within two quarters (Panel B). Panel C reports estimates for all dropout events on the same sample. Events occurring in an individual's final two interviews cannot be classified and are excluded from all three panels; because only events with at least two quarters of subsequent observation can be classified (roughly half of all dropout events), the estimates in Panel C are not directly comparable in magnitude to those in Table~\ref{tab:baseline_specs}. By construction, the coefficients in Panels A and B sum to the coefficient in Panel C. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants, instrumented using the interaction between Colombian cocaine seizures and a municipality's distance to the Pacific coast. Column (1) reports the primary specification on the whole sample; the remaining columns restrict the sample to the three time periods. All specifications include the full set of household-- and municipality--level controls, individual fixed effects, and month--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is identical across panels because all three outcomes are estimated on the same sample. As in Table~\ref{tab:baseline_specs}, the first stage is weak in the War on Drugs period (Column (2)), so estimates in that column should be interpreted with caution. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+\end{minipage}
+\end{table}
+
+\subsection*{Subgroup Heterogeneity}
 With these caveats in mind, I proceed to estimate an additional set of heterogeneity specifications primarily for descriptive purposes. To shed further light on the mechanisms behind the main results, Table~\ref{tab:subgroup_specs} examines treatment effects across demographic and educational subgroups. The estimates in this table are highly suggestive that the effects during the Resurgence period are concentrated among high school students (Column 2) and are substantially larger for males (Column 3).\footnote{These estimates, while descriptive, are robust to the quarterly aggregation specifications as well. See Appendix Table~\ref{tab:subgroup_respike_quarterly}.} The estimates are indicative of meaningful effects: a one--standard deviation increase in the municipal homicide rate raises the probability of dropping out among high school students by approximately {\fpeval{round(\sdEffectRespikeHigh * 100,2)}} percentage points (from a mean dropout probability of roughly 9.5 percent), and the effect for males in this group is even larger, at roughly {\fpeval{round(\sdEffectRespikeMale * 100,2)}} percentage points (from a mean of 8 percent). These magnitudes suggest that the Resurgence period's surge in violence had a particularly strong impact on schooling decisions for older male students.\footnote{Table~\ref{tab:demographics by period} shows the demographic composition of the sample by time period. The results are likely not driven by significant demographic changes across time periods.} While remaining descriptive in spirit only, subgroup effects are imprecise throughout and in the full sample and in the earlier periods (see Appendix Tables~\ref{tab:subgroup_whole_samp}, \ref{tab:subgroup_war}, and \ref{tab:subgroup_interim}), suggesting that this pattern of heterogeneity is likely to be specific to the post--2017 resurgence in violence.\footnote{Once again, the estimates are consistent with the quarterly aggregation estimates in Appendix Tables~\ref{tab:subgroup_whole_quarterly}, \ref{tab:subgroup_war_quarterly}, and \ref{tab:subgroup_interim_quarterly}}} 
 
 \begin{table}[H]
@@ -430,7 +450,9 @@ The pattern of results across time periods and subgroups is highly suggestive of
 
 Instead, the observed subgroup heterogeneity is consistent with DTO recruitment practices. High school--aged males (15--18) show the largest and most significant dropout responses to violence, while effects for secondary school students (12--15) are smaller and less precisely estimated. This age gradient aligns with the organizational structure of criminal groups: older adolescents are recruited at higher rates and into full--time roles as enforcers, distributors, or armed operatives, while younger teenagers are recruited at lower rates and typically serve in more peripheral capacities as lookouts or errand runners that can be balanced with continued school attendance. Additionally, as children age and become more deeply involved in cartel activities, they gain a certain ``criminal capital" specific to the illegal industry that fosters full--time criminal careers \citep{Sviatschi2022}. When DTO activity intensifies, they are therefore likelier to dropout of school. Furthermore, the stark gender difference, with large positive effects for males and null effects for females, provides additional support for this interpretation, as DTO recruitment overwhelmingly targets young men.
 
-While income effects could theoretically produce similar demographic patterns---households facing violence--induced income shocks might withdraw older sons from school to compensate for lost earnings---this explanation is inconsistent with the time-period heterogeneity. Despite the aforementioned imprecision caveats, if the primary mechanism were income substitution, one would expect similar effects across all three periods whenever violence increased household economic insecurity. 
+While income effects could theoretically produce similar demographic patterns---households facing violence--induced income shocks might withdraw older sons from school to compensate for lost earnings---this explanation is inconsistent with the time-period heterogeneity. Despite the aforementioned imprecision caveats, if the primary mechanism were income substitution, one would expect similar effects across all three periods whenever violence increased household economic insecurity.
+
+The employment margin provides more direct evidence against the labor substitution channel. Appendix Table~\ref{tab:employment_iv} replaces the dropout outcome with the labor market outcomes of the students themselves: an indicator for being employed and weekly hours worked. Across all periods, there is no evidence that violence draws adolescents into measured employment---the point estimates are predominantly negative, and if anything suggest that adolescent employment falls when violence rises.\footnote{The quarterly aggregation estimates in Appendix Table~\ref{tab:employment_quarterly} are tightly estimated zeros.} If children were leaving school to replace lost household earnings, adolescent employment should rise with violence; it does not. Importantly, the ENOE records formal and informal employment as reported by survey respondents, but participation in illicit activities is unlikely to be reported. The absence of any measured employment response is therefore consistent with the recruitment interpretation: adolescents who leave school in response to violence do not appear in the conventional labor market captured by the survey.
 
 The era--specific nature of the effects instead points to changes in the calculus of considering DTO membership over Mexico's evolving security landscape. During Calder\'{o}n's militarized offensive against cartels, intense armed confrontations between security forces and traffickers drastically increased the mortality risk of cartel membership. Additionally, the increased police and military enforcement, increased the perceived probability of getting caught and going to prison. Lastly, the nationwide campaign against cartels in this period worsened the social perception of narcotrafficking, potentially dis--incentivizing children from participating in the drug trade to protect their social capital. Together, these factors may have decreased the opportunity cost of recruitment into DTOs vis--\`{a}--vis the continuation of human capital accumulation, dampening recruitment effects even as violence surged (potentially making them negative, as the point estimates indicate). The Interim Period under President Pe\~{n}a Nieto saw lower homicide rates and a shift in enforcement strategy away from direct confrontation. Cartels during this period were fragmented and reorganizing following the arrests of major kingpins, potentially reducing their recruitment capacity. Moreover, the intense social stigma attached to cartel membership likely persisted, further deterring youth from entering the drug trade.
 
@@ -681,6 +703,45 @@ The results highlight the salience of this issue in the present context. While D
     \end{minipage}
 \end{table}
 
+\begin{table}[H]
+\centering
+\caption{Summary Statistics: Dropout Persistence}
+\label{tab:dropout_permanence}
+\centering
+\footnotesize
+\input{../input/Tables/dropout_permanence}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table reports the persistence of dropout events in the estimation sample. A dropout event can be evaluated at a given follow--up horizon only if the individual is interviewed for at least that many quarters after the event; because the ENOE panel spans five quarters, events occurring at later interviews can only be evaluated at shorter horizons, and events in an individual's final interview cannot be evaluated at all. For each horizon, the table reports the number of evaluable dropout events, the share of individuals who re--enroll in school within the horizon, and the share who remain out of school. The quarterly return hazard remains positive in the third quarter after the event, so the share of persistent dropouts at any fixed horizon is an upper bound on truly permanent exits from schooling. The sample corresponds to the main estimation sample: children aged 12--18 observed in all five interviews, excluding municipalities with fewer than 15{,}000 residents.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Dropout Decomposition: Alternative Follow--Up Horizons}
+\label{tab:perm_horizons}
+\centering
+\scriptsize
+\input{../input/Tables/perm_dropout_horizons}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table reports the whole--sample (2007--2024) dropout decomposition estimates of Table~\ref{tab:perm_decomposition} under alternative follow--up horizons. In Column (1), a dropout event is classified as persistent if the individual remains out of school for the quarter following the event; in Column (2), for the two following quarters (the primary definition); and in Column (3), for the three following quarters. Events without sufficient subsequent observation are excluded, so the estimation sample varies across columns. Panel A reports estimates for persistent dropouts and Panel B for temporary dropouts (re--enrollment within the horizon). The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants, instrumented using the interaction between Colombian cocaine seizures and a municipality's distance to the Pacific coast. All specifications include the full set of household-- and municipality--level controls, individual fixed effects, and month--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Adolescent Employment Estimates}
+\label{tab:employment_iv}
+\centering
+\scriptsize
+\input{../input/Tables/employment_iv}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table replaces the dropout outcome with the labor market outcomes of the students themselves. In Panel A, the dependent variable is an indicator equal to one if the individual is employed (\textit{poblaci\'{o}n ocupada}); in Panel B, it is weekly hours worked, with zeros for individuals who do not work, so that the estimates capture total adolescent labor supply. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants, instrumented using the interaction between Colombian cocaine seizures and a municipality's distance to the Pacific coast. Column (1) reports the primary specification on the whole sample; the remaining columns restrict the sample to the three time periods. All specifications include the full set of household-- and municipality--level controls, individual fixed effects, and month--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is identical across panels because both outcomes are estimated on the same sample. As in Table~\ref{tab:baseline_specs}, the first stage is weak in the War on Drugs period (Column (2)), so estimates in that column should be interpreted with caution. The ENOE records formal and informal employment as reported by survey respondents; participation in illicit activities is unlikely to be reported. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
 \section{Quarterly Aggregation}
 \label{sec:quarterly_appendix}
 
@@ -764,6 +825,32 @@ The results highlight the salience of this issue in the present context. While D
     \scriptsize \singlespacing
     This table replicates Table \ref{tab:subgroup_specs} using data aggregated at the quarter-year level instead of the month-year level. The table reports IV estimates of the primary IV specification in the resurgence period (2017--2024), disaggregated by educational and demographic subgroups. Column (1) presents results for secondary school (ages 12--14); Column (2) for high school (ages 15--18); Columns (3) and (4) for Males and Females, respectively. The dependent variable is an indicator equal to one if the individual dropped out of school in the given quarter. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants. All columns include the full set of household-- and municipality--level controls, individual fixed effects, and quarter--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is reported for all specifications. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children.
  $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Quarterly Dropout Decomposition Estimates}
+\label{tab:perm_decomposition_quarterly}
+\centering
+\scriptsize
+\input{../input/Tables/perm_dropout_iv_quarterly}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table replicates Table~\ref{tab:perm_decomposition} using data at the quarter-year level instead of the month-year level. A dropout event is classified as persistent if the individual remains out of school for the two quarters following the event (Panel A) and as temporary if the individual re--enrolls within two quarters (Panel B). Panel C reports estimates for all dropout events on the same sample. Events occurring in an individual's final two interviews cannot be classified and are excluded from all three panels. By construction, the coefficients in Panels A and B sum to the coefficient in Panel C. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants, instrumented using the interaction between Colombian cocaine seizures and a municipality's distance to the Pacific coast. Column (1) reports the primary specification on the whole sample; the remaining columns restrict the sample to the three time periods. All specifications include the full set of household-- and municipality--level controls, individual fixed effects, and quarter--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is identical across panels because all three outcomes are estimated on the same sample. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Quarterly Adolescent Employment Estimates}
+\label{tab:employment_quarterly}
+\centering
+\scriptsize
+\input{../input/Tables/employment_iv_quarterly}
+\begin{minipage}{0.95\linewidth}
+    \scriptsize \singlespacing
+    \textit{Notes:} This table replicates Table~\ref{tab:employment_iv} using data at the quarter-year level instead of the month-year level. In Panel A, the dependent variable is an indicator equal to one if the individual is employed (\textit{poblaci\'{o}n ocupada}); in Panel B, it is weekly hours worked, with zeros for individuals who do not work. The key regressor is the natural logarithm of one plus the municipal homicide rate per 10{,}000 inhabitants, instrumented using the interaction between Colombian cocaine seizures and a municipality's distance to the Pacific coast. Column (1) reports the primary specification on the whole sample; the remaining columns restrict the sample to the three time periods. All specifications include the full set of household-- and municipality--level controls, individual fixed effects, and quarter--by--year fixed effects. Standard errors are clustered at the individual level. The Kleibergen--Paap rk Wald F-statistic is identical across panels because both outcomes are estimated on the same sample. The sample excludes municipalities with fewer than 15{,}000 residents and primary-school-aged children. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
     \end{minipage}
 \end{table}
 
