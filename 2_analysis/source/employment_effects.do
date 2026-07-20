@@ -191,6 +191,132 @@ file write myfile "\end{tabular}" _n
 file close myfile
 
 ********************************************************************************
+* PART 1b: Subgroup analysis (monthly, Resurgence 2007-2024 restricted to the
+* post-2017 resurgence period, mirroring the main subgroup table
+* subgroup_iv_respike.tex). Repeats the employment robustness check within each
+* demographic/educational subgroup to confirm the "no employment pull" pattern
+* holds for the subgroups as well. The monthly analysis dataset built in PART 1
+* is still in memory (the outcomes emp / weekly_hours_worked and the `controls'
+* local remain in scope), so no reload is needed.
+********************************************************************************
+
+* Subgroup filters, one per output column (match subgroup_iv_respike.tex):
+*   (1) secondary school (ages 12-14)  (2) high school (ages 15-18)
+*   (3) males                          (4) females
+local sg1 age >= 12 & age <= 14
+local sg2 age >= 15 & age <= 18
+local sg3 sex == 1
+local sg4 sex == 2
+
+forvalues g = 1/4 {
+    forvalues oi = 1/2 {
+        local o : word `oi' of `outcomes'
+
+        ivreghdfe `o' `controls' (ln_homicide = iv) ///
+            if (`sg`g'') & year >= 2017 & year <= 2024, ///
+            absorb(i.month_year_date i.id) cluster(id) first
+
+        local sb_`oi'_`g'  = _b[ln_homicide]
+        local sse_`oi'_`g' = _se[ln_homicide]
+        local sN_`oi'_`g'  = e(N)
+        local skp_`oi'_`g' = e(rkf)
+        quietly sum `o' if e(sample)
+        local smean_`oi'_`g' : display %6.3f r(mean)
+    }
+}
+
+* Within each subgroup both panels run on the same sample and first stage
+forvalues g = 1/4 {
+    assert `sN_1_`g'' == `sN_2_`g''
+}
+
+// ============================================
+// Prepare values for table display (subgroups)
+// ============================================
+
+forvalues oi = 1/2 {
+    forvalues g = 1/4 {
+        local b  = `sb_`oi'_`g''
+        local se = `sse_`oi'_`g''
+
+        * t/z statistic
+        local t = abs(`b' / `se')
+        local pval = 2 * normal(-`t')
+
+        * stars
+        local stars ""
+        if (`pval' < 0.10) local stars "*"
+        if (`pval' < 0.05) local stars "**"
+        if (`pval' < 0.01) local stars "***"
+
+        * formatted numbers
+        local b_tex  : display %6.3f `b'
+        local se_tex : display %6.3f `se'
+        local kp_tex : display %6.2f `skp_`oi'_`g''
+
+        * store LaTeX-ready output
+        local scoef`oi'_`g' "\$`b_tex'^{`stars'}\$"
+        local sseout`oi'_`g' "(`se_tex')"
+        local skpout`g' "`kp_tex'"
+
+        local N = `sN_`oi'_`g''
+        * Add comma if N > 10,000
+        if `N' >= 10000 {
+            local sNout`g' : display %9.0fc `N'
+        }
+        else {
+            local sNout`g' : display %9.0f `N'
+        }
+    }
+}
+
+// ============================================
+// WRITE LATEX TABLE (Subgroups, monthly)
+// ============================================
+
+file open myfile using "${TABLES}employment_iv_subgroups.tex", write replace
+
+* Write table header
+file write myfile "\begin{tabular}{l c c c c}" _n
+file write myfile "\hline\hline" _n
+file write myfile "{\small \textit{Resurgence (2017-2024)}} & Secondary school & High school & Male & Female \\" _n
+file write myfile " & (1) & (2) & (3) & (4) \\" _n
+file write myfile "\hline" _n
+
+* Panel A: extensive margin
+file write myfile "\multicolumn{5}{l}{{\small \textit{Panel A. Outcome: Employed}}} \\" _n
+file write myfile "Homicides per 10,000" _n
+file write myfile " & `scoef1_1' & `scoef1_2' & `scoef1_3' & `scoef1_4' \\" _n
+file write myfile " & `sseout1_1' & `sseout1_2' & `sseout1_3' & `sseout1_4' \\" _n
+file write myfile "Mean of employed" _n
+file write myfile " & \$`smean_1_1'\$ & \$`smean_1_2'\$ & \$`smean_1_3'\$ & \$`smean_1_4'\$ \\" _n
+file write myfile "\hline" _n
+
+* Panel B: hours worked
+file write myfile "\multicolumn{5}{l}{{\small \textit{Panel B. Outcome: Weekly hours worked}}} \\" _n
+file write myfile "Homicides per 10,000" _n
+file write myfile " & `scoef2_1' & `scoef2_2' & `scoef2_3' & `scoef2_4' \\" _n
+file write myfile " & `sseout2_1' & `sseout2_2' & `sseout2_3' & `sseout2_4' \\" _n
+file write myfile "Mean of weekly hours worked" _n
+file write myfile " & \$`smean_2_1'\$ & \$`smean_2_2'\$ & \$`smean_2_3'\$ & \$`smean_2_4'\$ \\" _n
+
+* Kleibergen-Paap F-stat row (identical across panels within a subgroup)
+file write myfile "\hline" _n
+file write myfile "Kleibergen-Paap F-stat" _n
+file write myfile " & `skpout1' & `skpout2' & `skpout3' & `skpout4' \\" _n
+
+* Observations row
+file write myfile "\hline" _n
+file write myfile "Observations" _n
+file write myfile " & `sNout1' & `sNout2' & `sNout3' & `sNout4' \\" _n
+
+* Close table
+file write myfile "\hline\hline" _n
+file write myfile "\end{tabular}" _n
+
+file close myfile
+
+********************************************************************************
 * PART 2: Quarterly analysis
 ********************************************************************************
 

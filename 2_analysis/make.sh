@@ -54,6 +54,8 @@ run_R maps.R "${LOGFILE}" || exit 1
 run_stata main_results.do "${LOGFILE}" || exit 1
 run_stata quarterly_results.do "${LOGFILE}" || exit 1
 run_stata robustness.do "${LOGFILE}" || exit 1
+run_stata employment_effects.do "${LOGFILE}" || exit 1
+run_stata permanent_dropout.do "${LOGFILE}" || exit 1
 run_stata violence_predicts_attrit.do "${LOGFILE}" || exit 1
 run_stata iv_validation.do "${LOGFILE}" || exit 1
 ) || false
